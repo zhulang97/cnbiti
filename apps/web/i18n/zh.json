@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "products": "产品",
+    "grades": "牌号",
+    "standards": "标准",
+    "processing": "加工",
+    "industries": "行业",
+    "resources": "资料",
+    "quality": "质量",
+    "about": "关于",
+    "contact": "联系",
+    "getQuote": "询价",
+    "sendDrawing": "发送图纸"
+  },
+  "hero": {
+    "badge": "宝鸡钛谷 · 成立于2008年",
+    "title": "钛材料与定制加工",
+    "titleHighlight": "面向全球买家",
+    "subtitle": "来自中国宝鸡的钛棒、钛板、钛管、钛丝、钛锻件、钛管件、钛阳极和CNC钛零件，附带出口文件。",
+    "cta": {
+      "quote": "获取报价",
+      "drawing": "发送图纸",
+      "products": "查看产品"
+    }
+  },
+  "footer": {
+    "rights": "版权所有。"
+  }
+}

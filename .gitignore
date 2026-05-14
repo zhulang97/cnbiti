@@ -1,0 +1,33 @@
+node_modules/
+.pnpm-store/
+.npm-cache/
+.m2/
+.tmp/
+.claude/
+.playwright-mcp/
+.mysql-data*/
+.mysql-run*/
+.mysql-exp*/
+.minio-data*/
+.minio-run*/
+
+dist/
+.nuxt/
+.nuxt-*/
+.output/
+target/
+apps/admin/src/**/*.js
+
+*.log
+
+# Local notes and deployment/data handoff artifacts
+memory/
+release/
+minio-export/
+*.tgz
+/*.sql
+
+# Local screenshots captured during development
+/admin-dashboard-fixed.png
+/cnbjti-home.png
+/home-check.png
