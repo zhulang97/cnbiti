@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">CNBJTI titanium brand icon</title>
+  <desc id="desc">A refined titanium hexagon badge with contained Ti lettering.</desc>
+  <defs>
+    <linearGradient id="bg" x1="8" y1="4" x2="58" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#172033"/>
+      <stop offset="0.52" stop-color="#0d0f10"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="12" y1="8" x2="54" y2="57" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e9ecef"/>
+      <stop offset="0.2" stop-color="#38bdf8"/>
+      <stop offset="0.56" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#486581"/>
+    </linearGradient>
+    <linearGradient id="core" x1="18" y1="12" x2="48" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#243b53"/>
+      <stop offset="0.48" stop-color="#111827"/>
+      <stop offset="1" stop-color="#0d0f10"/>
+    </linearGradient>
+    <linearGradient id="facetA" x1="16" y1="17" x2="48" y2="47" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="facetB" x1="18" y1="45" x2="49" y2="21" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#334e68"/>
+      <stop offset="1" stop-color="#829ab1"/>
+    </linearGradient>
+    <linearGradient id="letter" x1="22" y1="23" x2="45" y2="45" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8f9fa"/>
+      <stop offset="0.46" stop-color="#d9e2ec"/>
+      <stop offset="1" stop-color="#9fb3c8"/>
+    </linearGradient>
+    <clipPath id="hexClip">
+      <path d="M32 11.5 50.2 22v20L32 52.5 13.8 42V22L32 11.5Z"/>
+    </clipPath>
+    <filter id="softShadow" x="-24%" y="-24%" width="148%" height="148%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#020617" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="64" height="64" rx="13" fill="url(#bg)"/>
+  <path d="M10 49.5 26.5 58H12.8A6.8 6.8 0 0 1 6 51.2V37.7l4 11.8Z" fill="#38bdf8" opacity="0.08"/>
+  <path d="M54 14.5 37.5 6h13.7A6.8 6.8 0 0 1 58 12.8v13.5l-4-11.8Z" fill="#e9ecef" opacity="0.08"/>
+
+  <path
+    d="M32 7.5 54.6 20.5v23L32 56.5 9.4 43.5v-23L32 7.5Z"
+    fill="url(#rim)"
+    filter="url(#softShadow)"
+  />
+  <path d="M32 11.5 50.2 22v20L32 52.5 13.8 42V22L32 11.5Z" fill="url(#core)"/>
+
+  <g clip-path="url(#hexClip)">
+    <path d="M13.8 22 32 11.5 50.2 22 32 26.4Z" fill="url(#facetA)" opacity="0.34"/>
+    <path d="M13.8 42 32 26.4 32 52.5Z" fill="#0ea5e9" opacity="0.13"/>
+    <path d="M50.2 42 32 26.4 32 52.5Z" fill="url(#facetB)" opacity="0.18"/>
+    <path d="M13.8 22 32 26.4 13.8 42Z" fill="#020617" opacity="0.22"/>
+    <path d="M50.2 22 32 26.4 50.2 42Z" fill="#f8f9fa" opacity="0.06"/>
+    <path d="M18 25.4h28M16.4 31.9h31.2M18 38.4h28" stroke="#e9ecef" stroke-width="0.8" opacity="0.1"/>
+    <path d="M16 21.9 32 12.8 48 21.9" fill="none" stroke="#f8f9fa" stroke-width="1.2" opacity="0.38"/>
+    <path d="M16 42.1 32 51.2 48 42.1" fill="none" stroke="#38bdf8" stroke-width="1.2" opacity="0.28"/>
+  </g>
+
+  <path d="M32 11.5 50.2 22v20L32 52.5 13.8 42V22L32 11.5Z" fill="none" stroke="#020617" stroke-width="2.2" opacity="0.55"/>
+  <path d="M32 9.4 52.2 21.1v21.8L32 54.6 11.8 42.9V21.1L32 9.4Z" fill="none" stroke="url(#rim)" stroke-width="1.6"/>
+
+  <g fill="url(#letter)">
+    <path d="M21 25.2h16.8v4.3h-6.1v16.2h-4.6V29.5H21v-4.3Z"/>
+    <path d="M40 31.2h4.4v14.5H40V31.2Z"/>
+    <path d="M40 25.2h4.4v4H40v-4Z"/>
+  </g>
+  <g fill="#38bdf8" opacity="0.72">
+    <path d="M21 25.2h16.8v1.2H21v-1.2Z"/>
+    <path d="M40 31.2h4.4v1.2H40v-1.2Z"/>
+    <path d="M40 25.2h4.4v1.1H40v-1.1Z"/>
+  </g>
+</svg>

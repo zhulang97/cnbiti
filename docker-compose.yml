@@ -1,0 +1,143 @@
+name: cnbiti
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: cnbjti-mysql
+    environment:
+      MYSQL_DATABASE: cnbjti
+      MYSQL_USER: cnbjti
+      MYSQL_PASSWORD: cnbjti
+      MYSQL_ROOT_PASSWORD: root
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-buffer-pool-size=64M
+      - --max-connections=40
+      - --performance-schema=OFF
+    mem_limit: 256m
+    memswap_limit: 384m
+    ports:
+      - "127.0.0.1:13306:3306"
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -ucnbjti -pcnbjti --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: cnbjti-minio
+    command: server /data --console-address ":9001"
+    mem_limit: 256m
+    memswap_limit: 384m
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "127.0.0.1:19002:9000"
+      - "127.0.0.1:19003:9001"
+    volumes:
+      - ./.data/minio:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  api:
+    image: eclipse-temurin:21-jre
+    container_name: cnbjti-api
+    restart: unless-stopped
+    working_dir: /app
+    command: ["java", "-jar", "apps/api/target/api-0.1.0-SNAPSHOT.jar"]
+    environment:
+      JAVA_TOOL_OPTIONS: -Xmx128m -XX:MaxMetaspaceSize=96m -XX:MaxDirectMemorySize=32m
+      MYSQL_URL: jdbc:mysql://mysql:3306/cnbjti?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
+      MYSQL_USER: cnbjti
+      MYSQL_PASSWORD: cnbjti
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: cnbjti-assets
+      MINIO_PUBLIC_URL: /cnbjti-assets
+      CORS_ALLOWED_ORIGIN_PATTERNS: http://localhost:*,http://127.0.0.1:*,http://[::1]:*,http://*:13000,http://*:13003,https://admin.cnbjti.com,https://cnbjti.com,https://www.cnbjti.com
+    mem_limit: 320m
+    memswap_limit: 448m
+    ports:
+      - "127.0.0.1:18080:8080"
+    volumes:
+      - ./:/app
+      - ./.m2:/root/.m2
+    depends_on:
+      mysql:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  web:
+    image: node:22-bookworm
+    container_name: cnbjti-web
+    restart: unless-stopped
+    working_dir: /app
+    command: ["sh", "-lc", "node apps/web/.output/server/index.mjs"]
+    environment:
+      NODE_OPTIONS: --max-old-space-size=128
+      NUXT_API_BASE: http://api:8080/api
+      NUXT_PUBLIC_API_BASE: /api
+      NUXT_PUBLIC_SITE_URL: https://cnbjti.com
+      HOST: 0.0.0.0
+      PORT: 3000
+    mem_limit: 192m
+    memswap_limit: 256m
+    expose:
+      - "3000"
+    volumes:
+      - ./:/app
+    depends_on:
+      api:
+        condition: service_started
+
+  admin:
+    image: node:22-bookworm
+    container_name: cnbjti-admin
+    restart: unless-stopped
+    working_dir: /app
+    command: ["sh", "-lc", "corepack enable && corepack prepare pnpm@10.23.0 --activate && pnpm --filter admin exec vite --host 0.0.0.0 --port 3003"]
+    environment:
+      NODE_OPTIONS: --max-old-space-size=128
+      VITE_API_BASE: /api
+    mem_limit: 192m
+    memswap_limit: 256m
+    expose:
+      - "3003"
+    volumes:
+      - ./:/app
+    depends_on:
+      api:
+        condition: service_started
+
+  gateway:
+    image: nginx:1.27-alpine
+    container_name: cnbjti-gateway
+    restart: unless-stopped
+    mem_limit: 64m
+    memswap_limit: 96m
+    ports:
+      - "127.0.0.1:13000:13000"
+      - "127.0.0.1:13003:13003"
+    volumes:
+      - ./deploy/local-nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      web:
+        condition: service_started
+      admin:
+        condition: service_started
+      api:
+        condition: service_started
+      minio:
+        condition: service_healthy
