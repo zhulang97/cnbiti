@@ -6,7 +6,7 @@
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-500/5 rounded-full blur-3xl pointer-events-none" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">Quality</span>
         </nav>
@@ -102,7 +102,7 @@
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-2xl font-display font-bold text-white mb-4">Need Certified Titanium?</h2>
         <p class="text-titanium-400 mb-8">Specify your required standard and certification in your RFQ. We'll confirm availability and documentation before you order.</p>
-        <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Request a Quote</NuxtLink>
+        <NuxtLink :to="'/request-a-quote'" class="btn-primary">Request a Quote</NuxtLink>
       </div>
     </section>
   </div>
@@ -111,7 +111,6 @@
 <script setup lang="ts">
 import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
 
-const localePath = useLocalePath()
 
 const certBadges = ['ASTM', 'ASME', 'AMS', 'EN 10204', 'ISO 9001']
 

@@ -22,7 +22,7 @@ interface SitemapUrl {
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
-  const siteUrl = String(config.public.siteUrl || 'https://www.cnbjti.com').replace(/\/$/, '')
+  const siteUrl = String(config.public.siteUrl || 'https://cnbjti.com').replace(/\/$/, '')
   const apiBase = String(config.apiBase || 'http://127.0.0.1:8080/api').replace(/\/$/, '')
 
   const [categories, products, grades, standards, articles] = await Promise.all([
@@ -34,30 +34,30 @@ export default defineEventHandler(async (event) => {
   ])
 
   const urls: SitemapUrl[] = [
-    route(siteUrl, '/en', 'weekly', '1.0'),
-    route(siteUrl, '/en/products', 'weekly', '0.9'),
-    route(siteUrl, '/en/grades', 'monthly', '0.7'),
-    route(siteUrl, '/en/standards', 'monthly', '0.7'),
-    route(siteUrl, '/en/processing', 'monthly', '0.7'),
-    route(siteUrl, '/en/industries', 'monthly', '0.8'),
-    route(siteUrl, '/en/resources', 'weekly', '0.8'),
-    route(siteUrl, '/en/quality', 'monthly', '0.7'),
-    route(siteUrl, '/en/about', 'monthly', '0.6'),
-    route(siteUrl, '/en/contact', 'monthly', '0.6'),
-    route(siteUrl, '/en/request-a-quote', 'monthly', '0.8'),
-    route(siteUrl, '/en/faq', 'weekly', '0.7'),
-    route(siteUrl, '/en/resources/titanium-grade-guide', 'monthly', '0.6'),
-    route(siteUrl, '/en/resources/astm-b348-titanium-bar-standard', 'monthly', '0.6'),
-    route(siteUrl, '/en/resources/titanium-corrosion-resistance', 'monthly', '0.6'),
-    route(siteUrl, '/en/resources/titanium-weight-calculator', 'monthly', '0.7'),
-    ...categories.map((item) => route(siteUrl, `/en/products/${item.slug}`, 'weekly', '0.8', item.updatedAt)),
+    route(siteUrl, '/', 'weekly', '1.0'),
+    route(siteUrl, '/products', 'weekly', '0.9'),
+    route(siteUrl, '/grades', 'monthly', '0.7'),
+    route(siteUrl, '/standards', 'monthly', '0.7'),
+    route(siteUrl, '/processing', 'monthly', '0.7'),
+    route(siteUrl, '/industries', 'monthly', '0.8'),
+    route(siteUrl, '/resources', 'weekly', '0.8'),
+    route(siteUrl, '/quality', 'monthly', '0.7'),
+    route(siteUrl, '/about', 'monthly', '0.6'),
+    route(siteUrl, '/contact', 'monthly', '0.6'),
+    route(siteUrl, '/request-a-quote', 'monthly', '0.8'),
+    route(siteUrl, '/faq', 'weekly', '0.7'),
+    route(siteUrl, '/resources/titanium-grade-guide', 'monthly', '0.6'),
+    route(siteUrl, '/resources/astm-b348-titanium-bar-standard', 'monthly', '0.6'),
+    route(siteUrl, '/resources/titanium-corrosion-resistance', 'monthly', '0.6'),
+    route(siteUrl, '/resources/titanium-weight-calculator', 'monthly', '0.7'),
+    ...categories.map((item) => route(siteUrl, `/products/${item.slug}`, 'weekly', '0.8', item.updatedAt)),
     ...products
       .filter((item) => item.category?.slug)
-      .map((item) => route(siteUrl, `/en/products/${item.category!.slug}/${item.slug}`, 'weekly', '0.8', item.updatedAt)),
-    ...grades.map((item) => route(siteUrl, `/en/grades/${item.slug}`, 'monthly', '0.7', item.updatedAt)),
-    ...standards.map((item) => route(siteUrl, `/en/standards/${item.slug}`, 'monthly', '0.7', item.updatedAt)),
-    ...industryProfiles.map((item) => route(siteUrl, `/en/industries/${item.slug}`, 'monthly', '0.7')),
-    ...articles.map((item) => route(siteUrl, `/en/resources/${item.slug}`, 'weekly', '0.7', item.publishedAt || item.updatedAt)),
+      .map((item) => route(siteUrl, `/products/${item.category!.slug}/${item.slug}`, 'weekly', '0.8', item.updatedAt)),
+    ...grades.map((item) => route(siteUrl, `/grades/${item.slug}`, 'monthly', '0.7', item.updatedAt)),
+    ...standards.map((item) => route(siteUrl, `/standards/${item.slug}`, 'monthly', '0.7', item.updatedAt)),
+    ...industryProfiles.map((item) => route(siteUrl, `/industries/${item.slug}`, 'monthly', '0.7')),
+    ...articles.map((item) => route(siteUrl, `/resources/${item.slug}`, 'weekly', '0.7', item.publishedAt || item.updatedAt)),
   ]
 
   setHeader(event, 'content-type', 'application/xml; charset=utf-8')

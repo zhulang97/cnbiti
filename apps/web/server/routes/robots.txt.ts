@@ -1,6 +1,6 @@
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig(event)
-  const siteUrl = String(config.public.siteUrl || 'https://www.cnbjti.com').replace(/\/$/, '')
+  const siteUrl = String(config.public.siteUrl || 'https://cnbjti.com').replace(/\/$/, '')
 
   setHeader(event, 'content-type', 'text/plain; charset=utf-8')
   return [

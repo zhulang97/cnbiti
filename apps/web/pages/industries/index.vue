@@ -4,7 +4,7 @@
       <div class="absolute inset-0 grid-pattern opacity-30" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">Industries</span>
         </nav>
@@ -22,7 +22,7 @@
           <NuxtLink
             v-for="industry in industryProfiles"
             :key="industry.slug"
-            :to="localePath(`/industries/${industry.slug}`)"
+            :to="`/industries/${industry.slug}`"
             class="group overflow-hidden rounded-lg border border-titanium-800 bg-titanium-900/40 hover:border-accent-500/50 transition-all duration-300"
           >
             <div class="relative h-56 overflow-hidden bg-titanium-900">
@@ -83,7 +83,7 @@
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-2xl font-display font-bold text-white mb-4">Need a Grade Recommendation?</h2>
         <p class="text-titanium-400 mb-8">Share the medium, operating temperature, drawings and certificate requirements. CNBJTI will recommend a practical titanium supply route.</p>
-        <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Get a Quote</NuxtLink>
+        <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Quote</NuxtLink>
       </div>
     </section>
   </div>
@@ -93,7 +93,6 @@
 import type { Article } from '@cnbjti/types'
 import { industryProfiles, matchingIndustryArticles, type IndustryProfile } from '~/utils/industryContent'
 
-const localePath = useLocalePath()
 const { data: articleData } = await useAsyncData('public-industry-list-articles', () => publicApi<Article[]>('/public/articles'))
 
 const articles = computed(() => articleData.value || [])

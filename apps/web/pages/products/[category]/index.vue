@@ -2,9 +2,9 @@
   <div class="pt-24 pb-20 min-h-screen bg-titanium-950">
     <div v-if="category" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-        <NuxtLink :to="localePath('/')" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
+        <NuxtLink :to="'/'" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        <NuxtLink :to="localePath('/products')" class="hover:text-titanium-300 transition-colors">Products</NuxtLink>
+        <NuxtLink :to="'/products'" class="hover:text-titanium-300 transition-colors">Products</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
         <span class="text-titanium-300">{{ category.name }}</span>
       </nav>
@@ -15,7 +15,7 @@
           <h1 class="section-title mb-5">{{ category.name }}</h1>
           <p class="section-subtitle mb-8">{{ category.description }}</p>
           <div class="flex flex-wrap gap-3">
-            <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Get a Quote</NuxtLink>
+            <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Quote</NuxtLink>
             <a :href="mailtoHref" class="btn-secondary">Send Drawing</a>
           </div>
         </div>
@@ -51,7 +51,7 @@
           <NuxtLink
             v-for="product in categoryProducts"
             :key="product.id"
-            :to="localePath(`/products/${category.slug}/${product.slug}`)"
+            :to="`/products/${category.slug}/${product.slug}`"
             class="group card-hover p-5"
           >
             <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-titanium-900">
@@ -85,7 +85,7 @@
             </ul>
           </div>
           <div class="flex flex-col gap-3">
-            <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary justify-center py-3.5">Get a Quote</NuxtLink>
+            <NuxtLink :to="'/request-a-quote'" class="btn-primary justify-center py-3.5">Get a Quote</NuxtLink>
             <a :href="whatsappHref" target="_blank" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-green-500/10 border border-green-500/40 text-green-400 hover:bg-green-500/20 font-semibold rounded-lg transition-all duration-200">
               WhatsApp Us
             </a>
@@ -96,7 +96,7 @@
     </div>
     <div v-else class="max-w-7xl mx-auto px-4 py-32 text-center">
       <p class="text-titanium-400">Category not found.</p>
-      <NuxtLink :to="localePath('/products')" class="btn-primary mt-4">Back to Products</NuxtLink>
+      <NuxtLink :to="'/products'" class="btn-primary mt-4">Back to Products</NuxtLink>
     </div>
   </div>
 </template>
@@ -104,9 +104,9 @@
 <script setup lang="ts">
 import { productCategories, titaniumGrades as mockGrades, standards as mockStandards, featuredProducts as mockProducts } from '@cnbjti/mock-data'
 import type { Product, ProductCategory, ProductSpec, Standard, TitaniumGrade } from '@cnbjti/types'
+import { canonicalUrl } from '~/utils/seo'
 
 const route = useRoute()
-const localePath = useLocalePath()
 const { whatsappHref, mailtoHref } = await useSiteRuntime()
 const categorySlug = computed(() => String(route.params.category))
 const { data: categoryData } = await useAsyncData(`public-category-${categorySlug.value}`, () => publicApi<ProductCategory>(`/public/categories/${categorySlug.value}`))
@@ -137,7 +137,7 @@ useHead(computed(() => {
       { name: 'description', content: seo?.description || category.value?.description || '' },
       ...(seo?.noIndex ? [{ name: 'robots', content: 'noindex,nofollow' }] : []),
     ],
-    link: seo?.canonical ? [{ rel: 'canonical', href: seo.canonical }] : [],
+    link: seo?.canonical ? [{ rel: 'canonical', href: canonicalUrl(seo.canonical) }] : [],
   }
 }))
 </script>

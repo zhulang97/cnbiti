@@ -396,7 +396,7 @@ function mediaFromCategory(product, category) {
 }
 
 function payloadFor(product, category) {
-  const categoryPath = `/en/products/${category.slug}/${product.slug}`
+  const categoryPath = `/products/${category.slug}/${product.slug}`
   return {
     name: product.name,
     slug: product.slug,

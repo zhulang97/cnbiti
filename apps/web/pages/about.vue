@@ -6,7 +6,7 @@
       <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent-500/5 rounded-full blur-3xl pointer-events-none" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">About</span>
         </nav>
@@ -94,8 +94,8 @@
         <h2 class="text-2xl font-display font-bold text-white mb-4">{{ aboutPage.ctaTitle }}</h2>
         <p class="text-titanium-400 mb-8">{{ aboutPage.ctaDescription }}</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Get a Quote</NuxtLink>
-          <NuxtLink :to="localePath('/contact')" class="btn-secondary">Contact Us</NuxtLink>
+          <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Quote</NuxtLink>
+          <NuxtLink :to="'/contact'" class="btn-secondary">Contact Us</NuxtLink>
         </div>
       </div>
     </section>
@@ -106,7 +106,6 @@
 import { siteConfig as fallbackSiteConfig } from '@cnbjti/mock-data'
 import type { AboutPageConfig } from '@cnbjti/types'
 
-const localePath = useLocalePath()
 const { siteConfig } = await useSiteRuntime()
 
 const fallbackAboutPage = fallbackSiteConfig.aboutPage as AboutPageConfig

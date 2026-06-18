@@ -6,7 +6,7 @@
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-accent-500/5 rounded-full blur-3xl pointer-events-none" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">Grades</span>
         </nav>
@@ -31,7 +31,7 @@
           <NuxtLink
             v-for="grade in grades"
             :key="grade.id"
-            :to="localePath(`/grades/${grade.slug}`)"
+            :to="`/grades/${grade.slug}`"
             class="card card-hover p-6 group flex flex-col"
           >
             <div class="flex items-start justify-between mb-4">
@@ -85,7 +85,7 @@
               <tr v-for="grade in grades" :key="grade.id"
                 class="border-t border-titanium-800/50 hover:bg-titanium-800/20 transition-colors">
                 <td class="px-5 py-4">
-                  <NuxtLink :to="localePath(`/grades/${grade.slug}`)" class="flex items-center gap-2 group">
+                  <NuxtLink :to="`/grades/${grade.slug}`" class="flex items-center gap-2 group">
                     <span class="px-2 py-0.5 bg-accent-500/10 border border-accent-500/30 rounded text-accent-400 font-mono text-xs whitespace-nowrap">{{ grade.shortName }}</span>
                     <span class="text-titanium-300 group-hover:text-accent-400 transition-colors text-xs">{{ grade.name }}</span>
                   </NuxtLink>
@@ -110,8 +110,8 @@
           Our technical team can help you select the right titanium grade for your application. Send us your requirements and we'll respond within 24 hours.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Get a Quote</NuxtLink>
-          <NuxtLink :to="localePath('/contact')" class="btn-secondary">Contact Technical Team</NuxtLink>
+          <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Quote</NuxtLink>
+          <NuxtLink :to="'/contact'" class="btn-secondary">Contact Technical Team</NuxtLink>
         </div>
       </div>
     </section>
@@ -122,7 +122,6 @@
 import { titaniumGrades } from '@cnbjti/mock-data'
 import type { TitaniumGrade } from '@cnbjti/types'
 
-const localePath = useLocalePath()
 const { data: gradesData } = await useAsyncData('public-grade-list', () => publicApi<TitaniumGrade[]>('/public/grades'))
 const grades = computed(() => gradesData.value || titaniumGrades)
 

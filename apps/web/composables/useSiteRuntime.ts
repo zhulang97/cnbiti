@@ -4,7 +4,6 @@ import type { NavigationItem, ProductCategory, SiteConfig } from '@cnbjti/types'
 const LOCALE_PREFIX = /^\/(?:en|zh|de|es)(?=\/|$)/i
 
 export async function useSiteRuntime() {
-  const localePath = useLocalePath()
   const nuxtApp = useNuxtApp()
   let refreshSiteConfig = () => Promise.resolve()
   let refreshNavigation = () => Promise.resolve()
@@ -83,11 +82,11 @@ export async function useSiteRuntime() {
   const mailtoHref = computed(() => `mailto:${siteConfig.value.email || fallbackSiteConfig.email}`)
 
   function localizedPath(href?: string | null) {
-    if (!href) return localePath('/')
+    if (!href) return '/'
     if (/^(https?:|mailto:|tel:)/i.test(href)) return href
     const [path, suffix = ''] = href.split(/(?=[?#])/)
     const normalized = (path || '/').replace(LOCALE_PREFIX, '') || '/'
-    return `${localePath(normalized)}${suffix}`
+    return `${normalized}${suffix}`
   }
 
   return {

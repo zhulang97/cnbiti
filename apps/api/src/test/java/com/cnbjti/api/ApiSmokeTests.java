@@ -248,12 +248,12 @@ class ApiSmokeTests {
                     {
                       "label": "Products",
                       "children": [
-                        { "label": "Titanium Bar", "href": "/en/products/titanium-bar", "icon": "bar" },
-                        { "label": "Titanium Sheet", "href": "/en/products/titanium-sheet", "icon": "sheet" }
+                        { "label": "Titanium Bar", "href": "/products/titanium-bar", "icon": "bar" },
+                        { "label": "Titanium Sheet", "href": "/products/titanium-sheet", "icon": "sheet" }
                       ]
                     },
-                    { "label": "Technical Guides", "href": "/en/resources", "badge": "New" },
-                    { "label": "Contact", "href": "/en/contact" }
+                    { "label": "Technical Guides", "href": "/resources", "badge": "New" },
+                    { "label": "Contact", "href": "/contact" }
                   ]
                 }
                 """))
@@ -264,12 +264,12 @@ class ApiSmokeTests {
     mockMvc.perform(get("/api/public/navigation"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data[0].children[1].label").value("Titanium Sheet"))
-        .andExpect(jsonPath("$.data[1].href").value("/en/resources"));
+        .andExpect(jsonPath("$.data[1].href").value("/resources"));
 
     mockMvc.perform(put("/api/admin/navigation")
             .header(HttpHeaders.AUTHORIZATION, bearer(token))
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"items\":[{\"label\":\" \",\"href\":\"/en/bad\"}]}"))
+            .content("{\"items\":[{\"label\":\" \",\"href\":\"/bad\"}]}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
   }

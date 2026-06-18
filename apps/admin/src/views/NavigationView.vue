@@ -111,7 +111,7 @@
           <el-input v-model="itemForm.label" />
         </el-form-item>
         <el-form-item label="链接">
-          <el-input v-model="itemForm.href" placeholder="/en/contact" />
+          <el-input v-model="itemForm.href" placeholder="/contact" />
         </el-form-item>
         <el-form-item label="角标">
           <el-input v-model="itemForm.badge" />

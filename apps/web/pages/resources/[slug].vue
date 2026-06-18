@@ -2,9 +2,9 @@
   <article v-if="article" class="pt-24 pb-20 min-h-screen bg-titanium-950">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-        <NuxtLink :to="localePath('/')" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
+        <NuxtLink :to="'/'" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        <NuxtLink :to="localePath('/resources')" class="hover:text-titanium-300 transition-colors">Resources</NuxtLink>
+        <NuxtLink :to="'/resources'" class="hover:text-titanium-300 transition-colors">Resources</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
         <span class="text-titanium-300 line-clamp-1">{{ article.title }}</span>
       </nav>
@@ -38,7 +38,7 @@
             {{ tag }}
           </span>
         </div>
-        <NuxtLink :to="localePath('/resources')" class="btn-secondary text-sm">Back to Resources</NuxtLink>
+        <NuxtLink :to="'/resources'" class="btn-secondary text-sm">Back to Resources</NuxtLink>
       </footer>
     </div>
   </article>
@@ -48,7 +48,6 @@
 import type { Article } from '@cnbjti/types'
 
 const route = useRoute()
-const localePath = useLocalePath()
 const slug = computed(() => String(route.params.slug || ''))
 const { data: articleData, error } = await useAsyncData(`public-resource-${slug.value}`, () => publicApi<Article>(`/public/articles/${slug.value}`))
 

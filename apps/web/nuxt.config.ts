@@ -27,7 +27,6 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
 
   modules: [
-    '@nuxtjs/i18n',
     '@vueuse/nuxt',
   ],
 
@@ -38,17 +37,6 @@ export default defineNuxtConfig({
       tailwindcss: {},
       autoprefixer: {},
     },
-  },
-
-  i18n: {
-    locales: [
-      { code: 'en', language: 'en-US', name: 'English' },
-      { code: 'zh', language: 'zh-CN', name: 'Chinese' },
-      { code: 'de', language: 'de-DE', name: 'German' },
-      { code: 'es', language: 'es-ES', name: 'Spanish' },
-    ],
-    defaultLocale: 'en',
-    strategy: 'prefix',
   },
 
   app: {
@@ -96,7 +84,7 @@ export default defineNuxtConfig({
       },
     },
     prerender: {
-      routes: ['/en', '/sitemap.xml', '/robots.txt'],
+      routes: ['/', '/sitemap.xml', '/robots.txt'],
     },
   },
 

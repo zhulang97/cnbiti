@@ -7,9 +7,9 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-500/5 rounded-full blur-3xl pointer-events-none" />
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-            <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+            <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
             <span>/</span>
-            <NuxtLink :to="localePath('/standards')" class="hover:text-accent-400 transition-colors">Standards</NuxtLink>
+            <NuxtLink :to="'/standards'" class="hover:text-accent-400 transition-colors">Standards</NuxtLink>
             <span>/</span>
             <span class="text-titanium-300">{{ standard.code }}</span>
           </nav>
@@ -48,7 +48,7 @@
                     </div>
                   </div>
                 </div>
-                <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary w-full justify-center mt-5 text-sm">
+                <NuxtLink :to="'/request-a-quote'" class="btn-primary w-full justify-center mt-5 text-sm">
                   Request Certified Material
                 </NuxtLink>
               </div>
@@ -64,7 +64,7 @@
           <h2 class="section-title mb-10">Applicable Titanium Grades</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <NuxtLink v-for="grade in grades" :key="grade.id"
-              :to="localePath(`/grades/${grade.slug}`)"
+              :to="`/grades/${grade.slug}`"
               class="card card-hover p-5 group flex items-center gap-4">
               <span class="px-3 py-1.5 bg-accent-500/10 border border-accent-500/30 rounded-lg text-accent-400 font-mono font-bold text-sm flex-shrink-0">
                 {{ grade.shortName }}
@@ -122,7 +122,7 @@
           <h2 class="text-xl font-display font-bold text-white mb-8">Other Standards</h2>
           <div class="flex flex-wrap gap-3">
             <NuxtLink v-for="s in otherStandards" :key="s.id"
-              :to="localePath(`/standards/${s.slug}`)"
+              :to="`/standards/${s.slug}`"
               class="px-4 py-2 card card-hover text-sm text-titanium-300 hover:text-accent-400 transition-colors flex items-center gap-2">
               <span class="text-accent-400 font-mono text-xs">{{ s.code }}</span>
               <span class="text-titanium-500 text-xs truncate max-w-[200px]">{{ s.name }}</span>
@@ -135,7 +135,7 @@
     <div v-else class="min-h-screen bg-titanium-950 flex items-center justify-center">
       <div class="text-center">
         <p class="text-titanium-400 mb-4">Standard not found.</p>
-        <NuxtLink :to="localePath('/standards')" class="btn-secondary">View All Standards</NuxtLink>
+        <NuxtLink :to="'/standards'" class="btn-secondary">View All Standards</NuxtLink>
       </div>
     </div>
   </div>
@@ -146,7 +146,6 @@ import { standards, titaniumGrades } from '@cnbjti/mock-data'
 import type { Standard, TitaniumGrade } from '@cnbjti/types'
 
 const route = useRoute()
-const localePath = useLocalePath()
 const standardSlug = computed(() => String(route.params.slug))
 
 const { data: standardData } = await useAsyncData(`public-standard-${standardSlug.value}`, () => publicApi<Standard>(`/public/standards/${standardSlug.value}`))

@@ -6,7 +6,7 @@
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-500/5 rounded-full blur-3xl pointer-events-none" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">Standards</span>
         </nav>
@@ -31,7 +31,7 @@
           <NuxtLink
             v-for="std in standardList"
             :key="std.id"
-            :to="localePath(`/standards/${std.slug}`)"
+            :to="`/standards/${std.slug}`"
             class="card card-hover p-6 group flex flex-col"
           >
             <div class="flex items-start justify-between mb-4">
@@ -95,7 +95,7 @@
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-2xl font-display font-bold text-white mb-4">Need Certified Titanium?</h2>
         <p class="text-titanium-400 mb-8">All our products are supplied with full certification documentation. Request a quote and specify your required standard.</p>
-        <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Request a Quote with MTR</NuxtLink>
+        <NuxtLink :to="'/request-a-quote'" class="btn-primary">Request a Quote with MTR</NuxtLink>
       </div>
     </section>
   </div>
@@ -105,7 +105,6 @@
 import { standards } from '@cnbjti/mock-data'
 import type { Standard } from '@cnbjti/types'
 
-const localePath = useLocalePath()
 const { data: standardsData } = await useAsyncData('public-standard-list', () => publicApi<Standard[]>('/public/standards'))
 const standardList = computed(() => standardsData.value || standards)
 

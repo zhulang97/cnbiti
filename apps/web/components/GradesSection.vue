@@ -10,7 +10,7 @@
         <NuxtLink
           v-for="grade in gradeList"
           :key="grade.id"
-          :to="'/en/grades/' + grade.slug"
+          :to="'/grades/' + grade.slug"
           class="group card-hover p-5"
         >
           <div class="flex items-start justify-between mb-3">
@@ -38,7 +38,7 @@
         </NuxtLink>
       </div>
       <div class="mt-8 text-center">
-        <NuxtLink to="/en/grades" class="btn-secondary">
+        <NuxtLink to="/grades" class="btn-secondary">
           View All Grades
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
         </NuxtLink>

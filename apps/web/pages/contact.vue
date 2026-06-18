@@ -2,7 +2,7 @@
   <div class="pt-32 pb-20 min-h-screen bg-titanium-950">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-10">
-        <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+        <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
         <span>/</span>
         <span class="text-titanium-300">Contact</span>
       </nav>
@@ -133,7 +133,6 @@
   </div>
 </template>
 <script setup lang="ts">
-const localePath = useLocalePath()
 const { siteConfig, whatsappHref, phoneHref, mailtoHref } = await useSiteRuntime()
 interface ContactResponse {
   id: string

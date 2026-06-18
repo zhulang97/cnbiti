@@ -142,7 +142,7 @@ async function main() {
 
   await checkHttpOk('MinIO health', MINIO_HEALTH)
   await checkHttpOk('API site config', `${API_BASE}/public/site-config`)
-  await checkHttpOk('Web home', `${WEB_BASE}/en`)
+  await checkHttpOk('Web home', `${WEB_BASE}/`)
 
   const [categoryEnvelope, productEnvelope, gradeEnvelope, standardEnvelope, articleEnvelope] = await Promise.all([
     fetchJson(`${API_BASE}/public/categories`),
@@ -170,34 +170,34 @@ async function main() {
   const industrySlugs = [...industryFile.matchAll(/slug:\s*'([^']+)'/g)].map((match) => match[1])
 
   const staticRoutes = [
-    '/en',
-    '/en/products',
-    '/en/grades',
-    '/en/standards',
-    '/en/processing',
-    '/en/industries',
-    '/en/resources',
-    '/en/faq',
-    '/en/quality',
-    '/en/about',
-    '/en/contact',
-    '/en/request-a-quote',
-    '/en/privacy',
-    '/en/terms',
-    '/en/cookies',
-    '/en/resources/titanium-weight-calculator',
-    '/en/resources/titanium-grade-guide',
-    '/en/resources/astm-b348-titanium-bar-standard',
-    '/en/resources/titanium-corrosion-resistance',
+    '/',
+    '/products',
+    '/grades',
+    '/standards',
+    '/processing',
+    '/industries',
+    '/resources',
+    '/faq',
+    '/quality',
+    '/about',
+    '/contact',
+    '/request-a-quote',
+    '/privacy',
+    '/terms',
+    '/cookies',
+    '/resources/titanium-weight-calculator',
+    '/resources/titanium-grade-guide',
+    '/resources/astm-b348-titanium-bar-standard',
+    '/resources/titanium-corrosion-resistance',
   ]
-  const categoryRoutes = categories.map((category) => `/en/products/${category.slug}`)
+  const categoryRoutes = categories.map((category) => `/products/${category.slug}`)
   const productRoutes = products
     .filter((product) => product.category?.slug)
-    .map((product) => `/en/products/${product.category.slug}/${product.slug}`)
-  const gradeRoutes = grades.map((grade) => `/en/grades/${grade.slug}`)
-  const standardRoutes = standards.map((standard) => `/en/standards/${standard.slug}`)
-  const industryRoutes = industrySlugs.map((slug) => `/en/industries/${slug}`)
-  const articleRoutes = articles.map((article) => `/en/resources/${article.slug}`)
+    .map((product) => `/products/${product.category.slug}/${product.slug}`)
+  const gradeRoutes = grades.map((grade) => `/grades/${grade.slug}`)
+  const standardRoutes = standards.map((standard) => `/standards/${standard.slug}`)
+  const industryRoutes = industrySlugs.map((slug) => `/industries/${slug}`)
+  const articleRoutes = articles.map((article) => `/resources/${article.slug}`)
   const seoRoutes = ['/sitemap.xml', '/robots.txt']
   const allRoutes = [...new Set([
     ...staticRoutes,
@@ -225,15 +225,15 @@ async function main() {
   record('All public routes return 2xx/3xx', failedRoutes.length === 0, failedRoutes.length ? `${failedRoutes.length} failed` : `${allRoutes.length} routes`)
 
   const keyRoutes = [
-    '/en',
-    '/en/products',
+    '/',
+    '/products',
     categoryRoutes[0],
     productRoutes.find((route) => route.includes('titanium-hex-nuts')) || productRoutes[0],
-    '/en/resources',
+    '/resources',
     articleRoutes.find((route) => route.includes('does-titanium-tarnish')) || articleRoutes[0],
-    '/en/faq',
-    '/en/contact',
-    '/en/request-a-quote',
+    '/faq',
+    '/contact',
+    '/request-a-quote',
   ].filter(Boolean)
 
   const keyHtml = new Map()
@@ -303,15 +303,15 @@ async function main() {
   const sampleArticleRoute = articleRoutes.find((route) => route.includes('does-titanium-tarnish')) || articleRoutes[0]
   record('Sitemap contains product detail', sitemapLocs.some((loc) => loc.endsWith(sampleProductRoute)), sampleProductRoute)
   record('Sitemap contains imported article', sitemapLocs.some((loc) => loc.endsWith(sampleArticleRoute)), sampleArticleRoute)
-  record('Sitemap contains calculator', sitemapLocs.some((loc) => loc.endsWith('/en/resources/titanium-weight-calculator')), 'weight calculator')
+  record('Sitemap contains calculator', sitemapLocs.some((loc) => loc.endsWith('/resources/titanium-weight-calculator')), 'weight calculator')
   record('Robots references sitemap', /sitemap:\s*https?:\/\/.+\/sitemap\.xml/i.test(robots.text), 'Sitemap directive')
 
-  const productsHtml = keyHtml.get('/en/products') || ''
+  const productsHtml = keyHtml.get('/products') || ''
   record('Products page avoids empty fallback', !/Products are being prepared/i.test(productsHtml), 'live catalog visible')
   record('Products page shows live count', /\b90 items\b/i.test(productsHtml), '90 items expected')
-  record('Homepage resources are dynamic', /does titanium tarnish|FAQ|Technical Guides/i.test(keyHtml.get('/en') || ''), 'resource section content')
-  record('FAQ page includes imported FAQ library', /Does Titanium Tarnish|More Buyer Questions/i.test(keyHtml.get('/en/faq') || ''), 'FAQ article section')
-  record('Resources page includes article filters', /Showing\s+\d+\s+of\s+\d+\s+matching articles/i.test(keyHtml.get('/en/resources') || ''), 'resource count')
+  record('Homepage resources are dynamic', /does titanium tarnish|FAQ|Technical Guides/i.test(keyHtml.get('/') || ''), 'resource section content')
+  record('FAQ page includes imported FAQ library', /Does Titanium Tarnish|More Buyer Questions/i.test(keyHtml.get('/faq') || ''), 'FAQ article section')
+  record('Resources page includes article filters', /Showing\s+\d+\s+of\s+\d+\s+matching articles/i.test(keyHtml.get('/resources') || ''), 'resource count')
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
   const smokeEmail = `smoke-web-${Date.now()}@example.com`

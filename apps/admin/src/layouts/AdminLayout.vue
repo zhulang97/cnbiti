@@ -58,7 +58,7 @@
           <p class="text-admin-500 text-xs">{{ currentDate }}</p>
         </div>
         <div class="flex items-center gap-3">
-          <a href="http://localhost:3002/en" target="_blank" class="flex items-center gap-1.5 text-xs text-admin-400 hover:text-accent-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-admin-700/50">
+          <a href="http://localhost:3002/" target="_blank" class="flex items-center gap-1.5 text-xs text-admin-400 hover:text-accent-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-admin-700/50">
             <el-icon><TopRight /></el-icon>
             查看网站
           </a>

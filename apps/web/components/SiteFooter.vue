@@ -5,7 +5,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
         <!-- Brand column -->
         <div class="lg:col-span-2">
-          <NuxtLink :to="localePath('/')" class="flex items-center gap-3 group mb-5">
+          <NuxtLink to="/" class="flex items-center gap-3 group mb-5">
             <img
               src="/brand-icon.svg"
               alt=""
@@ -112,9 +112,9 @@
           &copy; {{ new Date().getFullYear() }} {{ siteConfig.siteName }}. All rights reserved.
         </p>
         <div class="flex items-center gap-4">
-          <NuxtLink :to="localePath('/privacy')" class="text-xs text-titanium-600 hover:text-titanium-400 transition-colors">Privacy Policy</NuxtLink>
-          <NuxtLink :to="localePath('/terms')" class="text-xs text-titanium-600 hover:text-titanium-400 transition-colors">Terms of Use</NuxtLink>
-          <NuxtLink :to="localePath('/cookies')" class="text-xs text-titanium-600 hover:text-titanium-400 transition-colors">Cookie Policy</NuxtLink>
+          <NuxtLink to="/privacy" class="text-xs text-titanium-600 hover:text-titanium-400 transition-colors">Privacy Policy</NuxtLink>
+          <NuxtLink to="/terms" class="text-xs text-titanium-600 hover:text-titanium-400 transition-colors">Terms of Use</NuxtLink>
+          <NuxtLink to="/cookies" class="text-xs text-titanium-600 hover:text-titanium-400 transition-colors">Cookie Policy</NuxtLink>
         </div>
       </div>
     </div>
@@ -124,7 +124,6 @@
 <script setup lang="ts">
 import type { NavigationItem } from '@cnbjti/types'
 
-const localePath = useLocalePath()
 const { siteConfig, navigationItems, productCategories, whatsappHref, phoneHref, mailtoHref, localizedPath } = await useSiteRuntime()
 
 const productLinks = computed<NavigationItem[]>(() => {

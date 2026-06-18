@@ -275,12 +275,12 @@ try {
       @{
         label = "Products"
         children = @(
-          @{ label = "Titanium Bar"; href = "/en/products/titanium-bar"; icon = "bar" },
-          @{ label = "Titanium Sheet"; href = "/en/products/titanium-sheet"; icon = "sheet" }
+          @{ label = "Titanium Bar"; href = "/products/titanium-bar"; icon = "bar" },
+          @{ label = "Titanium Sheet"; href = "/products/titanium-sheet"; icon = "sheet" }
         )
       },
-      @{ label = "Technical Guides"; href = "/en/resources"; badge = "New" },
-      @{ label = "Contact"; href = "/en/contact" }
+      @{ label = "Technical Guides"; href = "/resources"; badge = "New" },
+      @{ label = "Contact"; href = "/contact" }
     )
   } | ConvertTo-Json -Depth 10
   $updatedNavigation = Invoke-RestMethod -Uri "$baseUrl/api/admin/navigation" -Method Put -Headers $authHeaders -ContentType "application/json" -Body $navigationUpdateBody -TimeoutSec 20
@@ -693,7 +693,7 @@ UNION ALL SELECT 'stored_files', COUNT(*) FROM stored_files;
       -and -not $updatedSiteConfig.data.socialLinks.PSObject.Properties.Name.Contains("youtube")
     NavigationAdminOk = $updatedNavigation.data[1].label -eq "Technical Guides" `
       -and $updatedNavigation.data[1].badge -eq "New" `
-      -and $publicUpdatedNavigation.data[0].children[1].href -eq "/en/products/titanium-sheet"
+      -and $publicUpdatedNavigation.data[0].children[1].href -eq "/products/titanium-sheet"
     ContentOptionsOk = [bool]($contentOptions.data.categories.Count -gt 0)
     ReferenceDataOk = $updatedCategory.data.slug -eq $updatedCategorySlug `
       -and $updatedGrade.data.shortName -eq "Gr.SU" `

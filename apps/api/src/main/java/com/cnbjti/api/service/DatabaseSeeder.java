@@ -296,7 +296,7 @@ public class DatabaseSeeder implements ApplicationRunner {
             new AboutTimelineEvent("2015", "European Market Entry", "First major contracts with German and Dutch chemical processing companies. Began supplying EN 10204 3.1 MTRs as standard."),
             new AboutTimelineEvent("2018", "CNC Machining Division", "Launched in-house CNC machining capability for custom titanium components. Added aerospace-grade Ti-6Al-4V to stock."),
             new AboutTimelineEvent("2021", "North America Expansion", "Established relationships with US aerospace and medical device manufacturers. AMS 4928 supply capability added."),
-            new AboutTimelineEvent("2024", "50+ Countries Milestone", "Reached the milestone of supplying customers in over 50 countries. Launched multilingual website and 24-hour RFQ response commitment.")),
+            new AboutTimelineEvent("2024", "50+ Countries Milestone", "Reached the milestone of supplying customers in over 50 countries. Launched our export website and 24-hour RFQ response commitment.")),
         "What We Stand For",
         "Our Values",
         List.of(

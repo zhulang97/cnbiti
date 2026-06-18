@@ -13,7 +13,7 @@
         <NuxtLink
           v-for="industry in industryProfiles"
           :key="industry.slug"
-          :to="localePath(`/industries/${industry.slug}`)"
+          :to="`/industries/${industry.slug}`"
           class="group relative overflow-hidden rounded-lg border border-titanium-800/50 hover:border-titanium-600/50 transition-all duration-300"
         >
           <div class="aspect-[4/3] relative overflow-hidden bg-titanium-900">
@@ -38,5 +38,4 @@
 <script setup lang="ts">
 import { industryProfiles } from '~/utils/industryContent'
 
-const localePath = useLocalePath()
 </script>

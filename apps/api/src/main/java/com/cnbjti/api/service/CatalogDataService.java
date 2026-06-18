@@ -142,16 +142,16 @@ public class CatalogDataService {
   private List<NavigationItem> defaultNavigation() {
     return List.of(
         new NavigationItem("Products", null, categories().stream()
-            .map(category -> new NavigationItem(category.name(), "/en/products/" + category.slug(), null, null, category.icon()))
+            .map(category -> new NavigationItem(category.name(), "/products/" + category.slug(), null, null, category.icon()))
             .toList(), null, null),
-        nav("Grades", "/en/grades"),
-        nav("Standards", "/en/standards"),
-        nav("Processing", "/en/processing"),
-        nav("Industries", "/en/industries"),
-        nav("Resources", "/en/resources"),
-        nav("Quality", "/en/quality"),
-        nav("About", "/en/about"),
-        nav("Contact", "/en/contact")
+        nav("Grades", "/grades"),
+        nav("Standards", "/standards"),
+        nav("Processing", "/processing"),
+        nav("Industries", "/industries"),
+        nav("Resources", "/resources"),
+        nav("Quality", "/quality"),
+        nav("About", "/about"),
+        nav("Contact", "/contact")
     );
   }
 

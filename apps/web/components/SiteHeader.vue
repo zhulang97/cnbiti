@@ -19,7 +19,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
-        <NuxtLink :to="localePath('/')" class="flex items-center gap-3 group">
+        <NuxtLink to="/" class="flex items-center gap-3 group">
           <img
             src="/brand-icon.svg"
             alt=""
@@ -59,31 +59,6 @@
 
         <!-- Right actions -->
         <div class="flex items-center gap-2">
-          <!-- Language switcher -->
-          <div class="relative hidden md:block" @mouseenter="openMenu('lang')" @mouseleave="closeMenu">
-            <button class="flex items-center gap-1.5 px-3 py-2 text-sm text-titanium-400 hover:text-white rounded-lg hover:bg-titanium-800/30 transition-colors duration-200">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-              </svg>
-              <span class="uppercase text-xs font-semibold">{{ locale.toUpperCase() }}</span>
-            </button>
-            <!-- Language dropdown -->
-            <Transition name="dropdown">
-              <div v-if="activeMenu === 'lang'" class="absolute right-0 top-full mt-1 w-40 bg-titanium-900 border border-titanium-700 rounded-xl shadow-2xl overflow-hidden">
-                <NuxtLink
-                  v-for="loc in languageOptions"
-                  :key="loc.code"
-                  :to="switchLocalePath(loc.code)"
-                  class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-titanium-800 transition-colors"
-                  :class="loc.code === locale ? 'text-accent-400 font-medium' : 'text-titanium-300'"
-                >
-                  <span class="w-8 text-xs font-semibold uppercase tracking-wider text-titanium-500">{{ loc.code }}</span>
-                  {{ loc.name }}
-                </NuxtLink>
-              </div>
-            </Transition>
-          </div>
-
           <!-- WhatsApp -->
           <a
             :href="whatsappHref"
@@ -216,35 +191,7 @@
 <script setup lang="ts">
 import type { NavigationItem } from '@cnbjti/types'
 
-const { locale, availableLocales } = useI18n()
-const localePath = useLocalePath()
-const switchLocalePath = useSwitchLocalePath()
 const { siteConfig, navigationItems, productCategories, whatsappHref, mailtoHref, localizedPath } = await useSiteRuntime()
-
-type LocaleCode = 'en' | 'zh' | 'de' | 'es'
-
-const localeNames: Record<LocaleCode, string> = {
-  en: 'English',
-  zh: 'Chinese',
-  de: 'German',
-  es: 'Spanish',
-}
-
-type LocaleOption = string | { code: string; name?: string }
-
-function toLocaleCode(code: string): LocaleCode {
-  return ['en', 'zh', 'de', 'es'].includes(code) ? code as LocaleCode : 'en'
-}
-
-const languageOptions = computed(() =>
-  (availableLocales as LocaleOption[]).map((loc: LocaleOption) => {
-    const code = toLocaleCode(typeof loc === 'string' ? loc : loc.code)
-    return {
-      code,
-      name: typeof loc === 'string' ? localeNames[code] : loc.name || localeNames[code],
-    }
-  }),
-)
 
 const scrolled = ref(false)
 const activeMenu = ref<string | null>(null)

@@ -4,7 +4,7 @@
       <div class="absolute inset-0 grid-pattern opacity-30" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">FAQ</span>
         </nav>
@@ -72,7 +72,7 @@
           <NuxtLink
             v-for="article in visibleFaqArticles"
             :key="article.slug"
-            :to="localePath(`/resources/${article.slug}`)"
+            :to="`/resources/${article.slug}`"
             class="card card-hover p-5 group"
           >
             <div class="text-titanium-500 text-xs mb-2">{{ article.publishedAt }}</div>
@@ -92,8 +92,8 @@
         <h2 class="text-2xl font-display font-bold text-white mb-4">Still Have Questions?</h2>
         <p class="text-titanium-400 mb-8">Our technical team can help with grade selection, certificates, export packing and drawing-based parts.</p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <NuxtLink :to="localePath('/contact')" class="btn-secondary text-sm">Contact Technical Team</NuxtLink>
-          <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary text-sm">Get a Quote</NuxtLink>
+          <NuxtLink :to="'/contact'" class="btn-secondary text-sm">Contact Technical Team</NuxtLink>
+          <NuxtLink :to="'/request-a-quote'" class="btn-primary text-sm">Get a Quote</NuxtLink>
         </div>
       </div>
     </section>
@@ -103,7 +103,6 @@
 <script setup lang="ts">
 import type { Article } from '@cnbjti/types'
 
-const localePath = useLocalePath()
 const openItems = ref<Record<string, number[]>>({ 'Ordering and Documentation': [0] })
 const searchQuery = ref('')
 const visibleCount = ref(18)

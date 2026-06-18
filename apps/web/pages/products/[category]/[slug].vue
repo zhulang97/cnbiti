@@ -2,11 +2,11 @@
   <div class="min-h-screen bg-titanium-950 pt-24 pb-20">
     <div v-if="product && category" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-        <NuxtLink :to="localePath('/')" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
+        <NuxtLink :to="'/'" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        <NuxtLink :to="localePath('/products')" class="hover:text-titanium-300 transition-colors">Products</NuxtLink>
+        <NuxtLink :to="'/products'" class="hover:text-titanium-300 transition-colors">Products</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        <NuxtLink :to="localePath(`/products/${category.slug}`)" class="hover:text-titanium-300 transition-colors">{{ category.name }}</NuxtLink>
+        <NuxtLink :to="`/products/${category.slug}`" class="hover:text-titanium-300 transition-colors">{{ category.name }}</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
         <span class="text-titanium-300 truncate">{{ product.name }}</span>
       </nav>
@@ -39,7 +39,7 @@
             <NuxtLink
               v-for="grade in product.grades"
               :key="grade.id"
-              :to="localePath(`/grades/${grade.slug}`)"
+              :to="`/grades/${grade.slug}`"
               class="px-3 py-1.5 bg-accent-500/10 border border-accent-500/30 rounded-lg text-accent-300 font-mono text-sm font-semibold"
             >
               {{ grade.shortName }}
@@ -57,7 +57,7 @@
           </div>
 
           <div class="flex flex-wrap gap-3">
-            <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Get a Quote</NuxtLink>
+            <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Quote</NuxtLink>
             <a :href="mailtoHref" class="btn-secondary">Email Sales</a>
           </div>
         </div>
@@ -76,7 +76,7 @@
               <NuxtLink
                 v-for="standard in product.standards"
                 :key="standard.id"
-                :to="localePath(`/standards/${standard.slug}`)"
+                :to="`/standards/${standard.slug}`"
                 class="px-4 py-2 bg-titanium-900 border border-titanium-700 rounded-xl hover:border-accent-500/40 transition-colors"
               >
                 <span class="text-titanium-200 font-mono font-semibold text-sm">{{ standard.code }}</span>
@@ -94,7 +94,7 @@
               {{ item }}
             </li>
           </ul>
-          <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary w-full justify-center">Request Price</NuxtLink>
+          <NuxtLink :to="'/request-a-quote'" class="btn-primary w-full justify-center">Request Price</NuxtLink>
         </aside>
       </section>
 
@@ -104,7 +104,7 @@
           <NuxtLink
             v-for="item in relatedProducts"
             :key="item.id"
-            :to="localePath(`/products/${category.slug}/${item.slug}`)"
+            :to="`/products/${category.slug}/${item.slug}`"
             class="group card-hover p-5"
           >
             <div class="aspect-video rounded-lg overflow-hidden bg-titanium-900 mb-4">
@@ -120,7 +120,7 @@
     <div v-else class="min-h-[50vh] flex items-center justify-center px-4">
       <div class="text-center">
         <p class="text-titanium-400 mb-4">Product not found.</p>
-        <NuxtLink :to="localePath('/products')" class="btn-secondary">View Products</NuxtLink>
+        <NuxtLink :to="'/products'" class="btn-secondary">View Products</NuxtLink>
       </div>
     </div>
   </div>
@@ -129,9 +129,9 @@
 <script setup lang="ts">
 import { featuredProducts as mockProducts, productCategories } from '@cnbjti/mock-data'
 import type { MediaAsset, Product, ProductCategory } from '@cnbjti/types'
+import { canonicalUrl } from '~/utils/seo'
 
 const route = useRoute()
-const localePath = useLocalePath()
 const { siteConfig } = await useSiteRuntime()
 const categorySlug = computed(() => String(route.params.category))
 const productSlug = computed(() => String(route.params.slug))
@@ -172,7 +172,7 @@ useHead(computed(() => {
       ...(seo?.ogImage ? [{ property: 'og:image', content: seo.ogImage }] : []),
       ...(seo?.noIndex ? [{ name: 'robots', content: 'noindex,nofollow' }] : []),
     ],
-    link: seo?.canonical ? [{ rel: 'canonical', href: seo.canonical }] : [],
+    link: seo?.canonical ? [{ rel: 'canonical', href: canonicalUrl(seo.canonical) }] : [],
   }
 }))
 </script>

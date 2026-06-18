@@ -7,9 +7,9 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-500/5 rounded-full blur-3xl pointer-events-none" />
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-            <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+            <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
             <span>/</span>
-            <NuxtLink :to="localePath('/grades')" class="hover:text-accent-400 transition-colors">Grades</NuxtLink>
+            <NuxtLink :to="'/grades'" class="hover:text-accent-400 transition-colors">Grades</NuxtLink>
             <span>/</span>
             <span class="text-titanium-300">{{ grade.shortName }}</span>
           </nav>
@@ -44,7 +44,7 @@
                     <span class="text-white font-semibold text-sm">{{ grade.density }} g/cm³</span>
                   </div>
                 </div>
-                <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary w-full justify-center mt-6 text-sm">
+                <NuxtLink :to="'/request-a-quote'" class="btn-primary w-full justify-center mt-6 text-sm">
                   Request a Quote
                 </NuxtLink>
               </div>
@@ -79,7 +79,7 @@
           <h2 class="section-title mb-10">Available in {{ grade.shortName }}</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <NuxtLink v-for="cat in categories" :key="cat.id"
-              :to="localePath(`/products/${cat.slug}`)"
+              :to="`/products/${cat.slug}`"
               class="card card-hover p-5 flex items-center gap-4 group">
               <div class="w-12 h-12 rounded-xl bg-titanium-800 flex items-center justify-center flex-shrink-0">
                 <ProductCategoryIcon :icon="cat.icon || ''" class="w-6 h-6 text-accent-400" />
@@ -102,7 +102,7 @@
           <h2 class="text-xl font-display font-bold text-white mb-8">Other Titanium Grades</h2>
           <div class="flex flex-wrap gap-3">
             <NuxtLink v-for="g in otherGrades" :key="g.id"
-              :to="localePath(`/grades/${g.slug}`)"
+              :to="`/grades/${g.slug}`"
               class="px-4 py-2 card card-hover text-sm text-titanium-300 hover:text-accent-400 transition-colors flex items-center gap-2">
               <span class="text-accent-400 font-mono text-xs">{{ g.shortName }}</span>
               {{ g.name }}
@@ -116,7 +116,7 @@
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 class="text-2xl font-display font-bold text-white mb-4">Ready to Order {{ grade.shortName }}?</h2>
           <p class="text-titanium-400 mb-8">Tell us your dimensions, quantity and required standards. We'll send a quote with MTR within 24 hours.</p>
-          <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Get a Quote</NuxtLink>
+          <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Quote</NuxtLink>
         </div>
       </section>
     </template>
@@ -125,7 +125,7 @@
     <div v-else class="min-h-screen bg-titanium-950 flex items-center justify-center">
       <div class="text-center">
         <p class="text-titanium-400 mb-4">Grade not found.</p>
-        <NuxtLink :to="localePath('/grades')" class="btn-secondary">View All Grades</NuxtLink>
+        <NuxtLink :to="'/grades'" class="btn-secondary">View All Grades</NuxtLink>
       </div>
     </div>
   </div>
@@ -136,7 +136,6 @@ import { titaniumGrades, productCategories } from '@cnbjti/mock-data'
 import type { ProductCategory, TitaniumGrade } from '@cnbjti/types'
 
 const route = useRoute()
-const localePath = useLocalePath()
 const gradeSlug = computed(() => String(route.params.slug))
 
 const { data: gradeData } = await useAsyncData(`public-grade-${gradeSlug.value}`, () => publicApi<TitaniumGrade>(`/public/grades/${gradeSlug.value}`))

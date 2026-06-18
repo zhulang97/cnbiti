@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-        <NuxtLink :to="localePath('/')" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
+        <NuxtLink :to="'/'" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
         <span class="text-titanium-300">Products</span>
       </nav>
@@ -19,7 +19,7 @@
           <NuxtLink
           v-for="cat in categories"
           :key="cat.slug"
-          :to="localePath('/products/' + cat.slug)"
+          :to="'/products/' + cat.slug"
           class="group card-hover overflow-hidden"
         >
           <div class="aspect-video relative overflow-hidden bg-titanium-900">
@@ -68,7 +68,7 @@
           <NuxtLink
             v-for="product in filteredProducts"
             :key="product.id"
-            :to="localePath(`/products/${product.category.slug}/${product.slug}`)"
+            :to="`/products/${product.category.slug}/${product.slug}`"
             class="group card-hover p-5"
           >
             <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-titanium-900">
@@ -99,7 +99,7 @@
         <h2 class="text-white font-bold text-2xl mb-3">Can't find what you need?</h2>
         <p class="text-titanium-400 mb-6">We supply custom specifications, non-standard sizes and special alloys. Send us your requirements.</p>
         <div class="flex flex-wrap gap-3 justify-center">
-          <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Get a Custom Quote</NuxtLink>
+          <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Custom Quote</NuxtLink>
           <a :href="mailtoHref" class="btn-secondary">Email Us</a>
         </div>
       </div>
@@ -111,7 +111,6 @@
 import { featuredProducts, productCategories } from '@cnbjti/mock-data'
 import type { Product, ProductCategory, ProductSpec } from '@cnbjti/types'
 
-const localePath = useLocalePath()
 const { mailtoHref } = await useSiteRuntime()
 const { data: categoryData } = await useAsyncData('public-product-categories', () => publicApi<ProductCategory[]>('/public/categories'))
 const { data: productsData } = await useAsyncData('public-product-list', () => publicApi<Product[]>('/public/products'))

@@ -65,13 +65,13 @@ if errorlevel 1 (
 )
 
 call :wait_port 8080 API
-call :wait_http 3002 /en Web
+call :wait_http 3002 / Web
 call :wait_port 3003 Admin
 
 echo.
 echo Started stack:
 echo   API:   http://127.0.0.1:8080
-echo   Web:   http://127.0.0.1:3002/en
+echo   Web:   http://127.0.0.1:3002/
 echo   Admin: http://127.0.0.1:3003
 echo.
 echo Service windows are running separately. Close those windows to stop services.

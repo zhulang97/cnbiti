@@ -10,7 +10,7 @@
         <NuxtLink
           v-for="cat in categories"
           :key="cat.slug"
-          :to="localePath('/products/' + cat.slug)"
+          :to="'/products/' + cat.slug"
           class="group card-hover p-5 flex flex-col gap-3"
         >
           <div class="w-10 h-10 rounded-xl bg-titanium-800 group-hover:bg-accent-500/20 border border-titanium-700 group-hover:border-accent-500/40 flex items-center justify-center transition-all duration-300">
@@ -27,7 +27,7 @@
         </NuxtLink>
       </div>
       <div class="mt-8 text-center">
-        <NuxtLink :to="localePath('/products')" class="btn-secondary">
+        <NuxtLink :to="'/products'" class="btn-secondary">
           View All Products
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
         </NuxtLink>
@@ -39,7 +39,6 @@
 import { productCategories as mockCategories } from '@cnbjti/mock-data'
 import type { ProductCategory } from '@cnbjti/types'
 
-const localePath = useLocalePath()
 const { data: categoryData } = await useAsyncData('homepage-product-categories', () => publicApi<ProductCategory[]>('/public/categories'))
 const categories = computed(() => categoryData.value || mockCategories)
 </script>

@@ -188,7 +188,7 @@ async function refreshCategoryCounts(authHeaders, importedResults, categories) {
 
 function buildProductPayload({ name, slug, category, categorySlug, gradeIds, standardIds, sourceUrl, html, existing }) {
   const shortDescription = rewriteShortDescription(name, categorySlug)
-  const categoryPath = `/en/products/${category.slug}/${slug}`
+  const categoryPath = `/products/${category.slug}/${slug}`
   return {
     name,
     slug,

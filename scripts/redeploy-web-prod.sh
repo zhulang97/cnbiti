@@ -34,5 +34,5 @@ docker run -d \
   "$NODE_IMAGE" \
   sh -lc 'node apps/web/.output/server/index.mjs'
 
-curl -fsSI "http://127.0.0.1:${WEB_PORT}/en" >/dev/null
+curl -fsSI "http://127.0.0.1:${WEB_PORT}/" >/dev/null
 docker stats --no-stream "$WEB_CONTAINER"

@@ -5,9 +5,9 @@
       <div class="absolute inset-0 grid-pattern opacity-30" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
-          <NuxtLink :to="localePath('/resources')" class="hover:text-accent-400 transition-colors">Resources</NuxtLink>
+          <NuxtLink :to="'/resources'" class="hover:text-accent-400 transition-colors">Resources</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">Weight Calculator</span>
         </nav>
@@ -171,7 +171,7 @@
             </div>
 
             <!-- CTA -->
-            <NuxtLink :to="localePath('/request-a-quote')"
+            <NuxtLink :to="'/request-a-quote'"
               class="card card-hover p-6 group flex items-center gap-4">
               <div class="flex-1">
                 <div class="text-white font-medium text-sm group-hover:text-accent-400 transition-colors mb-1">Ready to Order?</div>
@@ -191,7 +191,6 @@
 <script setup lang="ts">
 import { titaniumGrades } from '@cnbjti/mock-data'
 
-const localePath = useLocalePath()
 const grades = titaniumGrades
 
 const shapes = [

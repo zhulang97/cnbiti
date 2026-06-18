@@ -24,7 +24,7 @@ try {
   for (let attempt = 0; attempt < 80; attempt += 1) {
     await sleep(500)
     try {
-      const response = await fetch('http://127.0.0.1:3002/en')
+      const response = await fetch('http://127.0.0.1:3002/')
       status = response.status
       const text = await response.text()
       length = text.length

@@ -4,7 +4,7 @@
       <div class="absolute inset-0 grid-pattern opacity-20" />
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">Terms of Use</span>
         </nav>
@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-const localePath = useLocalePath()
 
 const sections = [
   { title: '1. Acceptance of Terms', content: 'By accessing and using the CNBJTI website, you accept and agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use our website.' },

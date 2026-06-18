@@ -9,12 +9,12 @@
             Buyer-focused titanium guides, FAQ answers and application notes pulled from the live resource library.
           </p>
         </div>
-        <NuxtLink :to="localePath('/resources')" class="btn-secondary text-sm w-fit">View All Resources</NuxtLink>
+        <NuxtLink :to="'/resources'" class="btn-secondary text-sm w-fit">View All Resources</NuxtLink>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         <NuxtLink
-          :to="localePath('/resources/titanium-weight-calculator')"
+          :to="'/resources/titanium-weight-calculator'"
           class="group card-hover p-6 flex flex-col"
         >
           <div class="w-10 h-10 rounded-lg bg-titanium-800 group-hover:bg-accent-500/20 border border-titanium-700 group-hover:border-accent-500/40 flex items-center justify-center mb-4 transition-all duration-300">
@@ -37,7 +37,7 @@
         <NuxtLink
           v-for="article in resourceCards"
           :key="article.slug"
-          :to="localePath(`/resources/${article.slug}`)"
+          :to="`/resources/${article.slug}`"
           class="group card-hover overflow-hidden flex flex-col"
         >
           <div class="relative h-36 overflow-hidden bg-titanium-900">
@@ -66,7 +66,6 @@
 import type { Article } from '@cnbjti/types'
 import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
 
-const localePath = useLocalePath()
 const { data: articleData } = await useAsyncData('home-resource-articles', () => publicApi<Article[]>('/public/articles'))
 
 const preferredCategories = ['Processing Guide', 'Applications', 'Material Comparison', 'FAQ', 'Titanium Insights']

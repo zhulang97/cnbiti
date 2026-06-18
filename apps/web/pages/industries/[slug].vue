@@ -4,9 +4,9 @@
       <div class="absolute inset-0 grid-pattern opacity-30" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
-          <NuxtLink :to="localePath('/industries')" class="hover:text-accent-400 transition-colors">Industries</NuxtLink>
+          <NuxtLink :to="'/industries'" class="hover:text-accent-400 transition-colors">Industries</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">{{ industry.name }}</span>
         </nav>
@@ -88,7 +88,7 @@
               <NuxtLink
                 v-for="product in industry.productLinks"
                 :key="product.href"
-                :to="localePath(product.href)"
+                :to="product.href"
                 class="card card-hover px-4 py-3 text-sm text-white flex items-center justify-between"
               >
                 <span>{{ product.label }}</span>
@@ -104,7 +104,7 @@
               <NuxtLink
                 v-for="article in relatedArticles"
                 :key="article.slug"
-                :to="localePath(`/resources/${article.slug}`)"
+                :to="`/resources/${article.slug}`"
                 class="card card-hover overflow-hidden group"
               >
                 <div class="relative h-36 overflow-hidden bg-titanium-900">
@@ -126,7 +126,7 @@
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-2xl font-display font-bold text-white mb-4">Send Your {{ industry.name }} RFQ</h2>
         <p class="text-titanium-400 mb-8">Attach drawings or list grade, form, dimensions, quantity, destination and certification needs.</p>
-        <NuxtLink :to="localePath('/request-a-quote')" class="btn-primary">Request a Quote</NuxtLink>
+        <NuxtLink :to="'/request-a-quote'" class="btn-primary">Request a Quote</NuxtLink>
       </div>
     </section>
   </div>
@@ -137,7 +137,6 @@ import type { Article } from '@cnbjti/types'
 import { findIndustryProfile, matchingIndustryArticles } from '~/utils/industryContent'
 import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
 
-const localePath = useLocalePath()
 const route = useRoute()
 const slug = Array.isArray(route.params.slug) ? route.params.slug[0] : String(route.params.slug || '')
 const industry = findIndustryProfile(slug)

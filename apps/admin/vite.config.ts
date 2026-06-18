@@ -6,6 +6,8 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     target: 'esnext',
+    minify: false,
+    reportCompressedSize: false,
   },
   optimizeDeps: {
     esbuildOptions: {

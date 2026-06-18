@@ -59,22 +59,22 @@ const testSiteConfig = {
 const testNavigation = [
   {
     label: 'Runtime Sync Products',
-    href: '/en/products',
+    href: '/products',
     children: [
       {
         label: 'Runtime Sync Fittings',
-        href: '/en/products/titanium-fittings',
+        href: '/products/titanium-fittings',
         icon: 'fitting',
       },
       {
         label: 'Runtime Sync Bar',
-        href: '/en/products/titanium-bar',
+        href: '/products/titanium-bar',
         icon: 'bar',
       },
     ],
   },
-  { label: 'Runtime Sync About', href: '/en/about' },
-  { label: 'Runtime Sync Contact', href: '/en/contact' },
+  { label: 'Runtime Sync About', href: '/about' },
+  { label: 'Runtime Sync Contact', href: '/contact' },
 ]
 
 try {
@@ -95,12 +95,12 @@ try {
   if (publicNavigation[0]?.label !== testNavigation[0].label) throw new Error('Public navigation did not update')
 
   const checks = [
-    ['/en', ['CNBJTI Runtime Sync Check', 'runtime-sync@cnbjti.test', 'Runtime Sync Products']],
-    ['/en/contact', ['runtime-sync@cnbjti.test', '+8613888800000', 'CNBJTI Runtime Sync Check']],
-    ['/en/products', ['CNBJTI Runtime Sync Check', 'Runtime Sync Products', 'runtime-sync@cnbjti.test']],
-    ['/en/products/titanium-fittings', ['CNBJTI Runtime Sync Check', 'runtime-sync@cnbjti.test']],
-    ['/en/privacy', ['CNBJTI Runtime Sync Check', 'Runtime Sync Address 88', 'runtime-sync@cnbjti.test']],
-    ['/en/cookies', ['CNBJTI Runtime Sync Check', 'runtime-sync@cnbjti.test']],
+    ['/', ['CNBJTI Runtime Sync Check', 'runtime-sync@cnbjti.test', 'Runtime Sync Products']],
+    ['/contact', ['runtime-sync@cnbjti.test', '+8613888800000', 'CNBJTI Runtime Sync Check']],
+    ['/products', ['CNBJTI Runtime Sync Check', 'Runtime Sync Products', 'runtime-sync@cnbjti.test']],
+    ['/products/titanium-fittings', ['CNBJTI Runtime Sync Check', 'runtime-sync@cnbjti.test']],
+    ['/privacy', ['CNBJTI Runtime Sync Check', 'Runtime Sync Address 88', 'runtime-sync@cnbjti.test']],
+    ['/cookies', ['CNBJTI Runtime Sync Check', 'runtime-sync@cnbjti.test']],
   ]
 
   for (const [path, needles] of checks) {

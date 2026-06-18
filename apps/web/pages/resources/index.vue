@@ -4,7 +4,7 @@
       <div class="absolute inset-0 grid-pattern opacity-30" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="localePath('/')" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
           <span>/</span>
           <span class="text-titanium-300">Resources</span>
         </nav>
@@ -21,7 +21,7 @@
         <div class="section-label mb-3">Tools</div>
         <h2 class="section-title mb-8">Buyer Reference</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-          <NuxtLink :to="localePath('/resources/titanium-weight-calculator')" class="card card-hover p-8 group flex items-start gap-6">
+          <NuxtLink :to="'/resources/titanium-weight-calculator'" class="card card-hover p-8 group flex items-start gap-6">
             <div class="w-12 h-12 rounded bg-accent-500/10 border border-accent-500/20 flex items-center justify-center flex-shrink-0">
               <svg class="w-6 h-6 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 11h8M8 15h5M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
@@ -36,7 +36,7 @@
             </div>
           </NuxtLink>
 
-          <NuxtLink :to="localePath('/grades')" class="card card-hover p-8 group flex items-start gap-6">
+          <NuxtLink :to="'/grades'" class="card card-hover p-8 group flex items-start gap-6">
             <div class="w-12 h-12 rounded bg-accent-500/10 border border-accent-500/20 flex items-center justify-center flex-shrink-0">
               <svg class="w-6 h-6 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16M8 4v16M16 4v16" />
@@ -94,7 +94,7 @@
           <NuxtLink
             v-for="article in visibleArticles"
             :key="article.slug"
-            :to="localePath(`/resources/${article.slug}`)"
+            :to="`/resources/${article.slug}`"
             class="card card-hover group overflow-hidden flex flex-col"
           >
             <div class="relative h-44 overflow-hidden bg-titanium-900">
@@ -121,7 +121,7 @@
         </div>
 
         <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-5">
-          <NuxtLink :to="localePath('/standards')" class="card card-hover p-6 group flex items-center gap-4">
+          <NuxtLink :to="'/standards'" class="card card-hover p-6 group flex items-center gap-4">
             <div class="w-10 h-10 rounded bg-accent-500/10 border border-accent-500/20 flex items-center justify-center flex-shrink-0">
               <span class="text-accent-300 font-mono text-xs">STD</span>
             </div>
@@ -130,7 +130,7 @@
               <div class="text-titanium-500 text-xs mt-0.5">ASTM, ASME, AMS and EN references</div>
             </div>
           </NuxtLink>
-          <NuxtLink :to="localePath('/industries')" class="card card-hover p-6 group flex items-center gap-4">
+          <NuxtLink :to="'/industries'" class="card card-hover p-6 group flex items-center gap-4">
             <div class="w-10 h-10 rounded bg-accent-500/10 border border-accent-500/20 flex items-center justify-center flex-shrink-0">
               <span class="text-accent-300 font-mono text-xs">APP</span>
             </div>
@@ -139,7 +139,7 @@
               <div class="text-titanium-500 text-xs mt-0.5">Grades and product forms by sector</div>
             </div>
           </NuxtLink>
-          <NuxtLink :to="localePath('/faq')" class="card card-hover p-6 group flex items-center gap-4">
+          <NuxtLink :to="'/faq'" class="card card-hover p-6 group flex items-center gap-4">
             <div class="w-10 h-10 rounded bg-accent-500/10 border border-accent-500/20 flex items-center justify-center flex-shrink-0">
               <span class="text-accent-300 font-mono text-xs">FAQ</span>
             </div>
@@ -158,7 +158,6 @@
 import type { Article } from '@cnbjti/types'
 import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
 
-const localePath = useLocalePath()
 const selectedCategory = ref('All')
 const searchQuery = ref('')
 const visibleCount = ref(36)
