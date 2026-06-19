@@ -1,8 +1,8 @@
 <template>
   <section class="py-24 bg-gradient-to-b from-white to-steel-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
-        <div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:gap-12">
+        <div class="lg:max-w-[720px]">
           <p class="section-label mb-3">Processing Capabilities</p>
           <h2 class="section-title mb-5">In-House Machining &amp; Custom Processing</h2>
           <p class="section-subtitle mb-8">From raw titanium stock to finished components, we handle cutting, machining, forming and surface treatment with tighter quality control.</p>
@@ -22,11 +22,32 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </NuxtLink>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div v-for="(img, i) in images" :key="img.src" class="group relative overflow-hidden rounded-xl border border-titanium-200 bg-titanium-900 shadow-sm shadow-titanium-200/60" :class="i === 0 ? 'col-span-2 h-48' : 'h-36'">
-            <img :src="img.src" :alt="img.alt" class="content-image-lg transition-transform duration-500 group-hover:scale-[1.04]" loading="lazy" />
-            <div class="absolute inset-0 bg-gradient-to-t from-titanium-950/65 via-titanium-950/20 to-transparent" />
-            <div class="media-caption absolute bottom-2 left-3 right-3 text-xs font-semibold text-white">{{ img.label }}</div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:justify-self-end lg:max-w-[640px] xl:max-w-[660px]">
+          <div
+            v-for="img in factoryImages"
+            :key="img.src"
+            class="group overflow-hidden rounded-xl border border-titanium-200 bg-white shadow-sm shadow-titanium-200/60 transition-all duration-300 hover:-translate-y-1 hover:border-accent-500/30 hover:shadow-xl hover:shadow-titanium-200/80"
+          >
+            <div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-white via-steel-50 to-titanium-100">
+              <img
+                :src="img.src"
+                :alt="img.alt"
+                class="absolute inset-0 h-full w-full scale-110 object-cover object-center opacity-16 blur-xl transition-opacity duration-500 group-hover:opacity-22"
+                loading="lazy"
+                aria-hidden="true"
+              />
+              <div class="absolute inset-0 bg-white/50" />
+              <img
+                :src="img.src"
+                :alt="img.alt"
+                class="relative h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-[1.015]"
+                loading="lazy"
+              />
+            </div>
+            <div class="min-h-[58px] border-t border-titanium-100 bg-white px-4 py-3">
+              <div class="truncate text-sm font-semibold leading-tight text-titanium-950">{{ img.label }}</div>
+              <div v-if="img.subtitle" class="mt-1 truncate text-xs font-medium leading-tight text-titanium-500">{{ img.subtitle }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -34,8 +55,8 @@
   </section>
 </template>
 <script setup lang="ts">
-import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
-import type { HomeCapability } from '@cnbjti/types'
+import { siteConfig as fallbackSiteConfig } from '@cnbjti/mock-data'
+import type { GalleryPageConfig, HomeCapability } from '@cnbjti/types'
 
 const { siteConfig, localizedPath } = await useSiteRuntime()
 
@@ -47,20 +68,21 @@ const defaultCapabilities: HomeCapability[] = [
   { title: 'Surface Treatment', desc: 'Anodizing, passivation' },
   { title: 'Inspection & Testing', desc: 'UT, PMI, hardness' },
 ]
-const defaultImages = [
-  { src: qinghangPageAssets.factoryCnc.url, alt: 'Titanium CNC factory', label: 'CNC Machining' },
-  { src: qinghangPageAssets.waterJet.url, alt: 'Water jet cutting', label: 'Water Jet Cutting' },
-  { src: qinghangPageAssets.surfaceTreatment.url, alt: 'Titanium surface treatment', label: 'Surface Treatment' },
-]
+const fallbackFactoryTourPage = fallbackSiteConfig.factoryTourPage as GalleryPageConfig
 const capabilities = computed(() => siteConfig.value.homePage?.capabilities?.length ? siteConfig.value.homePage.capabilities : defaultCapabilities)
-const images = computed(() => {
-  const customImages = capabilities.value
-    .filter((item) => item.imageUrl)
+
+const factoryImages = computed(() => {
+  const configuredItems = siteConfig.value.factoryTourPage?.items
+  const sourceItems = configuredItems?.some((item) => item?.imageUrl) ? configuredItems : fallbackFactoryTourPage.items
+
+  return sourceItems
+    .filter((item) => item?.imageUrl)
+    .slice(0, 4)
     .map((item) => ({
-      src: item.imageUrl || '',
-      alt: item.imageAlt || item.title,
-      label: item.title,
+      src: item.imageUrl,
+      alt: item.imageAlt || item.title || 'Factory tour image',
+      label: item.title || 'Factory Image',
+      subtitle: item.desc || '',
     }))
-  return customImages.length ? customImages.slice(0, 3) : defaultImages
 })
 </script>

@@ -5,7 +5,6 @@
     <ProductCategoriesSection />
     <HomeContactSection />
     <ProcessingSection />
-    <QualitySection />
     <IndustriesSection />
     <ResourcesSection />
   </div>

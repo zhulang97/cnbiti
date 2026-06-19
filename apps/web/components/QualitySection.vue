@@ -3,10 +3,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
         <div class="order-2 lg:order-1">
-          <div class="relative h-44 rounded-xl overflow-hidden border border-titanium-200 bg-white mb-4 shadow-sm shadow-titanium-200/60">
-            <img :src="qinghangPageAssets.sheetFactory.url" alt="Titanium sheet inspection" class="content-image" />
-            <div class="absolute inset-0 bg-gradient-to-t from-titanium-950/70 to-transparent" />
-            <div class="absolute bottom-3 left-4 text-white text-xs font-medium media-caption">Material Traceability</div>
+          <div class="mb-4 overflow-hidden rounded-xl border border-titanium-200 bg-white shadow-sm shadow-titanium-200/60">
+            <div class="flex h-[280px] items-center justify-center bg-gradient-to-br from-steel-50 via-white to-titanium-50/70 p-3 sm:h-[320px] lg:h-[300px]">
+              <img
+                :src="qinghangPageAssets.sheetFactory.url"
+                alt="Titanium sheet inspection"
+                class="h-full w-full object-contain object-center"
+                loading="lazy"
+              />
+            </div>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div v-for="cert in certs" :key="cert.title" class="p-4 bg-white border border-titanium-200 rounded-xl shadow-sm shadow-titanium-200/60 hover:border-accent-500/30 transition-colors">

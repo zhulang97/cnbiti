@@ -111,7 +111,7 @@
         <p class="text-admin-500 text-xs mt-1">工厂介绍视频、视频封面和联系卡片图片建议上传到本地 MinIO。</p>
       </div>
 
-      <el-form label-position="top" class="grid grid-cols-1 lg:grid-cols-3 gap-x-4">
+      <el-form label-position="top" class="grid grid-cols-1 items-start gap-4 xl:grid-cols-3">
         <el-form-item label="工厂介绍视频">
           <div class="w-full space-y-3">
             <div class="flex gap-2">
@@ -126,7 +126,7 @@
             <video
               v-if="socialLinks.homeHeroVideo"
               :src="socialLinks.homeHeroVideo"
-              class="w-full h-36 rounded-lg bg-admin-950 object-cover border border-admin-600"
+              class="h-56 w-full rounded-lg border border-admin-600 bg-admin-950 object-contain xl:h-64"
               controls
               muted
               preload="metadata"
@@ -144,12 +144,19 @@
                 </el-button>
               </el-upload>
             </div>
-            <img
+            <a
               v-if="socialLinks.homeHeroPosterImage"
-              :src="socialLinks.homeHeroPosterImage"
-              alt="Home hero poster preview"
-              class="w-full h-36 rounded-lg bg-admin-950 object-cover border border-admin-600"
+              :href="socialLinks.homeHeroPosterImage"
+              target="_blank"
+              rel="noreferrer"
+              class="block rounded-xl border border-admin-600 bg-admin-950 p-2"
             >
+              <img
+                :src="socialLinks.homeHeroPosterImage"
+                alt="Home hero poster preview"
+                class="h-56 w-full rounded-lg bg-admin-950 object-contain xl:h-64"
+              >
+            </a>
           </div>
         </el-form-item>
         <el-form-item label="联系卡片图片">
@@ -163,12 +170,19 @@
                 </el-button>
               </el-upload>
             </div>
-            <img
+            <a
               v-if="socialLinks.contactCardImage"
-              :src="socialLinks.contactCardImage"
-              alt="Contact card preview"
-              class="w-full h-36 rounded-lg bg-admin-950 object-contain border border-admin-600"
+              :href="socialLinks.contactCardImage"
+              target="_blank"
+              rel="noreferrer"
+              class="block rounded-xl border border-admin-600 bg-admin-950 p-2"
             >
+              <img
+                :src="socialLinks.contactCardImage"
+                alt="Contact card preview"
+                class="h-56 w-full rounded-lg bg-admin-950 object-contain xl:h-64"
+              >
+            </a>
           </div>
         </el-form-item>
       </el-form>
