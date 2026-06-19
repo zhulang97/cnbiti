@@ -94,7 +94,7 @@
               <el-button link size="small" title="打开" @click="openFile(row.url)">
                 <el-icon><TopRight /></el-icon>
               </el-button>
-              <el-button link size="small" title="复制 URL" @click="void copyUrl(row.url)">
+              <el-button link size="small" title="复制链接" @click="void copyUrl(row.url)">
                 <el-icon><CopyDocument /></el-icon>
               </el-button>
               <el-button link size="small" title="删除" @click="void deleteFile(row.id)">
@@ -179,7 +179,7 @@ async function handleUpload(file: File) {
 
 async function deleteFile(id: string) {
   try {
-    await ElMessageBox.confirm('删除后该文件的公开 URL 将不可访问，确定继续？', '删除媒体资源', { type: 'warning' })
+    await ElMessageBox.confirm('删除后该文件的公开链接将不可访问，确定继续？', '删除媒体资源', { type: 'warning' })
     await mock.deleteStoredFile(id)
     ElMessage.success('文件已删除')
   } catch (error) {
@@ -192,7 +192,7 @@ async function deleteFile(id: string) {
 async function copyUrl(url: string) {
   try {
     await navigator.clipboard.writeText(url)
-    ElMessage.success('URL 已复制')
+    ElMessage.success('链接已复制')
   } catch {
     ElMessage.error('复制失败')
   }

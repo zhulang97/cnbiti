@@ -63,7 +63,7 @@
         <el-form-item label="产品名称" required>
           <el-input v-model="productForm.name" placeholder="Grade 2 Titanium Round Bar" @blur="fillProductSlug" />
         </el-form-item>
-        <el-form-item label="Slug" required>
+        <el-form-item label="路径标识" required>
           <el-input v-model="productForm.slug" placeholder="grade-2-titanium-round-bar" />
         </el-form-item>
         <el-form-item label="分类" required>
@@ -88,7 +88,7 @@
         <el-form-item label="产品图片" class="col-span-2">
           <div class="w-full space-y-3">
             <div class="flex gap-2">
-              <el-input v-model="productForm.imageUrl" placeholder="首图 URL，上传后自动填入" @blur="syncImageUrlToFirstImage" />
+              <el-input v-model="productForm.imageUrl" placeholder="首图链接，上传后自动填入" @blur="syncImageUrlToFirstImage" />
               <el-upload :show-file-list="false" accept="image/*" multiple :before-upload="uploadProductImage">
                 <el-button :loading="uploadingImage">
                   <el-icon class="mr-1"><Upload /></el-icon>
@@ -110,8 +110,8 @@
                         </el-button>
                       </div>
                     </div>
-                    <el-input v-model="image.alt" size="small" placeholder="Alt 文案" />
-                    <el-input v-model="image.url" size="small" placeholder="图片 URL" @blur="refreshImageUrl" />
+                    <el-input v-model="image.alt" size="small" placeholder="图片替代文案" />
+                    <el-input v-model="image.url" size="small" placeholder="图片链接" @blur="refreshImageUrl" />
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@
             <el-form-item label="SEO 标题">
               <el-input v-model="productForm.seo.title" />
             </el-form-item>
-            <el-form-item label="Canonical URL">
+            <el-form-item label="规范链接">
               <el-input v-model="productForm.seo.canonical" />
             </el-form-item>
             <el-form-item label="SEO 描述" class="col-span-2">
@@ -257,7 +257,7 @@ async function loadProductOptions(force = false) {
 
 async function saveProduct() {
   if (!productForm.name.trim() || !productForm.slug.trim() || !productForm.categoryId) {
-    ElMessage.warning('请填写产品名称、Slug 和分类')
+    ElMessage.warning('请填写产品名称、路径标识和分类')
     return
   }
   saving.value = true

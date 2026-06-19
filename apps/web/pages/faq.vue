@@ -1,34 +1,34 @@
 <template>
   <div>
-    <section class="relative bg-titanium-950 pt-32 pb-20 overflow-hidden">
+    <section class="relative bg-gradient-to-b from-white via-steel-50 to-titanium-50 pt-32 pb-20 overflow-hidden">
       <div class="absolute inset-0 grid-pattern opacity-30" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-          <NuxtLink :to="'/'" class="hover:text-accent-400 transition-colors">Home</NuxtLink>
+          <NuxtLink :to="'/'" class="hover:text-titanium-800 transition-colors">Home</NuxtLink>
           <span>/</span>
-          <span class="text-titanium-300">FAQ</span>
+          <span class="text-titanium-700">FAQ</span>
         </nav>
         <div class="section-label">Common Questions</div>
         <h1 class="section-title mt-3 mb-6">Titanium FAQ</h1>
-        <p class="text-titanium-300 text-lg max-w-2xl leading-relaxed">
+        <p class="text-titanium-600 text-lg max-w-2xl leading-relaxed">
           Practical answers for titanium buyers, from ordering and certification to grade selection and processing.
         </p>
       </div>
     </section>
 
-    <section class="bg-titanium-950 py-16">
+    <section class="bg-titanium-50 py-16">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-12">
           <div v-for="category in coreFaqCategories" :key="category.title">
-            <h2 class="text-white font-semibold text-lg mb-6">{{ category.title }}</h2>
+            <h2 class="text-titanium-950 font-semibold text-lg mb-6">{{ category.title }}</h2>
             <div class="space-y-3">
               <div v-for="(item, index) in category.items" :key="item.q" class="card overflow-hidden">
                 <button
                   type="button"
-                  class="w-full flex items-center justify-between p-5 text-left hover:bg-titanium-800/30 transition-colors"
+                  class="w-full flex items-center justify-between p-5 text-left hover:bg-titanium-50 transition-colors"
                   @click="toggle(category.title, index)"
                 >
-                  <span class="text-white font-medium text-sm pr-4">{{ item.q }}</span>
+                  <span class="text-titanium-950 font-medium text-sm pr-4">{{ item.q }}</span>
                   <svg
                     :class="['w-5 h-5 text-titanium-500 flex-shrink-0 transition-transform duration-200', isOpen(category.title, index) ? 'rotate-180' : '']"
                     fill="none"
@@ -39,7 +39,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                <div v-show="isOpen(category.title, index)" class="px-5 pb-5 text-titanium-400 text-sm leading-relaxed border-t border-titanium-800">
+                <div v-show="isOpen(category.title, index)" class="px-5 pb-5 text-titanium-600 text-sm leading-relaxed border-t border-titanium-200">
                   <p class="pt-4">{{ item.a }}</p>
                 </div>
               </div>
@@ -49,7 +49,7 @@
       </div>
     </section>
 
-    <section class="bg-titanium-900/30 py-16">
+    <section class="bg-white py-16">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-8">
           <div>
@@ -63,7 +63,7 @@
               v-model="searchQuery"
               type="search"
               placeholder="Search titanium questions"
-              class="w-full rounded border border-titanium-700 bg-titanium-950 px-4 py-3 text-sm text-white placeholder:text-titanium-500 focus:border-accent-400 focus:outline-none"
+              class="form-field"
             />
           </div>
         </div>
@@ -76,7 +76,7 @@
             class="card card-hover p-5 group"
           >
             <div class="text-titanium-500 text-xs mb-2">{{ article.publishedAt }}</div>
-            <h3 class="text-white font-semibold text-sm leading-snug group-hover:text-accent-400 transition-colors">{{ article.title }}</h3>
+            <h3 class="text-titanium-950 font-semibold text-sm leading-snug group-hover:text-accent-600 transition-colors">{{ article.title }}</h3>
             <p class="text-titanium-400 text-sm leading-relaxed mt-3 line-clamp-3">{{ article.excerpt }}</p>
           </NuxtLink>
         </div>
@@ -87,9 +87,9 @@
       </div>
     </section>
 
-    <section class="bg-titanium-950 py-20">
+    <section class="bg-titanium-50 py-20">
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-2xl font-display font-bold text-white mb-4">Still Have Questions?</h2>
+        <h2 class="text-2xl font-display font-bold text-titanium-950 mb-4">Still Have Questions?</h2>
         <p class="text-titanium-400 mb-8">Our technical team can help with grade selection, certificates, export packing and drawing-based parts.</p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <NuxtLink :to="'/contact'" class="btn-secondary text-sm">Contact Technical Team</NuxtLink>

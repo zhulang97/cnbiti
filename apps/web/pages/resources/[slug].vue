@@ -1,39 +1,41 @@
 <template>
-  <article v-if="article" class="pt-24 pb-20 min-h-screen bg-titanium-950">
+  <article v-if="article" class="min-h-screen bg-gradient-to-b from-white via-steel-50 to-titanium-50 pt-24 pb-20">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-        <NuxtLink :to="'/'" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
+        <NuxtLink :to="'/'" class="hover:text-accent-600 transition-colors">Home</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        <NuxtLink :to="'/resources'" class="hover:text-titanium-300 transition-colors">Resources</NuxtLink>
+        <NuxtLink :to="'/resources'" class="hover:text-accent-600 transition-colors">Resources</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        <span class="text-titanium-300 line-clamp-1">{{ article.title }}</span>
+        <span class="text-titanium-600 line-clamp-1">{{ article.title }}</span>
       </nav>
 
       <header class="mb-10">
         <div class="flex flex-wrap items-center gap-3 mb-5">
-          <span class="px-3 py-1 bg-accent-500/10 border border-accent-500/30 rounded text-accent-300 text-xs font-medium">
+          <span class="px-3 py-1 bg-accent-500/10 border border-accent-500/30 rounded-full text-accent-600 text-xs font-semibold">
             {{ article.category || 'Titanium Resources' }}
           </span>
-          <span class="text-titanium-500 text-sm">{{ article.readingTime || 5 }} min read</span>
-          <span class="text-titanium-700">&middot;</span>
-          <span class="text-titanium-500 text-sm">{{ article.publishedAt }}</span>
+          <span class="text-titanium-600 text-sm">{{ article.readingTime || 5 }} min read</span>
+          <span class="text-titanium-300">&middot;</span>
+          <span class="text-titanium-600 text-sm">{{ article.publishedAt }}</span>
         </div>
-        <h1 class="text-white font-bold text-3xl md:text-5xl leading-tight mb-5">{{ article.title }}</h1>
-        <p class="text-titanium-300 text-lg leading-relaxed">{{ article.excerpt }}</p>
+        <h1 class="text-titanium-950 font-bold text-3xl md:text-5xl leading-tight mb-5">{{ article.title }}</h1>
+        <p class="text-titanium-700 text-lg leading-relaxed">{{ article.excerpt }}</p>
       </header>
 
-      <div v-if="articleImage" class="aspect-[16/9] rounded-xl overflow-hidden bg-titanium-900 border border-titanium-800 mb-10">
-        <img :src="articleImage" :alt="article.title" class="content-image-lg" />
+      <div v-if="articleImage" class="mb-10 overflow-hidden rounded-2xl border border-titanium-200 bg-white shadow-sm shadow-titanium-200/70">
+        <img :src="articleImage" :alt="article.title" class="aspect-[16/9] w-full object-cover object-center" />
       </div>
 
-      <div class="article-body" v-html="articleHtml" />
+      <div class="rounded-2xl border border-titanium-200 bg-white p-6 shadow-sm shadow-titanium-200/70 sm:p-8">
+        <div class="article-body" v-html="articleHtml" />
+      </div>
 
-      <footer class="mt-12 pt-8 border-t border-titanium-800">
+      <footer class="mt-12 pt-8 border-t border-titanium-200">
         <div class="flex flex-wrap gap-2 mb-8">
           <span
             v-for="tag in article.tags || []"
             :key="tag"
-            class="px-2.5 py-1 bg-titanium-900 border border-titanium-800 rounded text-titanium-400 text-xs"
+            class="px-2.5 py-1 bg-white border border-titanium-200 rounded-full text-titanium-600 text-xs"
           >
             {{ tag }}
           </span>
@@ -106,17 +108,17 @@ useHead(() => ({
 
 <style scoped>
 .article-body {
-  color: rgb(203 213 225);
+  color: rgb(51 65 85);
   font-size: 1rem;
-  line-height: 1.8;
+  line-height: 1.85;
 }
 
 .article-body :deep(p) {
-  margin: 1rem 0;
+  margin: 1.1rem 0;
 }
 
 .article-body :deep(h2) {
-  color: white;
+  color: rgb(15 23 42);
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.25;
@@ -124,7 +126,7 @@ useHead(() => ({
 }
 
 .article-body :deep(h3) {
-  color: white;
+  color: rgb(15 23 42);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.3;
@@ -142,6 +144,11 @@ useHead(() => ({
 }
 
 .article-body :deep(a) {
-  color: rgb(56 189 248);
+  color: rgb(2 132 199);
+  font-weight: 600;
+}
+
+.article-body :deep(strong) {
+  color: rgb(15 23 42);
 }
 </style>

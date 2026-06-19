@@ -215,6 +215,9 @@ if ($ResetData) {
 New-Item -ItemType Directory -Force $DataDir, $RunDir | Out-Null
 
 $freshData = Initialize-DataDir $Mysqld $MysqlHome $DataDir $RunDir
+if (-not $freshData) {
+  Move-UndoFiles $DataDir $RunDir "pre-start MySQL 8.4 undo recovery"
+}
 
 if (-not $existing) {
   Start-MySqlProcess $Mysqld $MysqlHome $DataDir $RunDir $Port
@@ -224,12 +227,7 @@ if (-not $existing) {
     if ($freshData) {
       throw
     }
-    Write-Warning "Existing local MySQL dev data did not start. Backing it up and recreating a clean dev database."
-    Backup-LocalMySqlDirs $RepoRoot
-    New-Item -ItemType Directory -Force $DataDir, $RunDir | Out-Null
-    Initialize-DataDir $Mysqld $MysqlHome $DataDir $RunDir | Out-Null
-    Start-MySqlProcess $Mysqld $MysqlHome $DataDir $RunDir $Port
-    Wait-ForMySql $Mysql $Port
+    throw "Existing local MySQL dev data did not start. The data directory was left in place. Check $(Join-Path $RunDir 'mysqld.err'). To intentionally recreate an empty dev database, rerun this script with -ResetData."
   }
 } else {
   Wait-ForMySql $Mysql $Port

@@ -3,11 +3,10 @@
     <HeroSection />
     <TrustStrip />
     <ProductCategoriesSection />
+    <HomeContactSection />
     <ProcessingSection />
-    <GradesSection />
-    <IndustriesSection />
     <QualitySection />
-    <QuickRfqSection />
+    <IndustriesSection />
     <ResourcesSection />
   </div>
 </template>

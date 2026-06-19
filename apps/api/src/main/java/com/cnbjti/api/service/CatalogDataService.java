@@ -24,6 +24,13 @@ import com.cnbjti.api.model.ApiModels.CountryCount;
 import com.cnbjti.api.model.ApiModels.Customer;
 import com.cnbjti.api.model.ApiModels.CustomerDetail;
 import com.cnbjti.api.model.ApiModels.GradeSaveRequest;
+import com.cnbjti.api.model.ApiModels.GalleryPageConfig;
+import com.cnbjti.api.model.ApiModels.HomeCapability;
+import com.cnbjti.api.model.ApiModels.HomeFeature;
+import com.cnbjti.api.model.ApiModels.HomePageConfig;
+import com.cnbjti.api.model.ApiModels.HomeQualityItem;
+import com.cnbjti.api.model.ApiModels.HomeStat;
+import com.cnbjti.api.model.ApiModels.ManagedGalleryItem;
 import com.cnbjti.api.model.ApiModels.MediaAsset;
 import com.cnbjti.api.model.ApiModels.NavigationItem;
 import com.cnbjti.api.model.ApiModels.NavigationSaveRequest;
@@ -87,17 +94,26 @@ public class CatalogDataService {
 
   public SiteConfig siteConfig() {
     return catalogRepository.findByContentTypeAndItemId(TYPE_SITE_CONFIG, "site")
-        .map(item -> withDefaultAboutPage(jsonCodec.read(item.getPayloadJson(), SiteConfig.class)))
+        .map(item -> withDefaultSitePages(jsonCodec.read(item.getPayloadJson(), SiteConfig.class)))
         .orElseThrow(() -> new NoSuchElementException("Site config not found"));
   }
 
   @Transactional
   public SiteConfig updateSiteConfig(SiteConfigSaveRequest request) {
     CatalogContentEntity existing = catalogRepository.findByContentTypeAndItemId(TYPE_SITE_CONFIG, "site").orElse(null);
-    SiteConfig previous = existing == null ? null : jsonCodec.read(existing.getPayloadJson(), SiteConfig.class);
+    SiteConfig previous = existing == null ? null : withDefaultSitePages(jsonCodec.read(existing.getPayloadJson(), SiteConfig.class));
     AboutPageConfig aboutPage = request.aboutPage() == null && previous != null
         ? previous.aboutPage()
         : normalizeAboutPage(request.aboutPage());
+    HomePageConfig homePage = request.homePage() == null && previous != null
+        ? previous.homePage()
+        : normalizeHomePage(request.homePage());
+    GalleryPageConfig certificatesPage = request.certificatesPage() == null && previous != null
+        ? previous.certificatesPage()
+        : normalizeGalleryPage(request.certificatesPage());
+    GalleryPageConfig factoryTourPage = request.factoryTourPage() == null && previous != null
+        ? previous.factoryTourPage()
+        : normalizeGalleryPage(request.factoryTourPage());
     SiteConfig siteConfig = new SiteConfig(
         request.siteName().trim(),
         text(request.tagline(), ""),
@@ -108,12 +124,15 @@ public class CatalogDataService {
         text(request.city(), ""),
         text(request.country(), ""),
         cleanLinks(request.socialLinks()),
-        aboutPage == null ? defaultAboutPage() : aboutPage
+        aboutPage == null ? defaultAboutPage() : aboutPage,
+        homePage == null ? defaultHomePage() : homePage,
+        certificatesPage == null ? defaultCertificatesPage() : certificatesPage,
+        factoryTourPage == null ? defaultFactoryTourPage() : factoryTourPage
     );
     CatalogContentEntity entity = new CatalogContentEntity(TYPE_SITE_CONFIG + ":site", TYPE_SITE_CONFIG, "site", "site",
         siteConfig.siteName(), STATUS_PUBLISHED, existing == null ? 0 : existing.getSortOrder(),
         jsonCodec.write(siteConfig), LocalDateTime.now());
-    return withDefaultAboutPage(jsonCodec.read(catalogRepository.save(entity).getPayloadJson(), SiteConfig.class));
+    return withDefaultSitePages(jsonCodec.read(catalogRepository.save(entity).getPayloadJson(), SiteConfig.class));
   }
 
   public List<NavigationItem> navigation() {
@@ -150,17 +169,24 @@ public class CatalogDataService {
         nav("Industries", "/industries"),
         nav("Resources", "/resources"),
         nav("Quality", "/quality"),
+        nav("Certificates", "/certificates"),
+        nav("Factory Tour", "/factory-tour"),
         nav("About", "/about"),
         nav("Contact", "/contact")
     );
   }
 
   public List<ProductCategory> categories() {
-    return catalogList(TYPE_CATEGORY, ProductCategory.class, true);
+    return catalogRepository.findByContentTypeAndStatusOrderBySortOrderAsc(TYPE_CATEGORY, STATUS_PUBLISHED).stream()
+        .map(this::toProductCategory)
+        .toList();
   }
 
   public ProductCategory category(String slug) {
-    return catalogBySlug(TYPE_CATEGORY, slug, ProductCategory.class);
+    CatalogContentEntity entity = catalogRepository.findByContentTypeAndSlug(TYPE_CATEGORY, slug)
+        .filter(item -> STATUS_PUBLISHED.equals(item.getStatus()))
+        .orElseThrow(() -> new NoSuchElementException("category not found"));
+    return toProductCategory(entity);
   }
 
   public List<Product> products() {
@@ -293,7 +319,9 @@ public class CatalogDataService {
 
   public AdminContentOptions adminContentOptions() {
     return new AdminContentOptions(
-        catalogList(TYPE_CATEGORY, ProductCategory.class, false),
+        catalogRepository.findByContentTypeOrderBySortOrderAsc(TYPE_CATEGORY).stream()
+            .map(this::toProductCategory)
+            .toList(),
         catalogList(TYPE_GRADE, TitaniumGrade.class, false),
         catalogList(TYPE_STANDARD, Standard.class, false)
     );
@@ -537,6 +565,7 @@ public class CatalogDataService {
   private CatalogContentEntity saveCategoryEntity(CatalogContentEntity existing, String id, CategorySaveRequest request) {
     ProductCategory previous = existing == null ? null : jsonCodec.read(existing.getPayloadJson(), ProductCategory.class);
     String imageUrl = text(request.imageUrl(), previous == null || previous.image() == null ? "" : previous.image().url());
+    int sortOrder = existing == null ? nextSortOrder(TYPE_CATEGORY) : existing.getSortOrder();
     ProductCategory category = new ProductCategory(
         id,
         slug(request.slug()),
@@ -545,10 +574,12 @@ public class CatalogDataService {
         imageUrl.isBlank() ? null : media("cm" + id, imageUrl, request.name(), slug(request.slug()) + ".jpg"),
         text(request.icon(), previous == null ? "" : previous.icon()),
         request.productCount() == null ? (previous == null ? 0 : previous.productCount()) : request.productCount(),
-        request.seo() == null ? (previous == null ? null : previous.seo()) : request.seo()
+        request.seo() == null ? (previous == null ? null : previous.seo()) : request.seo(),
+        request.showOnHome() == null ? previous == null || !Boolean.FALSE.equals(previous.showOnHome()) : request.showOnHome(),
+        request.homeSort() == null ? (previous == null || previous.homeSort() == null ? sortOrder : previous.homeSort()) : request.homeSort()
     );
     CatalogContentEntity entity = new CatalogContentEntity(TYPE_CATEGORY + ":" + id, TYPE_CATEGORY, id, category.slug(),
-        category.name(), request.status(), existing == null ? nextSortOrder(TYPE_CATEGORY) : existing.getSortOrder(),
+        category.name(), request.status(), sortOrder,
         jsonCodec.write(category), LocalDateTime.now());
     return catalogRepository.save(entity);
   }
@@ -714,10 +745,26 @@ public class CatalogDataService {
   }
 
   private AdminCategoryDetail toAdminCategoryDetail(CatalogContentEntity entity) {
-    ProductCategory category = jsonCodec.read(entity.getPayloadJson(), ProductCategory.class);
+    ProductCategory category = toProductCategory(entity);
     return new AdminCategoryDetail(category.id(), category.slug(), category.name(), text(category.description(), ""),
         category.image() == null ? "" : category.image().url(), text(category.icon(), ""), category.productCount(),
-        category.seo(), entity.getStatus(), entity.getUpdatedAt().toLocalDate().toString());
+        category.seo(), category.showOnHome(), category.homeSort(), entity.getStatus(), entity.getUpdatedAt().toLocalDate().toString());
+  }
+
+  private ProductCategory toProductCategory(CatalogContentEntity entity) {
+    ProductCategory category = jsonCodec.read(entity.getPayloadJson(), ProductCategory.class);
+    return new ProductCategory(
+        category.id(),
+        category.slug(),
+        category.name(),
+        text(category.description(), ""),
+        category.image(),
+        text(category.icon(), ""),
+        category.productCount(),
+        category.seo(),
+        category.showOnHome() == null || Boolean.TRUE.equals(category.showOnHome()),
+        category.homeSort() == null ? entity.getSortOrder() : category.homeSort()
+    );
   }
 
   private AdminGradeDetail toAdminGradeDetail(CatalogContentEntity entity) {
@@ -787,7 +834,7 @@ public class CatalogDataService {
 
   private ProductCategory productCategoryById(String id) {
     CatalogContentEntity entity = findCatalog(TYPE_CATEGORY, id, "Product category not found");
-    return jsonCodec.read(entity.getPayloadJson(), ProductCategory.class);
+    return toProductCategory(entity);
   }
 
   private TitaniumGrade gradeById(String id) {
@@ -1021,10 +1068,7 @@ public class CatalogDataService {
         ));
   }
 
-  private SiteConfig withDefaultAboutPage(SiteConfig value) {
-    if (value.aboutPage() != null) {
-      return value;
-    }
+  private SiteConfig withDefaultSitePages(SiteConfig value) {
     return new SiteConfig(
         value.siteName(),
         value.tagline(),
@@ -1035,7 +1079,10 @@ public class CatalogDataService {
         value.city(),
         value.country(),
         value.socialLinks(),
-        defaultAboutPage()
+        value.aboutPage() == null ? defaultAboutPage() : value.aboutPage(),
+        value.homePage() == null ? defaultHomePage() : value.homePage(),
+        value.certificatesPage() == null ? defaultCertificatesPage() : value.certificatesPage(),
+        value.factoryTourPage() == null ? defaultFactoryTourPage() : value.factoryTourPage()
     );
   }
 
@@ -1079,6 +1126,71 @@ public class CatalogDataService {
         "CNBJTI is a Baoji-based titanium materials supplier with 15+ years of export experience. We supply certified titanium to 50+ countries with EN 10204 3.1 MTR.");
   }
 
+  private HomePageConfig defaultHomePage() {
+    return new HomePageConfig(
+        "Baoji Titanium Materials Manufacturer & Custom Processing Supplier",
+        "CNBJTI is based in Baoji, China, focused on certified titanium materials and custom processing for global buyers.",
+        "We supply titanium bar, sheet, plate, tube, wire, forgings, fittings, fasteners, anodes and CNC titanium parts with MTR, export packing and drawing-based processing support.",
+        List.of(
+            new HomeStat("2008", "Founded in Baoji"),
+            new HomeStat("50+", "Countries Served"),
+            new HomeStat("100+", "Specifications"),
+            new HomeStat("24h", "RFQ Response")),
+        List.of(
+            new HomeFeature("MTR", "MTR Available", "Heat number, chemistry and mechanical values"),
+            new HomeFeature("MOQ", "Small MOQ", "Prototype, cut-to-size and export orders"),
+            new HomeFeature("OEM", "Custom Parts", "Machining, forging and drawing-based supply")),
+        List.of(
+            new HomeFeature("MTR", "Certified Documentation", "EN 10204 3.1 MTR, heat number traceability and third-party inspection available."),
+            new HomeFeature("CUT", "Cut-to-size Supply", "Bar, plate, sheet and tube can be cut or processed before export packing."),
+            new HomeFeature("OEM", "Drawing-based Parts", "CNC machining, forging and special titanium components quoted from drawings.")),
+        List.of(
+            new HomeCapability("Cut-to-size", "Saw, waterjet, laser", "", ""),
+            new HomeCapability("CNC Machining", "Turning, milling, drilling", "", ""),
+            new HomeCapability("Grinding & Polishing", "Ra 0.4 achievable", "", ""),
+            new HomeCapability("Welding & Fabrication", "TIG, electron beam", "", ""),
+            new HomeCapability("Surface Treatment", "Anodizing, passivation", "", ""),
+            new HomeCapability("Inspection & Testing", "UT, PMI, hardness", "", "")),
+        List.of(
+            new HomeQualityItem("MTR", "Mill Test Report (MTR)", "EN 10204 3.1 certified, traceable to heat number"),
+            new HomeQualityItem("CHEM", "Chemical Composition", "Full elemental analysis per ASTM/AMS requirements"),
+            new HomeQualityItem("MECH", "Mechanical Properties", "Tensile, yield, elongation, hardness test results"),
+            new HomeQualityItem("SGS", "Third-Party Inspection", "SGS, BV, TUV available on request"))
+    );
+  }
+
+  private GalleryPageConfig defaultCertificatesPage() {
+    return new GalleryPageConfig(
+        "Certificates",
+        "Certificates",
+        "Our certificate gallery can be managed from the admin panel. Upload ISO, compliance, business license or third-party inspection documents here so buyers can review them before sending an RFQ.",
+        List.of(),
+        "Certificates - Titanium Quality Documents | CNBJTI",
+        "View CNBJTI certificate images and quality documents for titanium materials, export supply and custom processing.");
+  }
+
+  private GalleryPageConfig defaultFactoryTourPage() {
+    return new GalleryPageConfig(
+        "Factory Tour",
+        "Factory Tour",
+        "A visual look at titanium processing, cutting, CNC machining, tube production, surface treatment and inspection resources used for export orders.",
+        List.of(
+            new ManagedGalleryItem("Titanium CNC Factory", "CNC machining and drawing-based titanium parts.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_535475e4c15a489dae12d2a841b4e878.jpg", "Titanium CNC factory"),
+            new ManagedGalleryItem("Titanium Sheet Factory", "Sheet, plate and foil handling for export supply.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_07a15b16c4134c07816d6b6b56d377e7.png", "Titanium sheet factory"),
+            new ManagedGalleryItem("Cutting Workshop", "Cut-to-size service for bar, plate and tube orders.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_37c2349a8a274995acd1fbab1cc85bcc.webp", "Titanium cutting workshop"),
+            new ManagedGalleryItem("Surface Treatment", "Grinding, polishing and surface treatment support.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_2577ed70f8764881bc9b430246fc4bd8.png", "Titanium surface treatment"),
+            new ManagedGalleryItem("Tube Production", "Titanium welded tube production and inspection.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_845cb1487b3a4b57a7f269a3d82e748c.jpg", "Titanium welded tube production"),
+            new ManagedGalleryItem("Pipe Equipment", "Equipment for pipe, fittings and related titanium products.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_dee5b328751444b6aa1d811a5adc00fb.png", "Titanium pipe equipment")),
+        "Factory Tour - Titanium Processing Workshop | CNBJTI",
+        "View CNBJTI factory tour images for titanium CNC machining, cutting, tube production, surface treatment and inspection.");
+  }
+
   private AboutPageConfig normalizeAboutPage(AboutPageConfig value) {
     if (value == null) {
       return null;
@@ -1114,6 +1226,94 @@ public class CatalogDataService {
         .filter(value -> value != null && value.value() != null && !value.value().isBlank()
             && value.label() != null && !value.label().isBlank())
         .map(value -> new AboutStat(value.value().trim(), value.label().trim()))
+        .toList();
+  }
+
+  private HomePageConfig normalizeHomePage(HomePageConfig value) {
+    if (value == null) {
+      return null;
+    }
+    return new HomePageConfig(
+        text(value.heroTitle(), ""),
+        text(value.heroIntro(), ""),
+        text(value.heroBody(), ""),
+        normalizeHomeStats(value.stats()),
+        normalizeHomeFeatures(value.proofPoints()),
+        normalizeHomeFeatures(value.buyerNotes()),
+        normalizeHomeCapabilities(value.capabilities()),
+        normalizeHomeQualityItems(value.qualityItems())
+    );
+  }
+
+  private List<HomeStat> normalizeHomeStats(List<HomeStat> values) {
+    if (values == null) {
+      return List.of();
+    }
+    return values.stream()
+        .filter(value -> value != null && value.value() != null && !value.value().isBlank()
+            && value.label() != null && !value.label().isBlank())
+        .map(value -> new HomeStat(value.value().trim(), value.label().trim()))
+        .toList();
+  }
+
+  private List<HomeFeature> normalizeHomeFeatures(List<HomeFeature> values) {
+    if (values == null) {
+      return List.of();
+    }
+    return values.stream()
+        .filter(value -> value != null && value.title() != null && !value.title().isBlank()
+            && value.desc() != null && !value.desc().isBlank())
+        .map(value -> new HomeFeature(text(value.code(), ""), value.title().trim(), value.desc().trim()))
+        .toList();
+  }
+
+  private List<HomeCapability> normalizeHomeCapabilities(List<HomeCapability> values) {
+    if (values == null) {
+      return List.of();
+    }
+    return values.stream()
+        .filter(value -> value != null && value.title() != null && !value.title().isBlank()
+            && value.desc() != null && !value.desc().isBlank())
+        .map(value -> new HomeCapability(value.title().trim(), value.desc().trim(), text(value.imageUrl(), ""), text(value.imageAlt(), "")))
+        .toList();
+  }
+
+  private List<HomeQualityItem> normalizeHomeQualityItems(List<HomeQualityItem> values) {
+    if (values == null) {
+      return List.of();
+    }
+    return values.stream()
+        .filter(value -> value != null && value.title() != null && !value.title().isBlank()
+            && value.desc() != null && !value.desc().isBlank())
+        .map(value -> new HomeQualityItem(text(value.code(), ""), value.title().trim(), value.desc().trim()))
+        .toList();
+  }
+
+  private GalleryPageConfig normalizeGalleryPage(GalleryPageConfig value) {
+    if (value == null) {
+      return null;
+    }
+    return new GalleryPageConfig(
+        text(value.heroLabel(), ""),
+        text(value.heroTitle(), ""),
+        text(value.heroIntro(), ""),
+        normalizeGalleryItems(value.items()),
+        text(value.seoTitle(), ""),
+        text(value.seoDescription(), "")
+    );
+  }
+
+  private List<ManagedGalleryItem> normalizeGalleryItems(List<ManagedGalleryItem> values) {
+    if (values == null) {
+      return List.of();
+    }
+    return values.stream()
+        .filter(value -> value != null && value.imageUrl() != null && !value.imageUrl().isBlank())
+        .map(value -> new ManagedGalleryItem(
+            text(value.title(), ""),
+            text(value.desc(), ""),
+            value.imageUrl().trim(),
+            text(value.imageAlt(), "")))
         .toList();
   }
 

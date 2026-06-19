@@ -75,7 +75,7 @@ export async function useSiteRuntime() {
   refreshCategories = categoryResult.refresh
 
   const siteConfig = computed(() => siteConfigData.value || fallbackSiteConfig)
-  const navigationItems = computed(() => navigationData.value?.length ? navigationData.value : fallbackNavigation)
+  const navigationItems = computed(() => ensureCoreNavigation(navigationData.value?.length ? navigationData.value : fallbackNavigation))
   const productCategories = computed(() => categoryData.value?.length ? categoryData.value : fallbackProductCategories)
   const whatsappHref = computed(() => toWhatsAppHref(siteConfig.value.whatsapp))
   const phoneHref = computed(() => toTelHref(siteConfig.value.phone))
@@ -120,4 +120,22 @@ export function stripLocalePrefix(href?: string | null) {
   if (/^(https?:|mailto:|tel:)/i.test(href)) return href
   const [path, suffix = ''] = href.split(/(?=[?#])/)
   return `${(path || '/').replace(LOCALE_PREFIX, '') || '/'}${suffix}`
+}
+
+function ensureCoreNavigation(items: NavigationItem[]) {
+  const result = [...items]
+  const hasHref = (href: string) => result.some((item) => stripLocalePrefix(item.href) === href)
+  const insertBefore = (targetHref: string, item: NavigationItem) => {
+    const index = result.findIndex((entry) => stripLocalePrefix(entry.href) === targetHref)
+    if (index === -1) result.push(item)
+    else result.splice(index, 0, item)
+  }
+
+  if (!hasHref('/certificates')) {
+    insertBefore('/about', { label: 'Certificates', href: '/certificates' })
+  }
+  if (!hasHref('/factory-tour')) {
+    insertBefore('/about', { label: 'Factory Tour', href: '/factory-tour' })
+  }
+  return result
 }

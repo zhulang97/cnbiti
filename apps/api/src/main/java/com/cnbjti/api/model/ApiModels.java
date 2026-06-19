@@ -22,9 +22,6 @@ public final class ApiModels {
   ) {
   }
 
-  public record Language(String code, String name, String nativeName, String flag, boolean isDefault) {
-  }
-
   public record MediaAsset(
       String id,
       String url,
@@ -91,7 +88,9 @@ public final class ApiModels {
       MediaAsset image,
       String icon,
       int productCount,
-      SeoMeta seo
+      SeoMeta seo,
+      Boolean showOnHome,
+      Integer homeSort
   ) {
   }
 
@@ -165,7 +164,10 @@ public final class ApiModels {
       String city,
       String country,
       Map<String, String> socialLinks,
-      AboutPageConfig aboutPage
+      AboutPageConfig aboutPage,
+      HomePageConfig homePage,
+      GalleryPageConfig certificatesPage,
+      GalleryPageConfig factoryTourPage
   ) {
   }
 
@@ -201,6 +203,43 @@ public final class ApiModels {
   ) {
   }
 
+  public record HomeStat(String value, String label) {
+  }
+
+  public record HomeFeature(String code, String title, String desc) {
+  }
+
+  public record HomeCapability(String title, String desc, String imageUrl, String imageAlt) {
+  }
+
+  public record HomeQualityItem(String code, String title, String desc) {
+  }
+
+  public record HomePageConfig(
+      String heroTitle,
+      String heroIntro,
+      String heroBody,
+      List<HomeStat> stats,
+      List<HomeFeature> proofPoints,
+      List<HomeFeature> buyerNotes,
+      List<HomeCapability> capabilities,
+      List<HomeQualityItem> qualityItems
+  ) {
+  }
+
+  public record ManagedGalleryItem(String title, String desc, String imageUrl, String imageAlt) {
+  }
+
+  public record GalleryPageConfig(
+      String heroLabel,
+      String heroTitle,
+      String heroIntro,
+      List<ManagedGalleryItem> items,
+      String seoTitle,
+      String seoDescription
+  ) {
+  }
+
   public record SiteRuntime(
       SiteConfig siteConfig,
       List<NavigationItem> navigation,
@@ -218,7 +257,10 @@ public final class ApiModels {
       String city,
       String country,
       Map<String, String> socialLinks,
-      AboutPageConfig aboutPage
+      AboutPageConfig aboutPage,
+      HomePageConfig homePage,
+      GalleryPageConfig certificatesPage,
+      GalleryPageConfig factoryTourPage
   ) {
   }
 
@@ -320,6 +362,8 @@ public final class ApiModels {
       String icon,
       int productCount,
       SeoMeta seo,
+      Boolean showOnHome,
+      Integer homeSort,
       String status,
       String updatedAt
   ) {
@@ -333,6 +377,8 @@ public final class ApiModels {
       String icon,
       Integer productCount,
       SeoMeta seo,
+      Boolean showOnHome,
+      Integer homeSort,
       @NotBlank String status
   ) {
   }

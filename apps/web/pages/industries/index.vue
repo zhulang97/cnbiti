@@ -18,44 +18,43 @@
 
     <section class="bg-titanium-950 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           <NuxtLink
             v-for="industry in industryProfiles"
             :key="industry.slug"
             :to="`/industries/${industry.slug}`"
-            class="group overflow-hidden rounded-lg border border-titanium-800 bg-titanium-900/40 hover:border-accent-500/50 transition-all duration-300"
+            class="group overflow-hidden rounded-2xl border border-titanium-200 bg-white shadow-sm shadow-titanium-200/70 transition-all duration-300 hover:-translate-y-1 hover:border-accent-500/35 hover:shadow-lg hover:shadow-titanium-200/80"
           >
-            <div class="relative h-56 overflow-hidden bg-titanium-900">
+            <div class="relative flex h-[200px] items-center justify-center overflow-hidden bg-steel-50 px-2 py-2 sm:h-[210px]">
               <img
                 :src="industry.image"
                 :alt="industry.imageAlt"
-                class="content-image-lg"
+                class="h-[96%] w-[96%] object-contain transition-transform duration-500 group-hover:scale-[1.03]"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-titanium-950 via-titanium-950/60 to-transparent" />
-              <span class="absolute top-4 left-4 px-3 py-1 rounded bg-titanium-950/70 border border-titanium-700 text-xs text-accent-300 font-mono uppercase tracking-[0.18em]">
-                {{ industry.kicker }}
-              </span>
             </div>
-            <div class="p-6">
+            <div class="p-5">
+              <div class="mb-3 inline-flex rounded-full border border-accent-500/25 bg-accent-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-600">
+                {{ industry.kicker }}
+              </div>
               <div class="flex items-start justify-between gap-4 mb-3">
-                <h2 class="text-white font-semibold text-lg group-hover:text-accent-400 transition-colors">{{ industry.name }}</h2>
-                <svg class="w-5 h-5 text-titanium-600 group-hover:text-accent-400 group-hover:translate-x-1 transition-all flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <h2 class="text-titanium-950 font-semibold text-lg group-hover:text-accent-600 transition-colors">{{ industry.name }}</h2>
+                <svg class="w-5 h-5 text-titanium-400 group-hover:text-accent-500 group-hover:translate-x-1 transition-all flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </div>
-              <p class="text-titanium-400 text-sm leading-relaxed mb-5">{{ industry.summary }}</p>
+              <p class="text-titanium-600 text-sm leading-relaxed mb-4 line-clamp-3">{{ industry.summary }}</p>
               <div class="flex flex-wrap gap-2 mb-5">
                 <span
                   v-for="grade in industry.grades"
                   :key="grade"
-                  class="px-2 py-1 bg-titanium-800 border border-titanium-700 rounded text-xs text-titanium-300 font-mono"
+                  class="px-2 py-1 bg-steel-50 border border-titanium-200 rounded text-xs text-titanium-700 font-mono"
                 >
                   {{ grade }}
                 </span>
               </div>
-              <div v-if="topArticle(industry)" class="pt-4 border-t border-titanium-800">
+              <div v-if="topArticle(industry)" class="pt-4 border-t border-titanium-200">
                 <div class="text-titanium-500 text-xs uppercase tracking-[0.18em] mb-2">Related guide</div>
-                <p class="text-titanium-300 text-sm line-clamp-2">{{ topArticle(industry)?.title }}</p>
+                <p class="text-titanium-700 text-sm line-clamp-2">{{ topArticle(industry)?.title }}</p>
               </div>
             </div>
           </NuxtLink>

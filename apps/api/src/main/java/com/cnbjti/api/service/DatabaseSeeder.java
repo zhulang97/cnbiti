@@ -10,6 +10,13 @@ import com.cnbjti.api.model.ApiModels.AboutPageConfig;
 import com.cnbjti.api.model.ApiModels.AboutStat;
 import com.cnbjti.api.model.ApiModels.AboutTimelineEvent;
 import com.cnbjti.api.model.ApiModels.Article;
+import com.cnbjti.api.model.ApiModels.GalleryPageConfig;
+import com.cnbjti.api.model.ApiModels.HomeCapability;
+import com.cnbjti.api.model.ApiModels.HomeFeature;
+import com.cnbjti.api.model.ApiModels.HomePageConfig;
+import com.cnbjti.api.model.ApiModels.HomeQualityItem;
+import com.cnbjti.api.model.ApiModels.HomeStat;
+import com.cnbjti.api.model.ApiModels.ManagedGalleryItem;
 import com.cnbjti.api.model.ApiModels.MediaAsset;
 import com.cnbjti.api.model.ApiModels.Product;
 import com.cnbjti.api.model.ApiModels.ProductCategory;
@@ -162,7 +169,8 @@ public class DatabaseSeeder implements ApplicationRunner {
     saveCatalog(CatalogDataService.TYPE_SITE_CONFIG, "site", "site", "Site Config", CatalogDataService.STATUS_PUBLISHED, 0,
         new SiteConfig("CNBJTI", "Baoji Titanium Materials & Custom Processing for Global Buyers", "sales@cnbjti.com",
             "+86-917-3456789", "+8613912345678", "No.88 Titanium Valley Industrial Park, High-Tech Zone",
-            "Baoji, Shaanxi", "China", Map.of("linkedin", "https://linkedin.com/company/cnbjti"), defaultAboutPage()));
+            "Baoji, Shaanxi", "China", Map.of("linkedin", "https://linkedin.com/company/cnbjti"), defaultAboutPage(),
+            defaultHomePage(), defaultCertificatesPage(), defaultFactoryTourPage()));
     for (int i = 0; i < categories.size(); i++) {
       ProductCategory item = categories.get(i);
       saveCatalog(CatalogDataService.TYPE_CATEGORY, item.id(), item.slug(), item.name(), CatalogDataService.STATUS_PUBLISHED, i, item);
@@ -245,7 +253,7 @@ public class DatabaseSeeder implements ApplicationRunner {
   }
 
   private ProductCategory category(String id, String slug, String name, String description, String icon, int count, String imageUrl) {
-    return new ProductCategory(id, slug, name, description, media("m" + id, imageUrl, name, slug + ".jpg"), icon, count, null);
+    return new ProductCategory(id, slug, name, description, media("m" + id, imageUrl, name, slug + ".jpg"), icon, count, null, true, null);
   }
 
   private TitaniumGrade grade(String id, String slug, String name, String shortName, String composition, String description,
@@ -308,6 +316,71 @@ public class DatabaseSeeder implements ApplicationRunner {
         "Send us your requirements and our team will respond within 24 hours with a quote and technical recommendations.",
         "About CNBJTI - Baoji Titanium Materials Supplier Since 2008",
         "CNBJTI is a Baoji-based titanium materials supplier with 15+ years of export experience. We supply certified titanium to 50+ countries with EN 10204 3.1 MTR.");
+  }
+
+  private HomePageConfig defaultHomePage() {
+    return new HomePageConfig(
+        "Baoji Titanium Materials Manufacturer & Custom Processing Supplier",
+        "CNBJTI is based in Baoji, China, focused on certified titanium materials and custom processing for global buyers.",
+        "We supply titanium bar, sheet, plate, tube, wire, forgings, fittings, fasteners, anodes and CNC titanium parts with MTR, export packing and drawing-based processing support.",
+        List.of(
+            new HomeStat("2008", "Founded in Baoji"),
+            new HomeStat("50+", "Countries Served"),
+            new HomeStat("100+", "Specifications"),
+            new HomeStat("24h", "RFQ Response")),
+        List.of(
+            new HomeFeature("MTR", "MTR Available", "Heat number, chemistry and mechanical values"),
+            new HomeFeature("MOQ", "Small MOQ", "Prototype, cut-to-size and export orders"),
+            new HomeFeature("OEM", "Custom Parts", "Machining, forging and drawing-based supply")),
+        List.of(
+            new HomeFeature("MTR", "Certified Documentation", "EN 10204 3.1 MTR, heat number traceability and third-party inspection available."),
+            new HomeFeature("CUT", "Cut-to-size Supply", "Bar, plate, sheet and tube can be cut or processed before export packing."),
+            new HomeFeature("OEM", "Drawing-based Parts", "CNC machining, forging and special titanium components quoted from drawings.")),
+        List.of(
+            new HomeCapability("Cut-to-size", "Saw, waterjet, laser", "", ""),
+            new HomeCapability("CNC Machining", "Turning, milling, drilling", "", ""),
+            new HomeCapability("Grinding & Polishing", "Ra 0.4 achievable", "", ""),
+            new HomeCapability("Welding & Fabrication", "TIG, electron beam", "", ""),
+            new HomeCapability("Surface Treatment", "Anodizing, passivation", "", ""),
+            new HomeCapability("Inspection & Testing", "UT, PMI, hardness", "", "")),
+        List.of(
+            new HomeQualityItem("MTR", "Mill Test Report (MTR)", "EN 10204 3.1 certified, traceable to heat number"),
+            new HomeQualityItem("CHEM", "Chemical Composition", "Full elemental analysis per ASTM/AMS requirements"),
+            new HomeQualityItem("MECH", "Mechanical Properties", "Tensile, yield, elongation, hardness test results"),
+            new HomeQualityItem("SGS", "Third-Party Inspection", "SGS, BV, TUV available on request"))
+    );
+  }
+
+  private GalleryPageConfig defaultCertificatesPage() {
+    return new GalleryPageConfig(
+        "Certificates",
+        "Certificates",
+        "Our certificate gallery can be managed from the admin panel. Upload ISO, compliance, business license or third-party inspection documents here so buyers can review them before sending an RFQ.",
+        List.of(),
+        "Certificates - Titanium Quality Documents | CNBJTI",
+        "View CNBJTI certificate images and quality documents for titanium materials, export supply and custom processing.");
+  }
+
+  private GalleryPageConfig defaultFactoryTourPage() {
+    return new GalleryPageConfig(
+        "Factory Tour",
+        "Factory Tour",
+        "A visual look at titanium processing, cutting, CNC machining, tube production, surface treatment and inspection resources used for export orders.",
+        List.of(
+            new ManagedGalleryItem("Titanium CNC Factory", "CNC machining and drawing-based titanium parts.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_535475e4c15a489dae12d2a841b4e878.jpg", "Titanium CNC factory"),
+            new ManagedGalleryItem("Titanium Sheet Factory", "Sheet, plate and foil handling for export supply.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_07a15b16c4134c07816d6b6b56d377e7.png", "Titanium sheet factory"),
+            new ManagedGalleryItem("Cutting Workshop", "Cut-to-size service for bar, plate and tube orders.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_37c2349a8a274995acd1fbab1cc85bcc.webp", "Titanium cutting workshop"),
+            new ManagedGalleryItem("Surface Treatment", "Grinding, polishing and surface treatment support.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_2577ed70f8764881bc9b430246fc4bd8.png", "Titanium surface treatment"),
+            new ManagedGalleryItem("Tube Production", "Titanium welded tube production and inspection.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_845cb1487b3a4b57a7f269a3d82e748c.jpg", "Titanium welded tube production"),
+            new ManagedGalleryItem("Pipe Equipment", "Equipment for pipe, fittings and related titanium products.",
+                "https://cnbjti.com/cnbjti-assets/2026-05-14/file_dee5b328751444b6aa1d811a5adc00fb.png", "Titanium pipe equipment")),
+        "Factory Tour - Titanium Processing Workshop | CNBJTI",
+        "View CNBJTI factory tour images for titanium CNC machining, cutting, tube production, surface treatment and inspection.");
   }
 
   private MediaAsset media(String id, String url, String alt, String filename) {

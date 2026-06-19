@@ -42,6 +42,8 @@ export default defineEventHandler(async (event) => {
     route(siteUrl, '/industries', 'monthly', '0.8'),
     route(siteUrl, '/resources', 'weekly', '0.8'),
     route(siteUrl, '/quality', 'monthly', '0.7'),
+    route(siteUrl, '/certificates', 'monthly', '0.7'),
+    route(siteUrl, '/factory-tour', 'monthly', '0.7'),
     route(siteUrl, '/about', 'monthly', '0.6'),
     route(siteUrl, '/contact', 'monthly', '0.6'),
     route(siteUrl, '/request-a-quote', 'monthly', '0.8'),

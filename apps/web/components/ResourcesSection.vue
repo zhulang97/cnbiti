@@ -1,5 +1,5 @@
 <template>
-  <section class="py-24 bg-titanium-950">
+  <section class="py-24 bg-titanium-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-12">
         <div>
@@ -17,16 +17,16 @@
           :to="'/resources/titanium-weight-calculator'"
           class="group card-hover p-6 flex flex-col"
         >
-          <div class="w-10 h-10 rounded-lg bg-titanium-800 group-hover:bg-accent-500/20 border border-titanium-700 group-hover:border-accent-500/40 flex items-center justify-center mb-4 transition-all duration-300">
-            <svg class="w-5 h-5 text-accent-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+          <div class="w-10 h-10 rounded-lg bg-titanium-100 group-hover:bg-accent-500/15 border border-titanium-200 group-hover:border-accent-500/40 flex items-center justify-center mb-4 transition-all duration-300">
+            <svg class="w-5 h-5 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 11h8M8 15h5M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
             </svg>
           </div>
           <div class="flex items-center gap-2 mb-2">
             <span class="px-2 py-0.5 bg-accent-500/10 border border-accent-500/30 rounded text-xs text-accent-400 font-medium">Tool</span>
-            <span class="px-2 py-0.5 bg-titanium-800 rounded text-xs text-titanium-400 font-medium">Calculator</span>
+            <span class="px-2 py-0.5 bg-titanium-100 rounded text-xs text-titanium-600 font-medium">Calculator</span>
           </div>
-          <h3 class="text-white font-semibold text-sm mb-2 group-hover:text-accent-300 transition-colors">Titanium Weight Calculator</h3>
+          <h3 class="text-titanium-950 font-semibold text-sm mb-2 group-hover:text-accent-600 transition-colors">Titanium Weight Calculator</h3>
           <p class="text-titanium-500 text-xs leading-relaxed flex-1">Calculate titanium bar, plate, tube and wire weights by dimensions and shape.</p>
           <div class="mt-4 flex items-center gap-1 text-accent-400 text-xs font-medium">
             Open Tool
@@ -48,7 +48,7 @@
             </span>
           </div>
           <div class="p-6 flex flex-col flex-1">
-            <h3 class="text-white font-semibold text-sm mb-2 group-hover:text-accent-300 transition-colors leading-snug">{{ article.title }}</h3>
+            <h3 class="text-titanium-950 font-semibold text-sm mb-2 group-hover:text-accent-600 transition-colors leading-snug">{{ article.title }}</h3>
             <p class="text-titanium-500 text-xs leading-relaxed flex-1 line-clamp-3">{{ article.excerpt }}</p>
             <div class="mt-4 flex items-center gap-3 text-xs text-titanium-500">
               <span>{{ article.readingTime || 5 }} min read</span>

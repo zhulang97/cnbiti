@@ -28,7 +28,7 @@ const { siteConfig } = await useSiteRuntime()
 const sections = computed(() => [
   { title: 'What Are Cookies?', content: 'Cookies are small text files stored on your device when you visit a website. They help websites remember your preferences and improve your browsing experience.' },
   { title: 'How We Use Cookies', content: 'We use essential cookies to ensure the website functions correctly, and analytics cookies to understand how visitors use our site. We do not use advertising or tracking cookies.' },
-  { title: 'Essential Cookies', content: 'These cookies are necessary for the website to function and cannot be disabled. They include session cookies for language preferences and form submissions.' },
+  { title: 'Essential Cookies', content: 'These cookies are necessary for the website to function and cannot be disabled. They include session cookies for form submissions, security, and basic site operation.' },
   { title: 'Analytics Cookies', content: 'We may use analytics tools to understand website traffic and usage patterns. This data is aggregated and anonymous. You can opt out through your browser settings.' },
   { title: 'Managing Cookies', content: 'You can control and delete cookies through your browser settings. Note that disabling cookies may affect the functionality of some parts of our website.' },
   { title: 'Contact', content: `If you have questions about our use of cookies, please contact us at ${siteConfig.value.email}.` },

@@ -1,5 +1,5 @@
 <template>
-  <section class="py-24 bg-gradient-to-b from-titanium-950 via-steel-950/20 to-titanium-950">
+  <section class="py-24 bg-gradient-to-b from-white via-steel-50 to-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-3xl mx-auto">
         <div class="text-center mb-10">
@@ -11,34 +11,34 @@
           <div v-if="!submitted">
             <div class="grid md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Product Type *</label>
-                <select v-model="form.productType" class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent-500 transition-colors">
+                <label class="form-label">Product Type *</label>
+                <select v-model="form.productType" class="form-field">
                   <option value="">Select product type</option>
                   <option v-for="p in productTypes" :key="p" :value="p">{{ p }}</option>
                 </select>
               </div>
               <div>
-                <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Grade</label>
-                <select v-model="form.grade" class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent-500 transition-colors">
+                <label class="form-label">Grade</label>
+                <select v-model="form.grade" class="form-field">
                   <option value="">Select grade</option>
                   <option v-for="g in gradeOptions" :key="g" :value="g">{{ g }}</option>
                 </select>
               </div>
               <div>
-                <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Quantity *</label>
-                <input v-model="form.quantity" type="text" placeholder="e.g. 500 kg or 100 pcs" class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm placeholder-titanium-600 focus:outline-none focus:border-accent-500 transition-colors" />
+                <label class="form-label">Quantity *</label>
+                <input v-model="form.quantity" type="text" placeholder="e.g. 500 kg or 100 pcs" class="form-field" />
               </div>
               <div>
-                <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Dimensions / Spec</label>
-                <input v-model="form.dimensions" type="text" placeholder="e.g. Dia 20mm x 1000mm" class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm placeholder-titanium-600 focus:outline-none focus:border-accent-500 transition-colors" />
+                <label class="form-label">Dimensions / Spec</label>
+                <input v-model="form.dimensions" type="text" placeholder="e.g. Dia 20mm x 1000mm" class="form-field" />
               </div>
             </div>
             <div class="mb-4">
-              <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Additional Requirements</label>
-              <textarea v-model="form.message" rows="3" placeholder="Surface finish, tolerance, certificate requirements, delivery time..." class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm placeholder-titanium-600 focus:outline-none focus:border-accent-500 transition-colors resize-none" />
+              <label class="form-label">Additional Requirements</label>
+              <textarea v-model="form.message" rows="3" placeholder="Surface finish, tolerance, certificate requirements, delivery time..." class="form-field resize-none" />
             </div>
             <div class="mb-4">
-              <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Drawings / Attachments</label>
+              <label class="form-label">Drawings / Attachments</label>
               <div class="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
@@ -58,7 +58,7 @@
               <p class="mt-2 text-xs text-titanium-500">PDF, DWG, DXF, STEP, STP, XLS, XLSX, JPG, PNG, ZIP. Max 30MB per file.</p>
               <div v-if="uploadingAttachments" class="mt-2 text-xs text-accent-400">Uploading files...</div>
               <div v-if="form.attachments.length" class="mt-3 flex flex-wrap gap-2">
-                <span v-for="asset in form.attachments" :key="asset.id" class="inline-flex items-center gap-2 rounded-full bg-titanium-800 px-3 py-1 text-xs text-titanium-300">
+                <span v-for="asset in form.attachments" :key="asset.id" class="inline-flex items-center gap-2 rounded-full bg-titanium-100 border border-titanium-200 px-3 py-1 text-xs text-titanium-600">
                   {{ asset.filename }}
                   <button type="button" class="text-titanium-500 hover:text-red-400" aria-label="Remove file" @click="removeAttachment(asset.id)">x</button>
                 </span>
@@ -66,16 +66,16 @@
             </div>
             <div class="grid md:grid-cols-3 gap-4 mb-6">
               <div>
-                <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Your Name *</label>
-                <input v-model="form.name" type="text" placeholder="John Smith" class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm placeholder-titanium-600 focus:outline-none focus:border-accent-500 transition-colors" />
+                <label class="form-label">Your Name *</label>
+                <input v-model="form.name" type="text" placeholder="John Smith" class="form-field" />
               </div>
               <div>
-                <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Company</label>
-                <input v-model="form.company" type="text" placeholder="Company name" class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm placeholder-titanium-600 focus:outline-none focus:border-accent-500 transition-colors" />
+                <label class="form-label">Company</label>
+                <input v-model="form.company" type="text" placeholder="Company name" class="form-field" />
               </div>
               <div>
-                <label class="block text-titanium-400 text-xs font-medium mb-1.5 uppercase tracking-wide">Email *</label>
-                <input v-model="form.email" type="email" placeholder="you@company.com" class="w-full bg-titanium-800 border border-titanium-700 rounded-lg px-3 py-2.5 text-white text-sm placeholder-titanium-600 focus:outline-none focus:border-accent-500 transition-colors" />
+                <label class="form-label">Email *</label>
+                <input v-model="form.email" type="email" placeholder="you@company.com" class="form-field" />
               </div>
             </div>
             <div v-if="error" class="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">{{ error }}</div>
@@ -88,7 +88,7 @@
             <div class="w-16 h-16 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg class="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
-            <h3 class="text-white font-bold text-xl mb-2">RFQ Submitted Successfully</h3>
+            <h3 class="text-titanium-950 font-bold text-xl mb-2">RFQ Submitted Successfully</h3>
             <p class="text-titanium-400 mb-2">Your RFQ <span class="text-accent-400 font-mono font-semibold">{{ rfqNo }}</span> has been received.</p>
             <p class="text-titanium-500 text-sm">We will review your request and respond within 24 hours.</p>
             <button @click="reset" class="mt-6 btn-secondary text-sm">Submit Another RFQ</button>

@@ -13,8 +13,8 @@
 
       <section class="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 items-start mb-16">
         <div class="space-y-4">
-          <div class="aspect-[4/3] rounded-2xl overflow-hidden border border-titanium-700 bg-titanium-900 shadow-2xl">
-            <img :src="activeImage?.url" :alt="activeImage?.alt || product.name" class="content-image-lg" />
+          <div class="aspect-[4/3] rounded-2xl overflow-hidden border border-titanium-700 bg-titanium-100 shadow-2xl">
+            <img :src="activeImage?.url" :alt="activeImage?.alt || product.name" class="h-full w-full object-contain object-center" />
           </div>
           <div v-if="images.length > 1" class="grid grid-cols-4 sm:grid-cols-6 gap-3">
             <button
@@ -25,7 +25,7 @@
               :class="index === activeImageIndex ? 'border-accent-400' : 'border-titanium-700 hover:border-titanium-500'"
               @click="activeImageIndex = index"
             >
-              <img :src="image.url" :alt="image.alt || product.name" class="content-image-sm" />
+              <img :src="image.url" :alt="image.alt || product.name" class="h-full w-full object-contain object-center" />
             </button>
           </div>
         </div>
@@ -107,8 +107,8 @@
             :to="`/products/${category.slug}/${item.slug}`"
             class="group card-hover p-5"
           >
-            <div class="aspect-video rounded-lg overflow-hidden bg-titanium-900 mb-4">
-              <img :src="item.images?.[0]?.url || category.image?.url" :alt="item.name" class="content-image" />
+            <div class="aspect-video rounded-lg overflow-hidden bg-titanium-100 mb-4">
+              <img :src="item.images?.[0]?.url || category.image?.url" :alt="item.name" class="h-full w-full object-contain object-center" />
             </div>
             <h3 class="text-white font-semibold text-sm group-hover:text-accent-300 transition-colors">{{ item.name }}</h3>
             <p class="text-titanium-500 text-xs mt-2">{{ item.shortDescription }}</p>

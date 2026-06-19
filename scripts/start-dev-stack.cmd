@@ -30,6 +30,7 @@ if not exist "%POWERSHELL%" (
 echo Starting CNBJTI dev stack from %ROOT%
 echo Logs:
 echo   MySQL: %RUN%\mysqld.err
+echo   MinIO: %ROOT%\.minio-run\minio.out.log / %ROOT%\.minio-run\minio.err.log
 echo   API:   %TMP%\api-8080.out.log / %TMP%\api-8080.err.log
 echo   Web:   %TMP%\web-3002.out.log / %TMP%\web-3002.err.log
 echo   Admin: %TMP%\admin-3003.out.log / %TMP%\admin-3003.err.log
@@ -37,6 +38,10 @@ echo.
 
 echo Starting MySQL...
 "%POWERSHELL%" -NoProfile -ExecutionPolicy Bypass -File "%ROOT%\scripts\start-local-mysql.ps1" -MysqlHome "%MYSQL_HOME%"
+if errorlevel 1 exit /b 1
+
+echo Starting MinIO...
+"%POWERSHELL%" -NoProfile -ExecutionPolicy Bypass -File "%ROOT%\scripts\start-local-infra.ps1" -SkipMySql
 if errorlevel 1 exit /b 1
 
 netstat -ano | findstr /R /C:":8080 .*LISTENING" >nul
@@ -67,12 +72,15 @@ if errorlevel 1 (
 call :wait_port 8080 API
 call :wait_http 3002 / Web
 call :wait_port 3003 Admin
+call :wait_http 9002 /minio/health/live MinIO
 
 echo.
 echo Started stack:
 echo   API:   http://127.0.0.1:8080
 echo   Web:   http://127.0.0.1:3002/
 echo   Admin: http://127.0.0.1:3003
+echo   MinIO: http://127.0.0.1:9002
+echo   MinIO Console: http://127.0.0.1:9003
 echo.
 echo Service windows are running separately. Close those windows to stop services.
 exit /b 0

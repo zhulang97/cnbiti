@@ -3,13 +3,16 @@ param(
   [int]$MinioPort = $(if ($env:MINIO_PORT) { [int]$env:MINIO_PORT } else { 9002 }),
   [int]$MinioConsolePort = $(if ($env:MINIO_CONSOLE_PORT) { [int]$env:MINIO_CONSOLE_PORT } else { 9003 }),
   [string]$MinioAccessKey = $(if ($env:MINIO_ACCESS_KEY) { $env:MINIO_ACCESS_KEY } else { "minioadmin" }),
-  [string]$MinioSecretKey = $(if ($env:MINIO_SECRET_KEY) { $env:MINIO_SECRET_KEY } else { "minioadmin" })
+  [string]$MinioSecretKey = $(if ($env:MINIO_SECRET_KEY) { $env:MINIO_SECRET_KEY } else { "minioadmin" }),
+  [switch]$SkipMySql
 )
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 
-& (Join-Path $PSScriptRoot "start-local-mysql.ps1")
+if (-not $SkipMySql) {
+  & (Join-Path $PSScriptRoot "start-local-mysql.ps1")
+}
 
 function Test-TcpPort {
   param([int]$Port)

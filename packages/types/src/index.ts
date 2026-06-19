@@ -8,14 +8,6 @@ export interface SeoMeta {
   noIndex?: boolean
 }
 
-export interface Language {
-  code: string
-  name: string
-  nativeName: string
-  flag: string
-  isDefault: boolean
-}
-
 export interface MediaAsset {
   id: string
   url: string
@@ -37,6 +29,8 @@ export interface ProductCategory {
   icon?: string
   productCount: number
   seo?: SeoMeta
+  showOnHome?: boolean
+  homeSort?: number
 }
 
 export interface TitaniumGrade {
@@ -210,6 +204,57 @@ export interface AboutPageConfig {
   seoDescription: string
 }
 
+export interface HomeStat {
+  value: string
+  label: string
+}
+
+export interface HomeFeature {
+  code?: string
+  title: string
+  desc: string
+}
+
+export interface HomeCapability {
+  title: string
+  desc: string
+  imageUrl?: string
+  imageAlt?: string
+}
+
+export interface HomeQualityItem {
+  code?: string
+  title: string
+  desc: string
+}
+
+export interface HomePageConfig {
+  heroTitle: string
+  heroIntro: string
+  heroBody: string
+  stats: HomeStat[]
+  proofPoints: HomeFeature[]
+  buyerNotes: HomeFeature[]
+  capabilities: HomeCapability[]
+  qualityItems: HomeQualityItem[]
+}
+
+export interface ManagedGalleryItem {
+  title: string
+  desc?: string
+  imageUrl: string
+  imageAlt?: string
+}
+
+export interface GalleryPageConfig {
+  heroLabel: string
+  heroTitle: string
+  heroIntro: string
+  items: ManagedGalleryItem[]
+  seoTitle: string
+  seoDescription: string
+}
+
 export interface SiteConfig {
   siteName: string
   tagline: string
@@ -231,6 +276,9 @@ export interface SiteConfig {
     youtube?: string
   }
   aboutPage?: AboutPageConfig | null
+  homePage?: HomePageConfig | null
+  certificatesPage?: GalleryPageConfig | null
+  factoryTourPage?: GalleryPageConfig | null
 }
 
 export interface NavigationItem {

@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-admin-100 font-semibold text-base">基础资料</h2>
-        <p class="text-admin-500 text-xs mt-0.5">维护产品分类、钛牌号和执行标准</p>
+        <p class="text-admin-500 text-xs mt-0.5">维护产品分类、钛牌号和执行标准，供产品管理和官网页面使用。</p>
       </div>
       <el-button type="primary" size="small" @click="openCreate">
         <el-icon class="mr-1"><Plus /></el-icon>
@@ -27,15 +27,23 @@
               </template>
             </el-table-column>
             <el-table-column prop="icon" label="图标" width="100" />
-            <el-table-column prop="productCount" label="数量" width="80" />
-            <el-table-column prop="status" label="状态" width="100">
+            <el-table-column prop="productCount" label="数量" width="90" />
+            <el-table-column label="首页展示" width="95">
+              <template #default="{ row }">
+                <span class="text-xs px-2 py-0.5 rounded-full font-medium" :class="row.showOnHome !== false ? 'bg-accent-500/15 text-accent-400' : 'bg-admin-700 text-admin-400'">
+                  {{ row.showOnHome !== false ? '展示' : '隐藏' }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="homeSort" label="首页排序" width="105" />
+            <el-table-column prop="status" label="状态" width="105">
               <template #default="{ row }">
                 <span class="text-xs px-2 py-0.5 rounded-full font-medium" :class="row.status === 'published' ? 'bg-green-500/15 text-green-400' : 'bg-admin-700 text-admin-400'">
                   {{ row.status === 'published' ? '已发布' : '草稿' }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="updatedAt" label="更新" width="110" />
+            <el-table-column prop="updatedAt" label="更新日期" width="110" />
             <el-table-column label="操作" width="110" align="center">
               <template #default="{ row }">
                 <el-button link size="small" title="编辑" @click="openCategory(row)">
@@ -64,7 +72,7 @@
             </el-table-column>
             <el-table-column prop="composition" label="成分" min-width="180" />
             <el-table-column prop="density" label="密度" width="90" />
-            <el-table-column prop="status" label="状态" width="100">
+            <el-table-column prop="status" label="状态" width="105">
               <template #default="{ row }">
                 <span class="text-xs px-2 py-0.5 rounded-full font-medium" :class="row.status === 'published' ? 'bg-green-500/15 text-green-400' : 'bg-admin-700 text-admin-400'">
                   {{ row.status === 'published' ? '已发布' : '草稿' }}
@@ -102,7 +110,7 @@
                 <span class="text-admin-400 text-xs">{{ row.productTypes.join(', ') }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="status" label="状态" width="100">
+            <el-table-column prop="status" label="状态" width="105">
               <template #default="{ row }">
                 <span class="text-xs px-2 py-0.5 rounded-full font-medium" :class="row.status === 'published' ? 'bg-green-500/15 text-green-400' : 'bg-admin-700 text-admin-400'">
                   {{ row.status === 'published' ? '已发布' : '草稿' }}
@@ -126,10 +134,10 @@
 
     <el-dialog v-model="categoryDialogVisible" :title="editingCategoryId ? '编辑分类' : '新增分类'" width="760px" destroy-on-close>
       <el-form label-position="top" class="grid grid-cols-2 gap-x-4">
-        <el-form-item label="名称" required>
+        <el-form-item label="分类名称" required>
           <el-input v-model="categoryForm.name" @blur="fillCategorySlug" />
         </el-form-item>
-        <el-form-item label="Slug" required>
+        <el-form-item label="路径标识" required>
           <el-input v-model="categoryForm.slug" />
         </el-form-item>
         <el-form-item label="图标">
@@ -138,10 +146,16 @@
         <el-form-item label="产品数量">
           <el-input-number v-model="categoryForm.productCount" :min="0" class="w-full" />
         </el-form-item>
+        <el-form-item label="首页展示">
+          <el-switch v-model="categoryForm.showOnHome" active-text="展示" inactive-text="隐藏" />
+        </el-form-item>
+        <el-form-item label="首页排序">
+          <el-input-number v-model="categoryForm.homeSort" :min="0" class="w-full" />
+        </el-form-item>
         <el-form-item label="状态" required>
           <el-segmented v-model="categoryForm.status" :options="statusOptions" />
         </el-form-item>
-        <el-form-item label="图片 URL" class="col-span-2">
+        <el-form-item label="图片链接" class="col-span-2">
           <div class="flex gap-2 w-full">
             <el-input v-model="categoryForm.imageUrl" />
             <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadCategoryImage">
@@ -158,7 +172,7 @@
         <el-form-item label="SEO 标题">
           <el-input v-model="categoryForm.seo.title" />
         </el-form-item>
-        <el-form-item label="Canonical URL">
+        <el-form-item label="规范链接">
           <el-input v-model="categoryForm.seo.canonical" />
         </el-form-item>
         <el-form-item label="SEO 描述" class="col-span-2">
@@ -173,13 +187,13 @@
 
     <el-dialog v-model="gradeDialogVisible" :title="editingGradeId ? '编辑牌号' : '新增牌号'" width="760px" destroy-on-close>
       <el-form label-position="top" class="grid grid-cols-2 gap-x-4">
-        <el-form-item label="名称" required>
+        <el-form-item label="牌号名称" required>
           <el-input v-model="gradeForm.name" @blur="fillGradeSlug" />
         </el-form-item>
         <el-form-item label="短名称" required>
           <el-input v-model="gradeForm.shortName" placeholder="Gr.2" />
         </el-form-item>
-        <el-form-item label="Slug" required>
+        <el-form-item label="路径标识" required>
           <el-input v-model="gradeForm.slug" />
         </el-form-item>
         <el-form-item label="状态" required>
@@ -197,7 +211,7 @@
         <el-form-item label="延伸率">
           <el-input v-model="gradeForm.elongation" />
         </el-form-item>
-        <el-form-item label="密度 g/cm³">
+        <el-form-item label="密度 g/cm3">
           <el-input-number v-model="gradeForm.density" :min="0" :step="0.01" class="w-full" />
         </el-form-item>
         <el-form-item label="应用场景" class="col-span-2">
@@ -218,10 +232,10 @@
         <el-form-item label="标准号" required>
           <el-input v-model="standardForm.code" placeholder="ASTM B348" @blur="fillStandardSlug" />
         </el-form-item>
-        <el-form-item label="Slug" required>
+        <el-form-item label="路径标识" required>
           <el-input v-model="standardForm.slug" />
         </el-form-item>
-        <el-form-item label="名称" required class="col-span-2">
+        <el-form-item label="标准名称" required class="col-span-2">
           <el-input v-model="standardForm.name" />
         </el-form-item>
         <el-form-item label="状态" required>
@@ -301,6 +315,8 @@ function openCategory(item?: AdminCategoryDetail) {
     icon: item.icon,
     productCount: item.productCount,
     seo: item.seo || emptySeo(),
+    showOnHome: item.showOnHome !== false,
+    homeSort: item.homeSort ?? 0,
     status: item.status,
   } : emptyCategoryForm())
   categoryDialogVisible.value = true
@@ -341,7 +357,7 @@ function openStandard(item?: AdminStandardDetail) {
 
 async function saveCategory() {
   if (!categoryForm.name.trim() || !categoryForm.slug.trim()) {
-    ElMessage.warning('请填写分类名称和 Slug')
+    ElMessage.warning('请填写分类名称和路径标识。')
     return
   }
   saving.value = true
@@ -350,7 +366,7 @@ async function saveCategory() {
     await mock.loadReferenceData(true)
     await mock.loadContentOptions(true)
     categoryDialogVisible.value = false
-    ElMessage.success('分类已保存')
+    ElMessage.success('分类已保存。')
   } finally {
     saving.value = false
   }
@@ -358,7 +374,7 @@ async function saveCategory() {
 
 async function saveGrade() {
   if (!gradeForm.name.trim() || !gradeForm.shortName.trim() || !gradeForm.slug.trim()) {
-    ElMessage.warning('请填写牌号名称、短名称和 Slug')
+    ElMessage.warning('请填写牌号名称、短名称和路径标识。')
     return
   }
   saving.value = true
@@ -367,7 +383,7 @@ async function saveGrade() {
     await mock.loadReferenceData(true)
     await mock.loadContentOptions(true)
     gradeDialogVisible.value = false
-    ElMessage.success('牌号已保存')
+    ElMessage.success('牌号已保存。')
   } finally {
     saving.value = false
   }
@@ -375,7 +391,7 @@ async function saveGrade() {
 
 async function saveStandard() {
   if (!standardForm.code.trim() || !standardForm.name.trim() || !standardForm.slug.trim()) {
-    ElMessage.warning('请填写标准号、名称和 Slug')
+    ElMessage.warning('请填写标准号、标准名称和路径标识。')
     return
   }
   saving.value = true
@@ -384,7 +400,7 @@ async function saveStandard() {
     await mock.loadReferenceData(true)
     await mock.loadContentOptions(true)
     standardDialogVisible.value = false
-    ElMessage.success('标准已保存')
+    ElMessage.success('标准已保存。')
   } finally {
     saving.value = false
   }
@@ -392,9 +408,9 @@ async function saveStandard() {
 
 async function deleteCategory(id: string) {
   try {
-    await ElMessageBox.confirm('删除后前台分类与产品选项中将不再显示，确定继续？', '删除分类', { type: 'warning' })
+    await ElMessageBox.confirm('删除后，该分类将不再用于官网产品选择。确定继续吗？', '删除分类', { type: 'warning' })
     await mock.deleteCategory(id)
-    ElMessage.success('分类已删除')
+    ElMessage.success('分类已删除。')
   } catch (error) {
     if (error instanceof Error) ElMessage.error(error.message)
   }
@@ -402,9 +418,9 @@ async function deleteCategory(id: string) {
 
 async function deleteGrade(id: string) {
   try {
-    await ElMessageBox.confirm('删除后产品编辑中将不能选择该牌号，确定继续？', '删除牌号', { type: 'warning' })
+    await ElMessageBox.confirm('删除后，编辑产品时将无法选择该牌号。确定继续吗？', '删除牌号', { type: 'warning' })
     await mock.deleteGrade(id)
-    ElMessage.success('牌号已删除')
+    ElMessage.success('牌号已删除。')
   } catch (error) {
     if (error instanceof Error) ElMessage.error(error.message)
   }
@@ -412,9 +428,9 @@ async function deleteGrade(id: string) {
 
 async function deleteStandard(id: string) {
   try {
-    await ElMessageBox.confirm('删除后产品编辑中将不能选择该标准，确定继续？', '删除标准', { type: 'warning' })
+    await ElMessageBox.confirm('删除后，编辑产品时将无法选择该标准。确定继续吗？', '删除标准', { type: 'warning' })
     await mock.deleteStandard(id)
-    ElMessage.success('标准已删除')
+    ElMessage.success('标准已删除。')
   } catch (error) {
     if (error instanceof Error) ElMessage.error(error.message)
   }
@@ -430,7 +446,7 @@ async function handleCategoryUpload(file: File) {
   try {
     const asset = await mock.uploadFile(file)
     categoryForm.imageUrl = asset.url
-    ElMessage.success('图片已上传')
+    ElMessage.success('图片已上传。')
   } finally {
     uploadingImage.value = false
   }
@@ -457,6 +473,8 @@ function emptyCategoryForm(): CategorySavePayload {
     icon: '',
     productCount: 0,
     seo: emptySeo(),
+    showOnHome: true,
+    homeSort: 0,
     status: 'draft',
   }
 }

@@ -19,8 +19,8 @@
             <a :href="mailtoHref" class="btn-secondary">Send Drawing</a>
           </div>
         </div>
-        <div class="relative rounded-2xl overflow-hidden border border-titanium-700/50 bg-titanium-900 shadow-2xl">
-          <img :src="category.image?.url" :alt="category.name" class="content-image-lg h-72" />
+        <div class="relative h-72 rounded-2xl overflow-hidden border border-titanium-700/50 bg-titanium-100 shadow-2xl">
+          <img :src="category.image?.url" :alt="category.name" class="h-full w-full object-contain object-center" />
           <div class="absolute inset-0 bg-gradient-to-t from-titanium-950/60 to-transparent" />
         </div>
       </div>
@@ -54,8 +54,8 @@
             :to="`/products/${category.slug}/${product.slug}`"
             class="group card-hover p-5"
           >
-            <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-titanium-900">
-              <img :src="productImage(product)" :alt="product.name" class="content-image" />
+            <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-titanium-100">
+              <img :src="productImage(product)" :alt="product.name" class="h-full w-full object-contain object-center" />
             </div>
             <h3 class="text-white font-semibold text-sm mb-2 group-hover:text-accent-300 transition-colors">{{ product.name }}</h3>
             <p class="text-titanium-500 text-xs mb-3">{{ product.shortDescription }}</p>

@@ -48,7 +48,7 @@ export default defineNuxtConfig({
         lang: 'en',
       },
       meta: [
-        { name: 'theme-color', content: '#020617' },
+        { name: 'theme-color', content: '#f8fafc' },
         { name: 'robots', content: 'index,follow' },
         { property: 'og:site_name', content: 'CNBJTI' },
         { property: 'og:type', content: 'website' },

@@ -62,6 +62,64 @@ export const siteConfig: SiteConfig = {
     seoTitle: 'About CNBJTI - Baoji Titanium Materials Supplier Since 2008',
     seoDescription: 'CNBJTI is a Baoji-based titanium materials supplier with 15+ years of export experience. We supply certified titanium to 50+ countries with EN 10204 3.1 MTR.',
   },
+  homePage: {
+    heroTitle: 'Baoji Titanium Materials Manufacturer & Custom Processing Supplier',
+    heroIntro: 'CNBJTI is based in Baoji, China, focused on certified titanium materials and custom processing for global buyers.',
+    heroBody: 'We supply titanium bar, sheet, plate, tube, wire, forgings, fittings, fasteners, anodes and CNC titanium parts with MTR, export packing and drawing-based processing support.',
+    stats: [
+      { value: '2008', label: 'Founded in Baoji' },
+      { value: '50+', label: 'Countries Served' },
+      { value: '100+', label: 'Specifications' },
+      { value: '24h', label: 'RFQ Response' },
+    ],
+    proofPoints: [
+      { code: 'MTR', title: 'MTR Available', desc: 'Heat number, chemistry and mechanical values' },
+      { code: 'MOQ', title: 'Small MOQ', desc: 'Prototype, cut-to-size and export orders' },
+      { code: 'OEM', title: 'Custom Parts', desc: 'Machining, forging and drawing-based supply' },
+    ],
+    buyerNotes: [
+      { code: 'MTR', title: 'Certified Documentation', desc: 'EN 10204 3.1 MTR, heat number traceability and third-party inspection available.' },
+      { code: 'CUT', title: 'Cut-to-size Supply', desc: 'Bar, plate, sheet and tube can be cut or processed before export packing.' },
+      { code: 'OEM', title: 'Drawing-based Parts', desc: 'CNC machining, forging and special titanium components quoted from drawings.' },
+    ],
+    capabilities: [
+      { title: 'Cut-to-size', desc: 'Saw, waterjet, laser' },
+      { title: 'CNC Machining', desc: 'Turning, milling, drilling' },
+      { title: 'Grinding & Polishing', desc: 'Ra 0.4 achievable' },
+      { title: 'Welding & Fabrication', desc: 'TIG, electron beam' },
+      { title: 'Surface Treatment', desc: 'Anodizing, passivation' },
+      { title: 'Inspection & Testing', desc: 'UT, PMI, hardness' },
+    ],
+    qualityItems: [
+      { code: 'MTR', title: 'Mill Test Report (MTR)', desc: 'EN 10204 3.1 certified, traceable to heat number' },
+      { code: 'CHEM', title: 'Chemical Composition', desc: 'Full elemental analysis per ASTM/AMS requirements' },
+      { code: 'MECH', title: 'Mechanical Properties', desc: 'Tensile, yield, elongation, hardness test results' },
+      { code: 'SGS', title: 'Third-Party Inspection', desc: 'SGS, BV, TUV available on request' },
+    ],
+  },
+  certificatesPage: {
+    heroLabel: 'Certificates',
+    heroTitle: 'Certificates',
+    heroIntro: 'Our certificate gallery can be managed from the admin panel. Upload ISO, compliance, business license or third-party inspection documents here so buyers can review them before sending an RFQ.',
+    items: [],
+    seoTitle: 'Certificates - Titanium Quality Documents | CNBJTI',
+    seoDescription: 'View CNBJTI certificate images and quality documents for titanium materials, export supply and custom processing.',
+  },
+  factoryTourPage: {
+    heroLabel: 'Factory Tour',
+    heroTitle: 'Factory Tour',
+    heroIntro: 'A visual look at titanium processing, cutting, CNC machining, tube production, surface treatment and inspection resources used for export orders.',
+    items: [
+      { title: 'Titanium CNC Factory', desc: 'CNC machining and drawing-based titanium parts.', imageUrl: 'https://cnbjti.com/cnbjti-assets/2026-05-14/file_535475e4c15a489dae12d2a841b4e878.jpg', imageAlt: 'Titanium CNC factory' },
+      { title: 'Titanium Sheet Factory', desc: 'Sheet, plate and foil handling for export supply.', imageUrl: 'https://cnbjti.com/cnbjti-assets/2026-05-14/file_07a15b16c4134c07816d6b6b56d377e7.png', imageAlt: 'Titanium sheet factory' },
+      { title: 'Cutting Workshop', desc: 'Cut-to-size service for bar, plate and tube orders.', imageUrl: 'https://cnbjti.com/cnbjti-assets/2026-05-14/file_37c2349a8a274995acd1fbab1cc85bcc.webp', imageAlt: 'Titanium cutting workshop' },
+      { title: 'Surface Treatment', desc: 'Grinding, polishing and surface treatment support.', imageUrl: 'https://cnbjti.com/cnbjti-assets/2026-05-14/file_2577ed70f8764881bc9b430246fc4bd8.png', imageAlt: 'Titanium surface treatment' },
+      { title: 'Tube Production', desc: 'Titanium welded tube production and inspection.', imageUrl: 'https://cnbjti.com/cnbjti-assets/2026-05-14/file_845cb1487b3a4b57a7f269a3d82e748c.jpg', imageAlt: 'Titanium welded tube production' },
+      { title: 'Pipe Equipment', desc: 'Equipment for pipe, fittings and related titanium products.', imageUrl: 'https://cnbjti.com/cnbjti-assets/2026-05-14/file_dee5b328751444b6aa1d811a5adc00fb.png', imageAlt: 'Titanium pipe equipment' },
+    ],
+    seoTitle: 'Factory Tour - Titanium Processing Workshop | CNBJTI',
+    seoDescription: 'View CNBJTI factory tour images for titanium CNC machining, cutting, tube production, surface treatment and inspection.',
+  },
 }
 
 export const navigation: NavigationItem[] = [
@@ -86,6 +144,8 @@ export const navigation: NavigationItem[] = [
   { label: 'Industries', href: '/industries' },
   { label: 'Resources', href: '/resources' },
   { label: 'Quality', href: '/quality' },
+  { label: 'Certificates', href: '/certificates' },
+  { label: 'Factory Tour', href: '/factory-tour' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ]
@@ -98,6 +158,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Round, square, hexagonal and flat bars in all titanium grades. Cut-to-size available.',
     icon: 'bar',
     productCount: 24,
+    showOnHome: true,
+    homeSort: 1,
     image: {
       id: 'm1',
       url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
@@ -114,6 +176,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Titanium sheet, plate and foil in standard and custom sizes. Mill finish and polished.',
     icon: 'sheet',
     productCount: 18,
+    showOnHome: true,
+    homeSort: 2,
     image: {
       id: 'm2',
       url: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80',
@@ -130,6 +194,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Seamless and welded titanium tubes and pipes for industrial and medical applications.',
     icon: 'tube',
     productCount: 16,
+    showOnHome: true,
+    homeSort: 3,
     image: {
       id: 'm3',
       url: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&q=80',
@@ -146,6 +212,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Titanium wire for welding, medical devices, aerospace and industrial applications.',
     icon: 'wire',
     productCount: 10,
+    showOnHome: true,
+    homeSort: 4,
     image: {
       id: 'm4',
       url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80',
@@ -162,6 +230,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Custom titanium forgings including discs, rings, blocks and near-net-shape parts.',
     icon: 'forging',
     productCount: 12,
+    showOnHome: true,
+    homeSort: 5,
     image: {
       id: 'm5',
       url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80',
@@ -178,6 +248,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Titanium bolts, nuts, screws, washers and studs. Standard and custom specifications.',
     icon: 'fastener',
     productCount: 20,
+    showOnHome: true,
+    homeSort: 6,
     image: {
       id: 'm6',
       url: 'https://images.unsplash.com/photo-1609205807107-2d5e9e5e5e5e?w=600&q=80',
@@ -194,6 +266,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Titanium pipe fittings, flanges, elbows, tees and reducers for corrosive environments.',
     icon: 'fitting',
     productCount: 14,
+    showOnHome: true,
+    homeSort: 7,
     image: {
       id: 'm7',
       url: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80',
@@ -210,6 +284,8 @@ export const productCategories: ProductCategory[] = [
     description: 'Custom CNC machined titanium components from drawings. Tight tolerances, fast turnaround.',
     icon: 'cnc',
     productCount: 8,
+    showOnHome: true,
+    homeSort: 8,
     image: {
       id: 'm8',
       url: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&q=80',

@@ -21,25 +21,30 @@
     <!-- Capabilities grid -->
     <section class="bg-titanium-950 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div v-for="cap in capabilities" :key="cap.title" class="card overflow-hidden">
-            <div class="h-44 bg-titanium-900 overflow-hidden">
-              <img :src="capImage(cap.title)" :alt="cap.title" class="content-image-lg" />
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div v-for="cap in capabilities" :key="cap.title" class="card group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-titanium-200/70">
+            <div class="relative flex h-[150px] items-center justify-center overflow-hidden bg-steel-50 px-2 py-2 sm:h-[165px]">
+              <img
+                :src="capImage(cap.title)"
+                :alt="cap.title"
+                class="h-[96%] w-[96%] object-contain transition-transform duration-500 group-hover:scale-[1.03]"
+                loading="lazy"
+              />
             </div>
-            <div class="p-8">
-              <div class="flex items-start gap-5 mb-6">
-                <div class="w-14 h-14 rounded-xl bg-accent-500/10 border border-accent-500/20 flex items-center justify-center flex-shrink-0">
-                  <span class="text-accent-300 font-semibold text-sm">{{ capCode(cap.title) }}</span>
+            <div class="p-4">
+              <div class="mb-4 flex items-start gap-3">
+                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-accent-500/20 bg-accent-500/10">
+                  <span class="text-xs font-semibold text-accent-300">{{ capCode(cap.title) }}</span>
                 </div>
                 <div>
-                  <h2 class="text-white font-semibold text-lg mb-1">{{ cap.title }}</h2>
-                  <p class="text-titanium-400 text-sm leading-relaxed">{{ cap.desc }}</p>
+                  <h2 class="mb-1 text-base font-semibold text-white">{{ cap.title }}</h2>
+                  <p class="line-clamp-2 text-sm leading-relaxed text-titanium-400">{{ cap.desc }}</p>
                 </div>
               </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div v-for="spec in cap.specs" :key="spec.label" class="bg-titanium-900 rounded-lg p-3">
-                  <div class="text-titanium-500 text-xs mb-1">{{ spec.label }}</div>
-                  <div class="text-white text-sm font-medium">{{ spec.value }}</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div v-for="spec in cap.specs" :key="spec.label" class="rounded-lg border border-titanium-200 bg-steel-50 p-3">
+                  <div class="mb-1 text-[11px] leading-tight text-titanium-500">{{ spec.label }}</div>
+                  <div class="text-xs font-semibold text-white">{{ spec.value }}</div>
                 </div>
               </div>
             </div>

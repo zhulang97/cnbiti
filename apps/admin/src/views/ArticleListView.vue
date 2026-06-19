@@ -95,7 +95,7 @@
         <el-form-item label="标题" required>
           <el-input v-model="articleForm.title" placeholder="Complete Guide to Titanium Grades" @blur="fillArticleSlug" />
         </el-form-item>
-        <el-form-item label="Slug" required>
+        <el-form-item label="路径标识" required>
           <el-input v-model="articleForm.slug" placeholder="complete-guide-to-titanium-grades" />
         </el-form-item>
         <el-form-item label="分类" required>
@@ -112,9 +112,9 @@
         <el-form-item label="阅读时间（分钟）">
           <el-input-number v-model="articleForm.readingTime" :min="1" :max="60" class="w-full" />
         </el-form-item>
-        <el-form-item label="封面图 URL" class="col-span-2">
+        <el-form-item label="封面图链接" class="col-span-2">
           <div class="flex gap-2 w-full">
-            <el-input v-model="articleForm.coverImageUrl" placeholder="上传后自动填入，或粘贴图片 URL" />
+            <el-input v-model="articleForm.coverImageUrl" placeholder="上传后自动填入，或粘贴图片链接" />
             <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadCoverImage">
               <el-button :loading="uploadingImage">
                 <el-icon class="mr-1"><Upload /></el-icon>
@@ -233,7 +233,7 @@ async function openEdit(id: string) {
 
 async function saveArticle() {
   if (!articleForm.title.trim() || !articleForm.slug.trim() || !articleForm.category.trim()) {
-    ElMessage.warning('请填写标题、Slug 和分类')
+    ElMessage.warning('请填写标题、路径标识和分类')
     return
   }
   saving.value = true

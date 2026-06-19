@@ -1,11 +1,11 @@
 <template>
-  <div class="pt-24 pb-20 min-h-screen bg-titanium-950">
+  <div class="pt-24 pb-20 min-h-screen bg-titanium-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Breadcrumb -->
       <nav class="flex items-center gap-2 text-sm text-titanium-500 mb-8">
-        <NuxtLink :to="'/'" class="hover:text-titanium-300 transition-colors">Home</NuxtLink>
+        <NuxtLink :to="'/'" class="hover:text-titanium-800 transition-colors">Home</NuxtLink>
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-        <span class="text-titanium-300">Products</span>
+        <span class="text-titanium-700">Products</span>
       </nav>
 
       <div class="mb-12">
@@ -22,13 +22,13 @@
           :to="'/products/' + cat.slug"
           class="group card-hover overflow-hidden"
         >
-          <div class="aspect-video relative overflow-hidden bg-titanium-900">
-            <img :src="cat.image?.url" :alt="cat.name" class="content-image-lg" />
+          <div class="aspect-video relative overflow-hidden bg-titanium-100">
+            <img :src="cat.image?.url" :alt="cat.name" class="h-full w-full object-contain object-center" />
             <div class="absolute inset-0 bg-gradient-to-t from-titanium-950/80 to-transparent" />
           </div>
           <div class="p-5">
             <div class="flex items-start justify-between mb-2">
-              <h2 class="text-white font-semibold text-sm group-hover:text-accent-300 transition-colors leading-tight">{{ cat.name }}</h2>
+              <h2 class="text-titanium-950 font-semibold text-sm group-hover:text-accent-600 transition-colors leading-tight">{{ cat.name }}</h2>
               <svg class="w-4 h-4 text-titanium-600 group-hover:text-accent-400 group-hover:translate-x-1 transition-all flex-shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
             </div>
             <p class="text-titanium-500 text-xs leading-relaxed mb-3">{{ cat.description }}</p>
@@ -45,8 +45,8 @@
         <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-6">
           <div>
             <p class="section-label mb-3">Live Catalog</p>
-            <h2 class="text-white font-bold text-2xl mb-2">Available Products</h2>
-            <p class="text-titanium-400 text-sm max-w-2xl">Browse standard and custom titanium products currently published from the admin catalog.</p>
+            <h2 class="text-titanium-950 font-bold text-2xl mb-2">Available Products</h2>
+            <p class="text-titanium-600 text-sm max-w-2xl">Browse standard and custom titanium products currently published from the admin catalog.</p>
           </div>
           <span class="text-titanium-500 text-sm">{{ filteredProducts.length }} items</span>
         </div>
@@ -58,7 +58,7 @@
             type="button"
             @click="activeFilter = filter.slug"
             class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-            :class="activeFilter === filter.slug ? 'bg-accent-500 text-white' : 'bg-titanium-800 text-titanium-300 hover:bg-titanium-700 hover:text-white border border-titanium-700'"
+            :class="activeFilter === filter.slug ? 'bg-accent-500 text-white' : 'bg-white text-titanium-600 hover:bg-titanium-100 hover:text-titanium-950 border border-titanium-200'"
           >
             {{ filter.label }}
           </button>
@@ -71,33 +71,33 @@
             :to="`/products/${product.category.slug}/${product.slug}`"
             class="group card-hover p-5"
           >
-            <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-titanium-900">
-              <img :src="productImage(product)" :alt="product.name" class="content-image" />
+            <div class="aspect-video rounded-lg overflow-hidden mb-4 bg-titanium-100">
+              <img :src="productImage(product)" :alt="product.name" class="h-full w-full object-contain object-center" />
             </div>
             <div class="flex items-start justify-between gap-3 mb-2">
-              <h3 class="text-white font-semibold text-sm group-hover:text-accent-300 transition-colors leading-tight">{{ product.name }}</h3>
-              <span class="px-2 py-0.5 rounded text-[11px] whitespace-nowrap" :class="product.inStock ? 'bg-green-500/10 border border-green-500/30 text-green-300' : 'bg-titanium-800 border border-titanium-700 text-titanium-400'">
+              <h3 class="text-titanium-950 font-semibold text-sm group-hover:text-accent-600 transition-colors leading-tight">{{ product.name }}</h3>
+              <span class="px-2 py-0.5 rounded text-[11px] whitespace-nowrap" :class="product.inStock ? 'bg-green-500/10 border border-green-500/30 text-green-700' : 'bg-titanium-100 border border-titanium-200 text-titanium-500'">
                 {{ product.inStock ? 'In Stock' : 'Custom' }}
               </span>
             </div>
             <p class="text-titanium-500 text-xs leading-relaxed mb-3 line-clamp-2">{{ product.shortDescription }}</p>
             <div class="grid grid-cols-2 gap-2">
-              <div v-for="spec in productSpecs(product)" :key="spec.label" class="bg-titanium-800/50 rounded-lg p-2">
+              <div v-for="spec in productSpecs(product)" :key="spec.label" class="bg-titanium-100 rounded-lg p-2">
                 <div class="text-titanium-500 text-[10px] uppercase tracking-wide">{{ spec.label }}</div>
-                <div class="text-titanium-200 text-xs font-mono font-medium mt-0.5 truncate">{{ spec.value }}{{ spec.unit ? ' ' + spec.unit : '' }}</div>
+                <div class="text-titanium-800 text-xs font-mono font-medium mt-0.5 truncate">{{ spec.value }}{{ spec.unit ? ' ' + spec.unit : '' }}</div>
               </div>
             </div>
           </NuxtLink>
         </div>
-        <div v-else class="border border-titanium-700 bg-titanium-900/50 rounded-xl p-6 text-titanium-400 text-sm">
+        <div v-else class="border border-titanium-200 bg-white rounded-xl p-6 text-titanium-500 text-sm">
           Products are being prepared.
         </div>
       </section>
 
       <!-- RFQ CTA -->
-      <div class="mt-16 p-8 bg-titanium-900/50 border border-titanium-800/50 rounded-2xl text-center">
-        <h2 class="text-white font-bold text-2xl mb-3">Can't find what you need?</h2>
-        <p class="text-titanium-400 mb-6">We supply custom specifications, non-standard sizes and special alloys. Send us your requirements.</p>
+      <div class="mt-16 p-8 bg-white border border-titanium-200 rounded-2xl text-center shadow-sm shadow-titanium-200/60">
+        <h2 class="text-titanium-950 font-bold text-2xl mb-3">Can't find what you need?</h2>
+        <p class="text-titanium-600 mb-6">We supply custom specifications, non-standard sizes and special alloys. Send us your requirements.</p>
         <div class="flex flex-wrap gap-3 justify-center">
           <NuxtLink :to="'/request-a-quote'" class="btn-primary">Get a Custom Quote</NuxtLink>
           <a :href="mailtoHref" class="btn-secondary">Email Us</a>

@@ -108,7 +108,7 @@
         <el-form-item label="状态" required>
           <el-segmented v-model="userForm.status" :options="statusOptions" />
         </el-form-item>
-        <el-form-item label="头像 URL">
+        <el-form-item label="头像链接">
           <el-input v-model="userForm.avatar" clearable placeholder="可选" />
         </el-form-item>
         <el-form-item v-if="!editingUserId" label="初始密码" required>

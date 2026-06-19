@@ -40,7 +40,7 @@
   }
 
   body {
-    @apply bg-titanium-950 text-titanium-100 font-sans;
+    @apply bg-titanium-50 text-titanium-800 font-sans;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -54,19 +54,31 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-titanium-600 hover:border-titanium-400 text-titanium-200 hover:text-white font-semibold rounded-lg transition-all duration-200;
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-white border border-titanium-300 hover:border-accent-500 text-titanium-800 hover:text-accent-600 font-semibold rounded-lg transition-all duration-200;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-4 py-2 text-titanium-400 hover:text-white transition-colors duration-200;
+    @apply inline-flex items-center gap-2 px-4 py-2 text-titanium-600 hover:text-titanium-950 transition-colors duration-200;
   }
 
   .card {
-    @apply bg-titanium-900 border border-titanium-800 rounded-xl overflow-hidden;
+    @apply bg-white border border-titanium-200 rounded-xl overflow-hidden shadow-sm shadow-titanium-200/60;
   }
 
   .card-hover {
-    @apply card hover:border-titanium-600 hover:bg-titanium-800/50 transition-all duration-300 cursor-pointer;
+    @apply card hover:border-accent-400 hover:bg-white transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-titanium-200/70;
+  }
+
+  .form-field {
+    @apply w-full bg-white border border-titanium-300 rounded-lg px-3 py-2.5 text-titanium-800 text-sm placeholder-titanium-500 focus:outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/10 transition-colors;
+  }
+
+  .form-label {
+    @apply block text-titanium-500 text-xs font-medium mb-1.5 uppercase tracking-wide;
+  }
+
+  .light-panel {
+    @apply bg-white border border-titanium-200 rounded-xl shadow-sm shadow-titanium-200/60;
   }
 
   .content-image {
@@ -86,15 +98,15 @@
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white leading-tight;
+    @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold text-titanium-950 leading-tight;
   }
 
   .section-subtitle {
-    @apply text-titanium-400 text-lg leading-relaxed;
+    @apply text-titanium-600 text-lg leading-relaxed;
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-white via-titanium-200 to-accent-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-titanium-950 via-steel-700 to-accent-600 bg-clip-text text-transparent;
   }
 
   .glow-accent {
@@ -103,8 +115,8 @@
 
   .grid-pattern {
     background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(15, 23, 42, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.055) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 
@@ -165,6 +177,17 @@
   100% { transform: translateY(100vh); }
 }
 
+@keyframes hero-media-float {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 26px 70px rgba(71, 85, 105, 0.18), 0 12px 28px rgba(14, 165, 233, 0.08);
+  }
+  50% {
+    transform: translateY(-10px);
+    box-shadow: 0 38px 90px rgba(71, 85, 105, 0.24), 0 18px 42px rgba(14, 165, 233, 0.12);
+  }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
@@ -177,4 +200,150 @@
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
+}
+
+.hero-media-float {
+  will-change: transform, box-shadow;
+  animation: hero-media-float 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-media-float {
+    animation: none;
+  }
+}
+
+/* Light B2B theme retrofit.
+   Most pages were originally authored with dark titanium utilities.
+   These overrides keep the existing component structure while moving the
+   public site to a brighter white / cool-gray industrial palette. */
+.bg-titanium-950,
+.bg-titanium-950\/95,
+.bg-titanium-950\/98 {
+  background-color: rgb(248 250 252 / 1) !important;
+}
+
+.bg-titanium-900,
+.bg-titanium-900\/90,
+.bg-titanium-900\/80,
+.bg-titanium-900\/50,
+.bg-titanium-900\/30 {
+  background-color: rgb(255 255 255 / 1) !important;
+}
+
+.bg-titanium-800,
+.bg-titanium-800\/50,
+.bg-titanium-800\/30 {
+  background-color: rgb(241 245 249 / 1) !important;
+}
+
+.border-titanium-900,
+.border-titanium-800,
+.border-titanium-800\/60,
+.border-titanium-800\/50,
+.border-titanium-700,
+.border-titanium-700\/50 {
+  border-color: rgb(226 232 240 / 1) !important;
+}
+
+.text-white {
+  color: rgb(15 23 42 / 1) !important;
+}
+
+.hover\:text-white:hover {
+  color: rgb(15 23 42 / 1) !important;
+}
+
+.text-titanium-100,
+.text-titanium-200,
+.text-titanium-300 {
+  color: rgb(51 65 85 / 1) !important;
+}
+
+.text-titanium-400,
+.text-titanium-500 {
+  color: rgb(100 116 139 / 1) !important;
+}
+
+.text-titanium-600,
+.text-titanium-700 {
+  color: rgb(71 85 105 / 1) !important;
+}
+
+.placeholder-titanium-500::placeholder,
+.placeholder-titanium-600::placeholder {
+  color: rgb(148 163 184 / 1) !important;
+}
+
+.text-accent-200,
+.text-accent-300 {
+  color: rgb(14 165 233 / 1) !important;
+}
+
+.hover\:text-accent-200:hover,
+.hover\:text-accent-300:hover {
+  color: rgb(2 132 199 / 1) !important;
+}
+
+.text-green-300 {
+  color: rgb(22 163 74 / 1) !important;
+}
+
+.btn-primary,
+.btn-primary *,
+[class*="bg-accent-"][class*="text-white"],
+[class*="bg-green-"][class*="text-white"],
+[class*="bg-red-"][class*="text-white"] {
+  color: rgb(255 255 255 / 1) !important;
+}
+
+.text-on-dark,
+.text-on-dark *,
+.media-caption,
+.media-caption *,
+.absolute.text-white,
+.absolute .text-white,
+.bg-steel-900.text-white,
+.bg-steel-900 .text-white,
+.bg-steel-950.text-white,
+.bg-steel-950 .text-white {
+  color: rgb(255 255 255 / 1) !important;
+}
+
+.absolute.text-titanium-200,
+.absolute .text-titanium-200,
+.absolute.text-titanium-300,
+.absolute .text-titanium-300,
+.absolute.text-titanium-400,
+.absolute .text-titanium-400,
+.text-on-dark .text-titanium-200,
+.text-on-dark .text-titanium-300,
+.text-on-dark .text-titanium-400,
+.text-on-dark.text-titanium-200,
+.text-on-dark.text-titanium-300,
+.text-on-dark.text-titanium-400,
+.media-caption .text-titanium-200,
+.media-caption .text-titanium-300,
+.media-caption .text-titanium-400,
+.media-caption.text-titanium-200,
+.media-caption.text-titanium-300,
+.media-caption.text-titanium-400 {
+  color: rgb(226 232 240 / 1) !important;
+}
+
+.text-on-dark .text-accent-300,
+.text-on-dark.text-accent-300,
+.media-caption .text-accent-300,
+.media-caption.text-accent-300 {
+  color: rgb(125 211 252 / 1) !important;
+}
+
+.text-on-dark .hover\:text-white:hover,
+.media-caption .hover\:text-white:hover {
+  color: rgb(255 255 255 / 1) !important;
+}
+
+.bg-accent-600\/90.text-white,
+.bg-accent-500.text-white {
+  color: rgb(255 255 255 / 1) !important;
 }

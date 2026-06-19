@@ -1,9 +1,9 @@
 <template>
   <div class="space-y-5">
-    <div class="flex items-center justify-between">
+    <div class="sticky top-0 z-30 flex items-center justify-between gap-4 rounded-xl border border-admin-700/70 bg-admin-950/95 px-4 py-3 shadow-lg shadow-admin-950/30 backdrop-blur">
       <div>
         <h2 class="text-admin-100 font-semibold text-base">站点设置</h2>
-        <p class="text-admin-500 text-xs mt-0.5">维护前台展示的品牌、联系方式、社交链接和 About 页面内容</p>
+        <p class="text-admin-500 text-xs mt-0.5">维护官网联系方式、首页内容、媒体资源和关于我们页面内容。</p>
       </div>
       <el-button type="primary" size="small" :loading="saving" @click="void saveConfig()">
         <el-icon class="mr-1"><Check /></el-icon>
@@ -11,16 +11,20 @@
       </el-button>
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-5">
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-5">
       <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5">
-        <el-form label-position="top" class="grid grid-cols-2 gap-x-4">
+        <div class="mb-4">
+          <h3 class="text-admin-100 text-sm font-semibold">公司与联系方式</h3>
+          <p class="text-admin-500 text-xs mt-1">这些字段会用于官网页头、页脚、联系卡片和询盘入口。</p>
+        </div>
+        <el-form label-position="top" class="grid grid-cols-1 md:grid-cols-2 gap-x-4">
           <el-form-item label="站点名称" required>
             <el-input v-model="form.siteName" />
           </el-form-item>
-          <el-form-item label="联系邮箱" required>
+          <el-form-item label="邮箱" required>
             <el-input v-model="form.email" />
           </el-form-item>
-          <el-form-item label="标语" class="col-span-2">
+          <el-form-item label="宣传语" class="md:col-span-2">
             <el-input v-model="form.tagline" />
           </el-form-item>
           <el-form-item label="联系电话">
@@ -35,67 +39,8 @@
           <el-form-item label="国家">
             <el-input v-model="form.country" />
           </el-form-item>
-          <el-form-item label="地址" class="col-span-2">
+          <el-form-item label="地址" class="md:col-span-2">
             <el-input v-model="form.address" type="textarea" :rows="3" resize="none" />
-          </el-form-item>
-          <el-form-item label="首页介绍视频" class="col-span-2">
-            <div class="w-full space-y-3">
-              <div class="flex gap-2">
-                <el-input v-model="socialLinks.homeHeroVideo" placeholder="上传 MP4/WebM 视频后自动填入，或粘贴视频 URL" />
-                <el-upload :show-file-list="false" accept="video/mp4,video/webm,video/quicktime,video/*" :before-upload="uploadHomeHeroVideo">
-                  <el-button :loading="uploadingHomeHeroVideo">
-                    <el-icon class="mr-1"><Upload /></el-icon>
-                    上传
-                  </el-button>
-                </el-upload>
-              </div>
-              <video
-                v-if="socialLinks.homeHeroVideo"
-                :src="socialLinks.homeHeroVideo"
-                class="w-64 h-36 rounded-lg bg-admin-950 object-cover border border-admin-600"
-                controls
-                muted
-                preload="metadata"
-              />
-            </div>
-          </el-form-item>
-          <el-form-item label="首页视频封面图" class="col-span-2">
-            <div class="w-full space-y-3">
-              <div class="flex gap-2">
-                <el-input v-model="socialLinks.homeHeroPosterImage" placeholder="上传封面图后自动填入，或粘贴图片 URL" />
-                <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadHomeHeroPoster">
-                  <el-button :loading="uploadingHomeHeroPoster">
-                    <el-icon class="mr-1"><Upload /></el-icon>
-                    上传
-                  </el-button>
-                </el-upload>
-              </div>
-              <img
-                v-if="socialLinks.homeHeroPosterImage"
-                :src="socialLinks.homeHeroPosterImage"
-                alt="Home hero poster preview"
-                class="w-64 h-36 rounded-lg bg-admin-950 object-cover border border-admin-600"
-              >
-            </div>
-          </el-form-item>
-          <el-form-item label="联系卡片展示图" class="col-span-2">
-            <div class="w-full space-y-3">
-              <div class="flex gap-2">
-                <el-input v-model="socialLinks.contactCardImage" placeholder="上传后自动填入，或粘贴图片 URL" />
-                <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadContactCardImage">
-                  <el-button :loading="uploadingContactCardImage">
-                    <el-icon class="mr-1"><Upload /></el-icon>
-                    上传
-                  </el-button>
-                </el-upload>
-              </div>
-              <img
-                v-if="socialLinks.contactCardImage"
-                :src="socialLinks.contactCardImage"
-                alt="Contact card preview"
-                class="w-44 h-32 rounded-lg bg-admin-950 object-contain border border-admin-600"
-              >
-            </div>
           </el-form-item>
         </el-form>
       </div>
@@ -103,19 +48,19 @@
       <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5 space-y-4">
         <div>
           <h3 class="text-admin-100 text-sm font-semibold">社交链接</h3>
-          <p class="text-admin-500 text-xs mt-1">留空的链接不会保存到接口响应中</p>
+          <p class="text-admin-500 text-xs mt-1">留空的链接不会保存到官网接口。</p>
         </div>
         <el-form label-position="top">
           <el-form-item label="LinkedIn">
             <el-input v-model="socialLinks.linkedin" />
           </el-form-item>
           <el-form-item label="WeChat">
-            <el-input v-model="socialLinks.wechat" placeholder="WeChat ID or QR content" />
+            <el-input v-model="socialLinks.wechat" placeholder="微信号或二维码说明" />
           </el-form-item>
-          <el-form-item label="WeChat 二维码图片">
+          <el-form-item label="微信二维码图片">
             <div class="w-full space-y-2">
               <div class="flex gap-2">
-                <el-input v-model="socialLinks.wechatQrImage" placeholder="上传后自动填入，或粘贴图片 URL" />
+                <el-input v-model="socialLinks.wechatQrImage" placeholder="上传后自动填入，或粘贴图片链接" />
                 <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadWechatQr">
                   <el-button :loading="uploadingWechatQr">
                     <el-icon class="mr-1"><Upload /></el-icon>
@@ -134,7 +79,7 @@
           <el-form-item label="WhatsApp 二维码图片">
             <div class="w-full space-y-2">
               <div class="flex gap-2">
-                <el-input v-model="socialLinks.whatsappQrImage" placeholder="上传后自动填入，或粘贴图片 URL" />
+                <el-input v-model="socialLinks.whatsappQrImage" placeholder="上传后自动填入，或粘贴图片链接" />
                 <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadWhatsappQr">
                   <el-button :loading="uploadingWhatsappQr">
                     <el-icon class="mr-1"><Upload /></el-icon>
@@ -161,10 +106,215 @@
     </div>
 
     <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5 space-y-5">
+      <div>
+        <h3 class="text-admin-100 text-sm font-semibold">首页媒体资源</h3>
+        <p class="text-admin-500 text-xs mt-1">工厂介绍视频、视频封面和联系卡片图片建议上传到本地 MinIO。</p>
+      </div>
+
+      <el-form label-position="top" class="grid grid-cols-1 lg:grid-cols-3 gap-x-4">
+        <el-form-item label="工厂介绍视频">
+          <div class="w-full space-y-3">
+            <div class="flex gap-2">
+              <el-input v-model="socialLinks.homeHeroVideo" placeholder="上传 MP4/WebM 后自动填入，或粘贴视频链接" />
+              <el-upload :show-file-list="false" accept="video/mp4,video/webm,video/quicktime,video/*" :before-upload="uploadHomeHeroVideo">
+                <el-button :loading="uploadingHomeHeroVideo">
+                  <el-icon class="mr-1"><Upload /></el-icon>
+                  上传
+                </el-button>
+              </el-upload>
+            </div>
+            <video
+              v-if="socialLinks.homeHeroVideo"
+              :src="socialLinks.homeHeroVideo"
+              class="w-full h-36 rounded-lg bg-admin-950 object-cover border border-admin-600"
+              controls
+              muted
+              preload="metadata"
+            />
+          </div>
+        </el-form-item>
+        <el-form-item label="视频封面图片">
+          <div class="w-full space-y-3">
+            <div class="flex gap-2">
+              <el-input v-model="socialLinks.homeHeroPosterImage" placeholder="上传后自动填入，或粘贴图片链接" />
+              <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadHomeHeroPoster">
+                <el-button :loading="uploadingHomeHeroPoster">
+                  <el-icon class="mr-1"><Upload /></el-icon>
+                  上传
+                </el-button>
+              </el-upload>
+            </div>
+            <img
+              v-if="socialLinks.homeHeroPosterImage"
+              :src="socialLinks.homeHeroPosterImage"
+              alt="Home hero poster preview"
+              class="w-full h-36 rounded-lg bg-admin-950 object-cover border border-admin-600"
+            >
+          </div>
+        </el-form-item>
+        <el-form-item label="联系卡片图片">
+          <div class="w-full space-y-3">
+            <div class="flex gap-2">
+              <el-input v-model="socialLinks.contactCardImage" placeholder="上传后自动填入，或粘贴图片链接" />
+              <el-upload :show-file-list="false" accept="image/*" :before-upload="uploadContactCardImage">
+                <el-button :loading="uploadingContactCardImage">
+                  <el-icon class="mr-1"><Upload /></el-icon>
+                  上传
+                </el-button>
+              </el-upload>
+            </div>
+            <img
+              v-if="socialLinks.contactCardImage"
+              :src="socialLinks.contactCardImage"
+              alt="Contact card preview"
+              class="w-full h-36 rounded-lg bg-admin-950 object-contain border border-admin-600"
+            >
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5 space-y-5">
       <div class="flex items-center justify-between gap-3">
         <div>
-          <h3 class="text-admin-100 text-sm font-semibold">官网 About 页面</h3>
-          <p class="text-admin-500 text-xs mt-1">保存后同步到前台 /about 页面</p>
+          <h3 class="text-admin-100 text-sm font-semibold">官网首页内容</h3>
+          <p class="text-admin-500 text-xs mt-1">这里填写的英文内容会展示到官网首页的首屏、产品说明、加工能力和质量模块。</p>
+        </div>
+        <el-button size="small" @click="resetHomePage">
+          恢复默认
+        </el-button>
+      </div>
+
+      <el-form label-position="top" class="space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
+          <el-form-item label="首屏标题" class="lg:col-span-2">
+            <el-input v-model="homePage.heroTitle" />
+          </el-form-item>
+          <el-form-item label="首屏简介">
+            <el-input v-model="homePage.heroIntro" type="textarea" :rows="3" resize="none" />
+          </el-form-item>
+          <el-form-item label="首屏补充说明">
+            <el-input v-model="homePage.heroBody" type="textarea" :rows="3" resize="none" />
+          </el-form-item>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-admin-200 text-xs font-semibold">首屏统计数据</h4>
+            <el-button size="small" text @click="addHomeStat">
+              <el-icon class="mr-1"><Plus /></el-icon>
+              添加
+            </el-button>
+          </div>
+          <div class="space-y-2">
+            <div v-for="(item, index) in homePage.stats" :key="`home-stat-${index}`" class="grid grid-cols-[120px_1fr_auto] gap-2">
+              <el-input v-model="item.value" placeholder="2008" />
+              <el-input v-model="item.label" placeholder="Founded in Baoji" />
+              <el-button circle text type="danger" @click="removeHomeStat(index)">
+                <el-icon><Delete /></el-icon>
+              </el-button>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-admin-200 text-xs font-semibold">首屏卖点</h4>
+            <el-button size="small" text @click="addHomeProofPoint">
+              <el-icon class="mr-1"><Plus /></el-icon>
+              添加
+            </el-button>
+          </div>
+          <div class="space-y-3">
+            <div v-for="(item, index) in homePage.proofPoints" :key="`proof-${index}`" class="border border-admin-600/40 rounded-lg p-3">
+              <div class="grid grid-cols-[90px_1fr_auto] gap-2 mb-2">
+                <el-input v-model="item.code" placeholder="MTR" />
+                <el-input v-model="item.title" placeholder="MTR Available" />
+                <el-button circle text type="danger" @click="removeHomeProofPoint(index)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+              <el-input v-model="item.desc" type="textarea" :rows="2" resize="none" placeholder="简短说明" />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-admin-200 text-xs font-semibold">产品区采购说明</h4>
+            <el-button size="small" text @click="addHomeBuyerNote">
+              <el-icon class="mr-1"><Plus /></el-icon>
+              添加
+            </el-button>
+          </div>
+          <div class="space-y-3">
+            <div v-for="(item, index) in homePage.buyerNotes" :key="`buyer-${index}`" class="border border-admin-600/40 rounded-lg p-3">
+              <div class="grid grid-cols-[90px_1fr_auto] gap-2 mb-2">
+                <el-input v-model="item.code" placeholder="CUT" />
+                <el-input v-model="item.title" placeholder="Cut-to-size Supply" />
+                <el-button circle text type="danger" @click="removeHomeBuyerNote(index)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+              <el-input v-model="item.desc" type="textarea" :rows="2" resize="none" placeholder="简短说明" />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-admin-200 text-xs font-semibold">加工能力</h4>
+            <el-button size="small" text @click="addHomeCapability">
+              <el-icon class="mr-1"><Plus /></el-icon>
+              添加
+            </el-button>
+          </div>
+          <div class="space-y-3">
+            <div v-for="(item, index) in homePage.capabilities" :key="`capability-${index}`" class="border border-admin-600/40 rounded-lg p-3">
+              <div class="grid grid-cols-[1fr_1fr_auto] gap-2 mb-2">
+                <el-input v-model="item.title" placeholder="CNC Machining" />
+                <el-input v-model="item.desc" placeholder="Turning, milling, drilling" />
+                <el-button circle text type="danger" @click="removeHomeCapability(index)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                <el-input v-model="item.imageUrl" placeholder="可选图片链接" />
+                <el-input v-model="item.imageAlt" placeholder="可选图片说明" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-admin-200 text-xs font-semibold">质量文档项</h4>
+            <el-button size="small" text @click="addHomeQualityItem">
+              <el-icon class="mr-1"><Plus /></el-icon>
+              添加
+            </el-button>
+          </div>
+          <div class="space-y-3">
+            <div v-for="(item, index) in homePage.qualityItems" :key="`quality-${index}`" class="border border-admin-600/40 rounded-lg p-3">
+              <div class="grid grid-cols-[90px_1fr_auto] gap-2 mb-2">
+                <el-input v-model="item.code" placeholder="MTR" />
+                <el-input v-model="item.title" placeholder="Mill Test Report" />
+                <el-button circle text type="danger" @click="removeHomeQualityItem(index)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+              <el-input v-model="item.desc" type="textarea" :rows="2" resize="none" placeholder="简短说明" />
+            </div>
+          </div>
+        </div>
+      </el-form>
+    </div>
+
+    <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5 space-y-5">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-admin-100 text-sm font-semibold">官网关于我们页面</h3>
+          <p class="text-admin-500 text-xs mt-1">保存后会同步展示到官网关于我们页面。</p>
         </div>
         <el-button size="small" @click="resetAboutPage">
           恢复默认
@@ -173,16 +323,16 @@
 
       <el-form label-position="top" class="space-y-5">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
-          <el-form-item label="Hero 标签">
+          <el-form-item label="首屏标签">
             <el-input v-model="aboutPage.heroLabel" />
           </el-form-item>
-          <el-form-item label="Hero 标题">
+          <el-form-item label="首屏标题">
             <el-input v-model="aboutPage.heroTitle" />
           </el-form-item>
-          <el-form-item label="Hero 第一段" class="lg:col-span-2">
+          <el-form-item label="首屏简介" class="lg:col-span-2">
             <el-input v-model="aboutPage.heroIntro" type="textarea" :rows="3" resize="none" />
           </el-form-item>
-          <el-form-item label="Hero 第二段" class="lg:col-span-2">
+          <el-form-item label="首屏补充说明" class="lg:col-span-2">
             <el-input v-model="aboutPage.heroBody" type="textarea" :rows="3" resize="none" />
           </el-form-item>
         </div>
@@ -319,6 +469,146 @@
       </el-form>
     </div>
 
+    <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5 space-y-5">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-admin-100 text-sm font-semibold">官网证书页面</h3>
+          <p class="text-admin-500 text-xs mt-1">管理 /certificates 页面文案和证书图片，图片上传后会保存到文件存储。</p>
+        </div>
+        <el-button size="small" @click="resetCertificatesPage">恢复默认</el-button>
+      </div>
+
+      <el-form label-position="top" class="space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
+          <el-form-item label="页面标签">
+            <el-input v-model="certificatesPage.heroLabel" />
+          </el-form-item>
+          <el-form-item label="页面标题">
+            <el-input v-model="certificatesPage.heroTitle" />
+          </el-form-item>
+          <el-form-item label="页面简介" class="lg:col-span-2">
+            <el-input v-model="certificatesPage.heroIntro" type="textarea" :rows="3" resize="none" />
+          </el-form-item>
+          <el-form-item label="SEO 标题">
+            <el-input v-model="certificatesPage.seoTitle" />
+          </el-form-item>
+          <el-form-item label="SEO 描述">
+            <el-input v-model="certificatesPage.seoDescription" />
+          </el-form-item>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-admin-200 text-xs font-semibold">证书图片</h4>
+            <el-button size="small" text @click="addGalleryItem(certificatesPage)">
+              <el-icon class="mr-1"><Plus /></el-icon>
+              添加图片
+            </el-button>
+          </div>
+          <div v-if="!certificatesPage.items.length" class="rounded-lg border border-dashed border-admin-600/70 p-6 text-center text-xs text-admin-500">
+            还没有证书图片，点击“添加图片”后上传。
+          </div>
+          <div v-else class="grid grid-cols-1 xl:grid-cols-2 gap-3">
+            <div v-for="(item, index) in certificatesPage.items" :key="`cert-gallery-${index}`" class="border border-admin-600/40 rounded-lg p-3">
+              <div class="grid grid-cols-1 md:grid-cols-[150px_1fr_auto] gap-3">
+                <div class="h-40 rounded-lg border border-admin-600 bg-admin-950 overflow-hidden">
+                  <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.imageAlt || item.title" class="h-full w-full object-contain bg-white">
+                  <div v-else class="flex h-full items-center justify-center text-xs text-admin-500">暂无图片</div>
+                </div>
+                <div class="space-y-2">
+                  <el-input v-model="item.title" placeholder="标题，例如 ISO 9001 Certificate" />
+                  <el-input v-model="item.desc" placeholder="说明，可选" />
+                  <el-input v-model="item.imageAlt" placeholder="图片 Alt 文本，可选" />
+                  <div class="flex gap-2">
+                    <el-input v-model="item.imageUrl" placeholder="图片链接，上传后自动填入" />
+                    <el-upload :show-file-list="false" accept="image/*" :before-upload="galleryBeforeUpload('certificatesPage', index)">
+                      <el-button :loading="uploadingGallery[`certificatesPage-${index}`]">
+                        <el-icon class="mr-1"><Upload /></el-icon>
+                        上传
+                      </el-button>
+                    </el-upload>
+                  </div>
+                </div>
+                <el-button circle text type="danger" @click="removeGalleryItem(certificatesPage, index)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-form>
+    </div>
+
+    <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5 space-y-5">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-admin-100 text-sm font-semibold">官网工厂参观页面</h3>
+          <p class="text-admin-500 text-xs mt-1">管理 /factory-tour 页面文案和工厂图库，可上传车间、设备、检测、生产线图片。</p>
+        </div>
+        <el-button size="small" @click="resetFactoryTourPage">恢复默认</el-button>
+      </div>
+
+      <el-form label-position="top" class="space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
+          <el-form-item label="页面标签">
+            <el-input v-model="factoryTourPage.heroLabel" />
+          </el-form-item>
+          <el-form-item label="页面标题">
+            <el-input v-model="factoryTourPage.heroTitle" />
+          </el-form-item>
+          <el-form-item label="页面简介" class="lg:col-span-2">
+            <el-input v-model="factoryTourPage.heroIntro" type="textarea" :rows="3" resize="none" />
+          </el-form-item>
+          <el-form-item label="SEO 标题">
+            <el-input v-model="factoryTourPage.seoTitle" />
+          </el-form-item>
+          <el-form-item label="SEO 描述">
+            <el-input v-model="factoryTourPage.seoDescription" />
+          </el-form-item>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-admin-200 text-xs font-semibold">工厂图片</h4>
+            <el-button size="small" text @click="addGalleryItem(factoryTourPage)">
+              <el-icon class="mr-1"><Plus /></el-icon>
+              添加图片
+            </el-button>
+          </div>
+          <div v-if="!factoryTourPage.items.length" class="rounded-lg border border-dashed border-admin-600/70 p-6 text-center text-xs text-admin-500">
+            还没有工厂图片，点击“添加图片”后上传。
+          </div>
+          <div v-else class="grid grid-cols-1 xl:grid-cols-2 gap-3">
+            <div v-for="(item, index) in factoryTourPage.items" :key="`factory-gallery-${index}`" class="border border-admin-600/40 rounded-lg p-3">
+              <div class="grid grid-cols-1 md:grid-cols-[150px_1fr_auto] gap-3">
+                <div class="h-40 rounded-lg border border-admin-600 bg-admin-950 overflow-hidden">
+                  <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.imageAlt || item.title" class="h-full w-full object-contain bg-white">
+                  <div v-else class="flex h-full items-center justify-center text-xs text-admin-500">暂无图片</div>
+                </div>
+                <div class="space-y-2">
+                  <el-input v-model="item.title" placeholder="标题，例如 CNC Machining Workshop" />
+                  <el-input v-model="item.desc" placeholder="说明，可选" />
+                  <el-input v-model="item.imageAlt" placeholder="图片 Alt 文本，可选" />
+                  <div class="flex gap-2">
+                    <el-input v-model="item.imageUrl" placeholder="图片链接，上传后自动填入" />
+                    <el-upload :show-file-list="false" accept="image/*" :before-upload="galleryBeforeUpload('factoryTourPage', index)">
+                      <el-button :loading="uploadingGallery[`factoryTourPage-${index}`]">
+                        <el-icon class="mr-1"><Upload /></el-icon>
+                        上传
+                      </el-button>
+                    </el-upload>
+                  </div>
+                </div>
+                <el-button circle text type="danger" @click="removeGalleryItem(factoryTourPage, index)">
+                  <el-icon><Delete /></el-icon>
+                </el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-form>
+    </div>
+
     <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
@@ -334,7 +624,7 @@
           <div class="text-admin-100 text-sm font-medium mt-1">{{ form.phone || '-' }}</div>
         </div>
         <div>
-          <div class="text-admin-500 text-xs">地址</div>
+          <div class="text-admin-500 text-xs">位置</div>
           <div class="text-admin-100 text-sm font-medium mt-1">{{ locationSummary }}</div>
         </div>
       </div>
@@ -346,8 +636,20 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { UploadRawFile } from 'element-plus'
-import { defaultAboutPageConfig, useMockStore } from '@/stores/mock'
-import type { AboutFeature, AboutPageConfig, AboutStat, AboutTimelineEvent, SiteConfig } from '@cnbjti/types'
+import { defaultAboutPageConfig, defaultCertificatesPageConfig, defaultFactoryTourPageConfig, defaultHomePageConfig, useMockStore } from '@/stores/mock'
+import type {
+  AboutFeature,
+  AboutPageConfig,
+  AboutStat,
+  AboutTimelineEvent,
+  GalleryPageConfig,
+  HomeCapability,
+  HomeFeature,
+  HomePageConfig,
+  HomeQualityItem,
+  HomeStat,
+  SiteConfig,
+} from '@cnbjti/types'
 
 const mock = useMockStore()
 const saving = ref(false)
@@ -356,8 +658,12 @@ const uploadingHomeHeroPoster = ref(false)
 const uploadingContactCardImage = ref(false)
 const uploadingWechatQr = ref(false)
 const uploadingWhatsappQr = ref(false)
+const uploadingGallery = reactive<Record<string, boolean>>({})
 const form = reactive<SiteConfig>(emptyConfig())
 const aboutPage = reactive<AboutPageConfig>(defaultAboutPageConfig())
+const homePage = reactive<HomePageConfig>(defaultHomePageConfig())
+const certificatesPage = reactive<GalleryPageConfig>(defaultCertificatesPageConfig())
+const factoryTourPage = reactive<GalleryPageConfig>(defaultFactoryTourPageConfig())
 const socialLinks = reactive({
   wechat: '',
   homeHeroVideo: '',
@@ -385,7 +691,7 @@ async function loadConfig() {
 
 async function saveConfig() {
   if (!form.siteName.trim() || !form.email.trim()) {
-    ElMessage.warning('请填写站点名称和联系邮箱')
+    ElMessage.warning('请填写站点名称和联系邮箱。')
     return
   }
 
@@ -402,15 +708,23 @@ async function saveConfig() {
       country: form.country.trim(),
       socialLinks: cleanLinks(socialLinks),
       aboutPage: cleanAboutPage(aboutPage),
+      homePage: cleanHomePage(homePage),
+      certificatesPage: cleanGalleryPage(certificatesPage, defaultCertificatesPageConfig()),
+      factoryTourPage: cleanGalleryPage(factoryTourPage, defaultFactoryTourPageConfig()),
     })
     fillForm(updated)
-    ElMessage.success('站点设置已保存')
+    ElMessage.success('站点设置已保存。')
   } finally {
     saving.value = false
   }
 }
 
 function fillForm(data: SiteConfig) {
+  const nextAboutPage = data.aboutPage ? cleanAboutPage(data.aboutPage) : defaultAboutPageConfig()
+  const nextHomePage = data.homePage ? cleanHomePage(data.homePage) : defaultHomePageConfig()
+  const nextCertificatesPage = cleanGalleryPage(data.certificatesPage, defaultCertificatesPageConfig())
+  const nextFactoryTourPage = cleanGalleryPage(data.factoryTourPage, defaultFactoryTourPageConfig())
+
   Object.assign(form, {
     siteName: data.siteName || '',
     tagline: data.tagline || '',
@@ -421,9 +735,15 @@ function fillForm(data: SiteConfig) {
     city: data.city || '',
     country: data.country || '',
     socialLinks: data.socialLinks || {},
-    aboutPage: data.aboutPage ? cleanAboutPage(data.aboutPage) : defaultAboutPageConfig(),
+    aboutPage: nextAboutPage,
+    homePage: nextHomePage,
+    certificatesPage: nextCertificatesPage,
+    factoryTourPage: nextFactoryTourPage,
   })
-  Object.assign(aboutPage, data.aboutPage ? cleanAboutPage(data.aboutPage) : defaultAboutPageConfig())
+  Object.assign(aboutPage, nextAboutPage)
+  Object.assign(homePage, nextHomePage)
+  Object.assign(certificatesPage, nextCertificatesPage)
+  Object.assign(factoryTourPage, nextFactoryTourPage)
   socialLinks.wechat = data.socialLinks?.wechat || ''
   socialLinks.homeHeroVideo = data.socialLinks?.homeHeroVideo || ''
   socialLinks.homeHeroPosterImage = data.socialLinks?.homeHeroPosterImage || ''
@@ -447,6 +767,101 @@ function cleanLinks(values: typeof socialLinks): SiteConfig['socialLinks'] {
   if (values.twitter.trim()) result.twitter = values.twitter.trim()
   if (values.youtube.trim()) result.youtube = values.youtube.trim()
   return result
+}
+
+function addHomeStat() {
+  homePage.stats.push({ value: '', label: '' })
+}
+
+function removeHomeStat(index: number) {
+  homePage.stats.splice(index, 1)
+}
+
+function addHomeProofPoint() {
+  homePage.proofPoints.push({ code: '', title: '', desc: '' })
+}
+
+function removeHomeProofPoint(index: number) {
+  homePage.proofPoints.splice(index, 1)
+}
+
+function addHomeBuyerNote() {
+  homePage.buyerNotes.push({ code: '', title: '', desc: '' })
+}
+
+function removeHomeBuyerNote(index: number) {
+  homePage.buyerNotes.splice(index, 1)
+}
+
+function addHomeCapability() {
+  homePage.capabilities.push({ title: '', desc: '', imageUrl: '', imageAlt: '' })
+}
+
+function removeHomeCapability(index: number) {
+  homePage.capabilities.splice(index, 1)
+}
+
+function addHomeQualityItem() {
+  homePage.qualityItems.push({ code: '', title: '', desc: '' })
+}
+
+function removeHomeQualityItem(index: number) {
+  homePage.qualityItems.splice(index, 1)
+}
+
+function resetHomePage() {
+  Object.assign(homePage, defaultHomePageConfig())
+}
+
+function cleanHomePage(value: Partial<HomePageConfig>): HomePageConfig {
+  const fallback = defaultHomePageConfig()
+  return {
+    heroTitle: text(value.heroTitle, fallback.heroTitle),
+    heroIntro: text(value.heroIntro, fallback.heroIntro),
+    heroBody: text(value.heroBody, fallback.heroBody),
+    stats: cleanHomeStats(value.stats ?? fallback.stats),
+    proofPoints: cleanHomeFeatures(value.proofPoints ?? fallback.proofPoints),
+    buyerNotes: cleanHomeFeatures(value.buyerNotes ?? fallback.buyerNotes),
+    capabilities: cleanHomeCapabilities(value.capabilities ?? fallback.capabilities),
+    qualityItems: cleanHomeQualityItems(value.qualityItems ?? fallback.qualityItems),
+  }
+}
+
+function cleanHomeStats(values: HomeStat[]) {
+  return values
+    .map((item) => ({ value: text(item.value, ''), label: text(item.label, '') }))
+    .filter((item) => item.value && item.label)
+}
+
+function cleanHomeFeatures(values: HomeFeature[]) {
+  return values
+    .map((item) => ({
+      code: text(item.code, ''),
+      title: text(item.title, ''),
+      desc: text(item.desc, ''),
+    }))
+    .filter((item) => item.title && item.desc)
+}
+
+function cleanHomeCapabilities(values: HomeCapability[]) {
+  return values
+    .map((item) => ({
+      title: text(item.title, ''),
+      desc: text(item.desc, ''),
+      imageUrl: text(item.imageUrl, ''),
+      imageAlt: text(item.imageAlt, ''),
+    }))
+    .filter((item) => item.title && item.desc)
+}
+
+function cleanHomeQualityItems(values: HomeQualityItem[]) {
+  return values
+    .map((item) => ({
+      code: text(item.code, ''),
+      title: text(item.title, ''),
+      desc: text(item.desc, ''),
+    }))
+    .filter((item) => item.title && item.desc)
 }
 
 function addAboutStat() {
@@ -510,26 +925,65 @@ function cleanAboutPage(value: Partial<AboutPageConfig>): AboutPageConfig {
   }
 }
 
-function text(value: string | undefined, fallback: string) {
+function text(value: string | null | undefined, fallback: string) {
   return value === undefined || value === null ? fallback : value.trim()
 }
 
 function cleanAboutStats(values: AboutStat[]) {
   return values
-    .map((item) => ({ value: item.value.trim(), label: item.label.trim() }))
+    .map((item) => ({ value: text(item.value, ''), label: text(item.label, '') }))
     .filter((item) => item.value && item.label)
 }
 
 function cleanAboutFeatures(values: AboutFeature[]) {
   return values
-    .map((item) => ({ icon: item.icon?.trim() || '', title: item.title.trim(), desc: item.desc.trim() }))
+    .map((item) => ({ icon: text(item.icon, ''), title: text(item.title, ''), desc: text(item.desc, '') }))
     .filter((item) => item.title && item.desc)
 }
 
 function cleanAboutTimeline(values: AboutTimelineEvent[]) {
   return values
-    .map((item) => ({ year: item.year.trim(), title: item.title.trim(), desc: item.desc.trim() }))
+    .map((item) => ({ year: text(item.year, ''), title: text(item.title, ''), desc: text(item.desc, '') }))
     .filter((item) => item.year && item.title && item.desc)
+}
+
+function resetCertificatesPage() {
+  Object.assign(certificatesPage, defaultCertificatesPageConfig())
+}
+
+function resetFactoryTourPage() {
+  Object.assign(factoryTourPage, defaultFactoryTourPageConfig())
+}
+
+function addGalleryItem(page: GalleryPageConfig) {
+  page.items.push({ title: '', desc: '', imageUrl: '', imageAlt: '' })
+}
+
+function removeGalleryItem(page: GalleryPageConfig, index: number) {
+  page.items.splice(index, 1)
+}
+
+function cleanGalleryPage(value: Partial<GalleryPageConfig> | null | undefined, fallback: GalleryPageConfig): GalleryPageConfig {
+  const source = value || fallback
+  return {
+    heroLabel: text(source.heroLabel, fallback.heroLabel),
+    heroTitle: text(source.heroTitle, fallback.heroTitle),
+    heroIntro: text(source.heroIntro, fallback.heroIntro),
+    items: cleanGalleryItems(source.items ?? fallback.items),
+    seoTitle: text(source.seoTitle, fallback.seoTitle),
+    seoDescription: text(source.seoDescription, fallback.seoDescription),
+  }
+}
+
+function cleanGalleryItems(values: GalleryPageConfig['items']) {
+  return values
+    .map((item) => ({
+      title: text(item.title, ''),
+      desc: text(item.desc, ''),
+      imageUrl: text(item.imageUrl, ''),
+      imageAlt: text(item.imageAlt, ''),
+    }))
+    .filter((item) => item.imageUrl)
 }
 
 function uploadHomeHeroVideo(file: UploadRawFile) {
@@ -558,6 +1012,16 @@ function uploadWhatsappQr(file: UploadRawFile) {
 }
 
 type SiteMediaKey = 'homeHeroVideo' | 'homeHeroPosterImage' | 'contactCardImage' | 'wechatQrImage' | 'whatsappQrImage'
+type GalleryPageKey = 'certificatesPage' | 'factoryTourPage'
+
+function galleryBeforeUpload(pageKey: GalleryPageKey, index: number) {
+  return (file: UploadRawFile) => uploadGalleryImage(file, pageKey, index)
+}
+
+function uploadGalleryImage(file: UploadRawFile, pageKey: GalleryPageKey, index: number) {
+  void handleGalleryUpload(file, pageKey, index)
+  return false
+}
 
 async function handleMediaUpload(file: File, key: SiteMediaKey) {
   const loading = key === 'homeHeroVideo'
@@ -573,16 +1037,27 @@ async function handleMediaUpload(file: File, key: SiteMediaKey) {
   try {
     const asset = await mock.uploadFile(file)
     socialLinks[key] = asset.url
-    const message = key === 'homeHeroVideo'
-      ? '首页视频已上传'
-      : key === 'homeHeroPosterImage'
-        ? '首页视频封面已上传'
-        : key === 'contactCardImage'
-          ? '联系卡片展示图已上传'
-          : '二维码图片已上传'
-    ElMessage.success(message)
+    ElMessage.success('文件已上传。')
   } finally {
     loading.value = false
+  }
+}
+
+async function handleGalleryUpload(file: File, pageKey: GalleryPageKey, index: number) {
+  const uploadKey = `${pageKey}-${index}`
+  uploadingGallery[uploadKey] = true
+  try {
+    const asset = await mock.uploadFile(file)
+    const page = pageKey === 'certificatesPage' ? certificatesPage : factoryTourPage
+    const item = page.items[index]
+    if (item) {
+      item.imageUrl = asset.url
+      if (!item.imageAlt) item.imageAlt = asset.alt || asset.filename
+      if (!item.title) item.title = asset.alt || asset.filename.replace(/\.[^.]+$/, '')
+    }
+    ElMessage.success('图片已上传')
+  } finally {
+    uploadingGallery[uploadKey] = false
   }
 }
 
@@ -598,6 +1073,9 @@ function emptyConfig(): SiteConfig {
     country: '',
     socialLinks: {},
     aboutPage: defaultAboutPageConfig(),
+    homePage: defaultHomePageConfig(),
+    certificatesPage: defaultCertificatesPageConfig(),
+    factoryTourPage: defaultFactoryTourPageConfig(),
   }
 }
 </script>
