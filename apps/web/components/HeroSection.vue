@@ -34,7 +34,7 @@
             <video
               v-if="heroVideoUrl && videoPlaying"
               :src="heroVideoUrl"
-              :poster="heroPosterUrl"
+              :poster="heroPosterUrl || undefined"
               class="h-full w-full bg-white object-contain object-center"
               controls
               autoplay
@@ -48,14 +48,16 @@
               aria-label="Play factory introduction video"
               @click="videoPlaying = true"
             >
-              <img :src="heroPosterUrl" alt="Titanium factory and product supply" class="h-full w-full bg-white object-contain object-center" />
+              <img v-if="heroPosterUrl" :src="heroPosterUrl" alt="Titanium factory and product supply" class="h-full w-full bg-white object-contain object-center" />
+              <div v-else class="h-full w-full bg-gradient-to-br from-white via-steel-50 to-titanium-100" />
               <span class="absolute inset-0 flex items-center justify-center bg-titanium-950/10 transition-colors group-hover:bg-titanium-950/20">
                 <span class="flex h-16 w-16 items-center justify-center rounded-full bg-accent-500 text-white shadow-2xl shadow-accent-500/30 ring-8 ring-accent-500/15 transition-transform group-hover:scale-105">
                   <svg class="ml-1 h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
                 </span>
               </span>
             </button>
-            <img v-else :src="heroPosterUrl" alt="Titanium factory and product supply" class="h-full w-full bg-white object-contain object-center" />
+            <img v-else-if="heroPosterUrl" :src="heroPosterUrl" alt="Titanium factory and product supply" class="h-full w-full bg-white object-contain object-center" />
+            <div v-else class="h-full w-full bg-gradient-to-br from-white via-steel-50 to-titanium-100" />
 
           </div>
 
@@ -72,8 +74,6 @@
 </template>
 
 <script setup lang="ts">
-import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
-
 const { siteConfig, whatsappHref, localizedPath } = await useSiteRuntime()
 const videoPlaying = ref(false)
 
@@ -86,7 +86,7 @@ const defaultStats = [
   { value: '24h', label: 'RFQ Response' },
 ]
 const heroVideoUrl = computed(() => siteConfig.value.socialLinks?.homeHeroVideo || '')
-const heroPosterUrl = computed(() => siteConfig.value.socialLinks?.homeHeroPosterImage || qinghangPageAssets.sheetFactory.url)
+const heroPosterUrl = computed(() => siteConfig.value.socialLinks?.homeHeroPosterImage || '')
 const heroTitle = computed(() => siteConfig.value.homePage?.heroTitle || defaultHeroTitle)
 const introText = computed(() => siteConfig.value.homePage?.heroIntro
   || `CNBJTI is based in ${siteConfig.value.city || 'Baoji'}, ${siteConfig.value.country || 'China'}, focused on certified titanium materials and custom processing for global buyers.`)
