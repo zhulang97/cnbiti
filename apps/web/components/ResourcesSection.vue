@@ -66,7 +66,11 @@
 import type { Article } from '@cnbjti/types'
 import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
 
-const { data: articleData } = await useAsyncData('home-resource-articles', () => publicApi<Article[]>('/public/articles'))
+const { data: articleData, refresh: refreshArticles } = await usePublicArticles()
+
+onMounted(() => {
+  void refreshArticles()
+})
 
 const preferredCategories = ['Processing Guide', 'Applications', 'Material Comparison', 'FAQ', 'Titanium Insights']
 const resourceCards = computed(() => {

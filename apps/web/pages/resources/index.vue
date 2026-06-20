@@ -162,7 +162,7 @@ const selectedCategory = ref('All')
 const searchQuery = ref('')
 const visibleCount = ref(36)
 
-const { data: articleData } = await useAsyncData('public-resource-articles', () => publicApi<Article[]>('/public/articles'))
+const { data: articleData } = await usePublicArticles()
 
 const articles = computed(() => articleData.value || [])
 const categories = computed(() => {
