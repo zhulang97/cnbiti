@@ -8,7 +8,7 @@
     ]"
   >
     <!-- Top announcement bar -->
-    <div class="bg-steel-900 text-white text-xs py-1.5 px-4 text-center hidden xl:block">
+    <div class="hidden bg-steel-900 px-4 py-1.5 text-center text-xs text-white min-[1100px]:block">
       <span class="opacity-90">Baoji Titanium Valley | MTR Available | Global Shipping | Small MOQ Welcome</span>
       <span class="mx-3 opacity-40">|</span>
       <a :href="mailtoHref" class="hover:underline font-medium">{{ siteConfig.email }}</a>
@@ -35,12 +35,12 @@
         </NuxtLink>
 
         <!-- Desktop nav -->
-        <nav class="hidden xl:flex flex-1 items-center justify-center gap-0.5 px-4">
+        <nav class="hidden flex-1 items-center justify-center gap-0.5 px-3 min-[1100px]:flex min-[1400px]:px-4">
           <template v-for="item in topNavigationItems" :key="item.label">
             <div v-if="item.children?.length" class="group/nav">
               <NuxtLink
                 :to="localizedPath(item.href)"
-                class="flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium whitespace-nowrap transition-colors duration-200 2xl:px-3"
+                class="flex items-center gap-1 rounded-lg px-2 py-2 text-[13px] font-medium whitespace-nowrap transition-colors duration-200 min-[1400px]:px-2.5 min-[1400px]:text-sm 2xl:px-3"
                 :class="item.label.toLowerCase() === 'products' ? 'text-titanium-600 hover:text-titanium-950 hover:bg-titanium-100 group-hover/nav:text-titanium-950 group-hover/nav:bg-titanium-100' : 'text-titanium-600 hover:text-titanium-950 hover:bg-titanium-100'"
               >
                 {{ item.label }}
@@ -87,7 +87,7 @@
             <NuxtLink
               v-else
               :to="localizedPath(item.href)"
-              class="rounded-lg px-2.5 py-2 text-sm font-medium whitespace-nowrap text-titanium-600 transition-colors duration-200 hover:bg-titanium-100 hover:text-titanium-950 2xl:px-3"
+              class="rounded-lg px-2 py-2 text-[13px] font-medium whitespace-nowrap text-titanium-600 transition-colors duration-200 hover:bg-titanium-100 hover:text-titanium-950 min-[1400px]:px-2.5 min-[1400px]:text-sm 2xl:px-3"
             >
               {{ item.label }}
             </NuxtLink>
@@ -118,7 +118,7 @@
 
           <!-- Mobile menu button -->
           <button
-            class="xl:hidden p-2 text-titanium-600 hover:text-titanium-950 rounded-lg hover:bg-titanium-100 transition-colors"
+            class="p-2 text-titanium-600 hover:text-titanium-950 rounded-lg hover:bg-titanium-100 transition-colors min-[1100px]:hidden"
             @click="mobileOpen = !mobileOpen"
           >
             <svg v-if="!mobileOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -134,7 +134,7 @@
 
     <!-- Mobile menu -->
     <Transition name="mobile-menu">
-      <div v-if="mobileOpen" class="xl:hidden bg-white border-t border-titanium-200 shadow-xl shadow-titanium-200/60">
+      <div v-if="mobileOpen" class="bg-white border-t border-titanium-200 shadow-xl shadow-titanium-200/60 min-[1100px]:hidden">
         <div class="max-w-7xl mx-auto px-4 py-4 space-y-1">
           <template v-for="item in topNavigationItems" :key="`mobile-${item.label}`">
             <div v-if="item.children?.length">
@@ -204,7 +204,7 @@ type HeaderDropdownItem = NavigationItem & { __allProducts?: boolean }
 const scrolled = ref(false)
 const mobileOpen = ref(false)
 const mobileOpenGroup = ref<string | null>(null)
-const companyHrefs = new Set(['/quality', '/certificates', '/factory-tour', '/about', '/contact'])
+const companyHrefs = new Set(['/quality', '/grades', '/standards', '/about', '/contact'])
 const headerTagline = computed(() => {
   const city = siteConfig.value.city ? siteConfig.value.city.split(',')[0] : 'Baoji'
   return `${city} Titanium Supplier`
@@ -229,7 +229,9 @@ const topNavigationItems = computed<NavigationItem[]>(() => {
       children: item.children?.length ? item.children : productMenuFallback.value.children,
     }
   })
-  const primary = normalized.filter((item) => !companyHrefs.has(stripLocalePrefix(item.href)))
+  const primary = normalized
+    .filter((item) => !companyHrefs.has(stripLocalePrefix(item.href)))
+    .sort((a, b) => primaryOrder(a) - primaryOrder(b))
   const companyChildren = normalized
     .filter((item) => companyHrefs.has(stripLocalePrefix(item.href)))
     .sort((a, b) => companyOrder(a) - companyOrder(b))
@@ -271,8 +273,8 @@ function childBadge(parent: NavigationItem, child: HeaderDropdownItem) {
 function companyBadge(item: NavigationItem) {
   const href = stripLocalePrefix(item.href)
   if (href === '/quality') return 'Quality system and testing'
-  if (href === '/certificates') return 'Certificates and documents'
-  if (href === '/factory-tour') return 'Workshop and equipment gallery'
+  if (href === '/grades') return 'Titanium grade reference'
+  if (href === '/standards') return 'ASTM, AMS and industry specs'
   if (href === '/contact') return 'Email, WhatsApp and address'
   return 'Company profile'
 }
@@ -284,9 +286,18 @@ function stripLocalePrefix(href?: string | null) {
 }
 
 function companyOrder(item: NavigationItem) {
-  const order = ['/quality', '/certificates', '/factory-tour', '/about', '/contact']
+  const order = ['/quality', '/grades', '/standards', '/about', '/contact']
   const index = order.indexOf(stripLocalePrefix(item.href))
   return index === -1 ? order.length : index
+}
+
+function primaryOrder(item: NavigationItem) {
+  const label = item.label.toLowerCase()
+  const href = stripLocalePrefix(item.href)
+  if (label === 'products') return 0
+  const order = ['/certificates', '/factory-tour', '/processing', '/industries', '/resources']
+  const index = order.indexOf(href)
+  return index === -1 ? order.length : index + 1
 }
 
 function toggleMobileGroup(label: string) {

@@ -147,7 +147,7 @@ public class CatalogDataService {
 
   @Transactional
   public List<NavigationItem> updateNavigation(NavigationSaveRequest request) {
-    List<NavigationItem> items = normalizeNavigationItems(request.items());
+    List<NavigationItem> items = orderNavigationItems(normalizeNavigationItems(request.items()));
     if (items.isEmpty()) {
       throw new IllegalArgumentException("Navigation items are required");
     }
@@ -163,14 +163,14 @@ public class CatalogDataService {
         new NavigationItem("Products", null, categories().stream()
             .map(category -> new NavigationItem(category.name(), "/products/" + category.slug(), null, null, category.icon()))
             .toList(), null, null),
-        nav("Grades", "/grades"),
-        nav("Standards", "/standards"),
+        nav("Certificates", "/certificates"),
+        nav("Factory Tour", "/factory-tour"),
         nav("Processing", "/processing"),
         nav("Industries", "/industries"),
         nav("Resources", "/resources"),
         nav("Quality", "/quality"),
-        nav("Certificates", "/certificates"),
-        nav("Factory Tour", "/factory-tour"),
+        nav("Grades", "/grades"),
+        nav("Standards", "/standards"),
         nav("About", "/about"),
         nav("Contact", "/contact")
     );
@@ -1027,7 +1027,7 @@ public class CatalogDataService {
     if (json == null || json.isBlank()) {
       return defaultNavigation();
     }
-    return normalizeNavigationItems(Arrays.asList(jsonCodec.read(json, NavigationItem[].class)));
+    return orderNavigationItems(normalizeNavigationItems(Arrays.asList(jsonCodec.read(json, NavigationItem[].class))));
   }
 
   private List<NavigationItem> normalizeNavigationItems(List<NavigationItem> items) {
@@ -1052,6 +1052,43 @@ public class CatalogDataService {
         text(item.badge(), null),
         text(item.icon(), null)
     );
+  }
+
+  private List<NavigationItem> orderNavigationItems(List<NavigationItem> items) {
+    return items.stream()
+        .sorted(Comparator.comparingInt(this::navigationOrder))
+        .toList();
+  }
+
+  private int navigationOrder(NavigationItem item) {
+    String href = navigationHref(item);
+    if ("products".equalsIgnoreCase(item.label()) || "/products".equals(href)
+        || ((item.href() == null || item.href().isBlank()) && item.children() != null && !item.children().isEmpty())) {
+      return 0;
+    }
+    return switch (href) {
+      case "/certificates" -> 1;
+      case "/factory-tour" -> 2;
+      case "/processing" -> 3;
+      case "/industries" -> 4;
+      case "/resources" -> 5;
+      case "/quality" -> 6;
+      case "/grades" -> 7;
+      case "/standards" -> 8;
+      case "/about" -> 9;
+      case "/contact" -> 10;
+      default -> 100;
+    };
+  }
+
+  private String navigationHref(NavigationItem item) {
+    String href = text(item.href(), "");
+    int suffixIndex = href.length();
+    int queryIndex = href.indexOf('?');
+    int hashIndex = href.indexOf('#');
+    if (queryIndex >= 0) suffixIndex = Math.min(suffixIndex, queryIndex);
+    if (hashIndex >= 0) suffixIndex = Math.min(suffixIndex, hashIndex);
+    return href.substring(0, suffixIndex).replaceFirst("^/(?:en|zh|de|es)(?=/|$)", "");
   }
 
   private Map<String, String> cleanLinks(Map<String, String> values) {

@@ -292,8 +292,20 @@
                   <el-icon><Delete /></el-icon>
                 </el-button>
               </div>
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                <el-input v-model="item.imageUrl" placeholder="可选图片链接" />
+              <div class="grid grid-cols-1 gap-2 lg:grid-cols-[120px_minmax(0,1fr)_minmax(0,1fr)]">
+                <div class="h-20 rounded-lg border border-admin-600 bg-admin-950 overflow-hidden">
+                  <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.imageAlt || item.title" class="h-full w-full object-contain bg-white">
+                  <div v-else class="flex h-full items-center justify-center text-xs text-admin-500">暂无图片</div>
+                </div>
+                <div class="flex gap-2">
+                  <el-input v-model="item.imageUrl" placeholder="可选图片链接" />
+                  <el-upload :show-file-list="false" accept="image/*" action="#" :http-request="capabilityUploadRequest(index)">
+                    <el-button :loading="uploadingCapabilities[`capability-${index}`]">
+                      <el-icon class="mr-1"><Upload /></el-icon>
+                      上传
+                    </el-button>
+                  </el-upload>
+                </div>
                 <el-input v-model="item.imageAlt" placeholder="可选图片说明" />
               </div>
             </div>
@@ -485,36 +497,14 @@
 
     <div class="bg-admin-900 border border-admin-600/40 rounded-xl p-5 space-y-5">
       <div class="flex items-center justify-between gap-3">
-        <div>
-          <h3 class="text-admin-100 text-sm font-semibold">官网证书页面</h3>
-          <p class="text-admin-500 text-xs mt-1">管理 /certificates 页面文案和证书图片，图片上传后会保存到文件存储。</p>
-        </div>
-        <el-button size="small" @click="resetCertificatesPage">恢复默认</el-button>
+        <h3 class="text-admin-100 text-sm font-semibold">官网证书页面</h3>
       </div>
 
       <el-form label-position="top" class="space-y-5">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
-          <el-form-item label="页面标签">
-            <el-input v-model="certificatesPage.heroLabel" />
-          </el-form-item>
-          <el-form-item label="页面标题">
-            <el-input v-model="certificatesPage.heroTitle" />
-          </el-form-item>
-          <el-form-item label="页面简介" class="lg:col-span-2">
-            <el-input v-model="certificatesPage.heroIntro" type="textarea" :rows="3" resize="none" />
-          </el-form-item>
-          <el-form-item label="SEO 标题">
-            <el-input v-model="certificatesPage.seoTitle" />
-          </el-form-item>
-          <el-form-item label="SEO 描述">
-            <el-input v-model="certificatesPage.seoDescription" />
-          </el-form-item>
-        </div>
-
         <div class="space-y-3">
           <div class="flex items-center justify-between">
             <h4 class="text-admin-200 text-xs font-semibold">证书图片</h4>
-            <el-button size="small" text @click="addGalleryItem(certificatesPage)">
+            <el-button size="small" text :disabled="certificatesPage.items.length >= 6" @click="addCertificateItem">
               <el-icon class="mr-1"><Plus /></el-icon>
               添加图片
             </el-button>
@@ -526,22 +516,17 @@
             <div v-for="(item, index) in certificatesPage.items" :key="`cert-gallery-${index}`" class="border border-admin-600/40 rounded-lg p-3">
               <div class="grid grid-cols-1 md:grid-cols-[150px_1fr_auto] gap-3">
                 <div class="h-40 rounded-lg border border-admin-600 bg-admin-950 overflow-hidden">
-                  <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.imageAlt || item.title" class="h-full w-full object-contain bg-white">
+                  <img v-if="item.imageUrl" :src="item.imageUrl" alt="Certificate image" class="h-full w-full object-contain bg-white">
                   <div v-else class="flex h-full items-center justify-center text-xs text-admin-500">暂无图片</div>
                 </div>
-                <div class="space-y-2">
-                  <el-input v-model="item.title" placeholder="标题，例如 ISO 9001 Certificate" />
-                  <el-input v-model="item.desc" placeholder="说明，可选" />
-                  <el-input v-model="item.imageAlt" placeholder="图片 Alt 文本，可选" />
-                  <div class="flex gap-2">
-                    <el-input v-model="item.imageUrl" placeholder="图片链接，上传后自动填入" />
-                    <el-upload :show-file-list="false" accept="image/*" :before-upload="galleryBeforeUpload('certificatesPage', index)">
-                      <el-button :loading="uploadingGallery[`certificatesPage-${index}`]">
-                        <el-icon class="mr-1"><Upload /></el-icon>
-                        上传
-                      </el-button>
-                    </el-upload>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <el-input v-model="item.imageUrl" placeholder="图片链接，上传后自动填入" />
+                  <el-upload :show-file-list="false" accept="image/*" action="#" :http-request="galleryUploadRequest('certificatesPage', index)">
+                    <el-button :loading="uploadingGallery[`certificatesPage-${index}`]">
+                      <el-icon class="mr-1"><Upload /></el-icon>
+                      上传
+                    </el-button>
+                  </el-upload>
                 </div>
                 <el-button circle text type="danger" @click="removeGalleryItem(certificatesPage, index)">
                   <el-icon><Delete /></el-icon>
@@ -605,7 +590,7 @@
                   <el-input v-model="item.imageAlt" placeholder="图片 Alt 文本，可选" />
                   <div class="flex gap-2">
                     <el-input v-model="item.imageUrl" placeholder="图片链接，上传后自动填入" />
-                    <el-upload :show-file-list="false" accept="image/*" :before-upload="galleryBeforeUpload('factoryTourPage', index)">
+                    <el-upload :show-file-list="false" accept="image/*" action="#" :http-request="galleryUploadRequest('factoryTourPage', index)">
                       <el-button :loading="uploadingGallery[`factoryTourPage-${index}`]">
                         <el-icon class="mr-1"><Upload /></el-icon>
                         上传
@@ -649,7 +634,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import type { UploadRawFile } from 'element-plus'
+import type { UploadRawFile, UploadRequestOptions } from 'element-plus'
 import { defaultAboutPageConfig, defaultCertificatesPageConfig, defaultFactoryTourPageConfig, defaultHomePageConfig, useMockStore } from '@/stores/mock'
 import type {
   AboutFeature,
@@ -673,6 +658,7 @@ const uploadingContactCardImage = ref(false)
 const uploadingWechatQr = ref(false)
 const uploadingWhatsappQr = ref(false)
 const uploadingGallery = reactive<Record<string, boolean>>({})
+const uploadingCapabilities = reactive<Record<string, boolean>>({})
 const form = reactive<SiteConfig>(emptyConfig())
 const aboutPage = reactive<AboutPageConfig>(defaultAboutPageConfig())
 const homePage = reactive<HomePageConfig>(defaultHomePageConfig())
@@ -723,7 +709,7 @@ async function saveConfig() {
       socialLinks: cleanLinks(socialLinks),
       aboutPage: cleanAboutPage(aboutPage),
       homePage: cleanHomePage(homePage),
-      certificatesPage: cleanGalleryPage(certificatesPage, defaultCertificatesPageConfig()),
+      certificatesPage: cleanCertificatePage(certificatesPage),
       factoryTourPage: cleanGalleryPage(factoryTourPage, defaultFactoryTourPageConfig()),
     })
     fillForm(updated)
@@ -736,7 +722,7 @@ async function saveConfig() {
 function fillForm(data: SiteConfig) {
   const nextAboutPage = data.aboutPage ? cleanAboutPage(data.aboutPage) : defaultAboutPageConfig()
   const nextHomePage = data.homePage ? cleanHomePage(data.homePage) : defaultHomePageConfig()
-  const nextCertificatesPage = cleanGalleryPage(data.certificatesPage, defaultCertificatesPageConfig())
+  const nextCertificatesPage = cleanCertificatePage(data.certificatesPage)
   const nextFactoryTourPage = cleanGalleryPage(data.factoryTourPage, defaultFactoryTourPageConfig())
 
   Object.assign(form, {
@@ -813,6 +799,13 @@ function addHomeCapability() {
 
 function removeHomeCapability(index: number) {
   homePage.capabilities.splice(index, 1)
+}
+
+function capabilityUploadRequest(index: number) {
+  return async (options: UploadRequestOptions) => {
+    await handleCapabilityUpload(options.file, index)
+    return {}
+  }
 }
 
 function addHomeQualityItem() {
@@ -961,8 +954,12 @@ function cleanAboutTimeline(values: AboutTimelineEvent[]) {
     .filter((item) => item.year && item.title && item.desc)
 }
 
-function resetCertificatesPage() {
-  Object.assign(certificatesPage, defaultCertificatesPageConfig())
+function addCertificateItem() {
+  if (certificatesPage.items.length >= 6) {
+    ElMessage.warning('证书页最多展示 6 张图片')
+    return
+  }
+  addGalleryItem(certificatesPage)
 }
 
 function resetFactoryTourPage() {
@@ -986,6 +983,23 @@ function cleanGalleryPage(value: Partial<GalleryPageConfig> | null | undefined, 
     items: cleanGalleryItems(source.items ?? fallback.items),
     seoTitle: text(source.seoTitle, fallback.seoTitle),
     seoDescription: text(source.seoDescription, fallback.seoDescription),
+  }
+}
+
+function cleanCertificatePage(value: Partial<GalleryPageConfig> | null | undefined): GalleryPageConfig {
+  const fallback = defaultCertificatesPageConfig()
+  return {
+    heroLabel: fallback.heroLabel,
+    heroTitle: fallback.heroTitle,
+    heroIntro: '',
+    items: cleanGalleryItems(value?.items ?? []).slice(0, 6).map((item) => ({
+      title: '',
+      desc: '',
+      imageUrl: item.imageUrl,
+      imageAlt: '',
+    })),
+    seoTitle: fallback.seoTitle,
+    seoDescription: fallback.seoDescription,
   }
 }
 
@@ -1028,13 +1042,11 @@ function uploadWhatsappQr(file: UploadRawFile) {
 type SiteMediaKey = 'homeHeroVideo' | 'homeHeroPosterImage' | 'contactCardImage' | 'wechatQrImage' | 'whatsappQrImage'
 type GalleryPageKey = 'certificatesPage' | 'factoryTourPage'
 
-function galleryBeforeUpload(pageKey: GalleryPageKey, index: number) {
-  return (file: UploadRawFile) => uploadGalleryImage(file, pageKey, index)
-}
-
-function uploadGalleryImage(file: UploadRawFile, pageKey: GalleryPageKey, index: number) {
-  void handleGalleryUpload(file, pageKey, index)
-  return false
+function galleryUploadRequest(pageKey: GalleryPageKey, index: number) {
+  return async (options: UploadRequestOptions) => {
+    await handleGalleryUpload(options.file, pageKey, index)
+    return {}
+  }
 }
 
 async function handleMediaUpload(file: File, key: SiteMediaKey) {
@@ -1052,6 +1064,8 @@ async function handleMediaUpload(file: File, key: SiteMediaKey) {
     const asset = await mock.uploadFile(file)
     socialLinks[key] = asset.url
     ElMessage.success('文件已上传。')
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '文件上传失败')
   } finally {
     loading.value = false
   }
@@ -1070,8 +1084,30 @@ async function handleGalleryUpload(file: File, pageKey: GalleryPageKey, index: n
       if (!item.title) item.title = asset.alt || asset.filename.replace(/\.[^.]+$/, '')
     }
     ElMessage.success('图片已上传')
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '图片上传失败')
+    throw error
   } finally {
     uploadingGallery[uploadKey] = false
+  }
+}
+
+async function handleCapabilityUpload(file: File, index: number) {
+  const uploadKey = `capability-${index}`
+  uploadingCapabilities[uploadKey] = true
+  try {
+    const asset = await mock.uploadFile(file)
+    const item = homePage.capabilities[index]
+    if (item) {
+      item.imageUrl = asset.url
+      if (!item.imageAlt) item.imageAlt = asset.alt || asset.filename
+    }
+    ElMessage.success('图片已上传')
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : '图片上传失败')
+    throw error
+  } finally {
+    uploadingCapabilities[uploadKey] = false
   }
 }
 

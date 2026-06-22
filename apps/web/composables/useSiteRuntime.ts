@@ -132,10 +132,10 @@ function ensureCoreNavigation(items: NavigationItem[]) {
   }
 
   if (!hasHref('/certificates')) {
-    insertBefore('/about', { label: 'Certificates', href: '/certificates' })
+    insertBefore('/processing', { label: 'Certificates', href: '/certificates' })
   }
   if (!hasHref('/factory-tour')) {
-    insertBefore('/about', { label: 'Factory Tour', href: '/factory-tour' })
+    insertBefore('/processing', { label: 'Factory Tour', href: '/factory-tour' })
   }
   return result
 }
