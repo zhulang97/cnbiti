@@ -31,6 +31,7 @@ public class FileStorageService {
   private final StoredFileRepository storedFileRepository;
   private final CatalogContentRepository catalogContentRepository;
   private final RfqRepository rfqRepository;
+  private volatile boolean bucketReady;
 
   public FileStorageService(MinioClient minioClient, MinioProperties properties, StoredFileRepository storedFileRepository,
       CatalogContentRepository catalogContentRepository, RfqRepository rfqRepository) {
@@ -93,6 +94,19 @@ public class FileStorageService {
   }
 
   private void ensureBucket() throws Exception {
+    if (bucketReady) {
+      return;
+    }
+    synchronized (this) {
+      if (bucketReady) {
+        return;
+      }
+      ensureBucketExists();
+      bucketReady = true;
+    }
+  }
+
+  private void ensureBucketExists() throws Exception {
     boolean exists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(properties.bucket()).build());
     if (!exists) {
       minioClient.makeBucket(MakeBucketArgs.builder().bucket(properties.bucket()).build());

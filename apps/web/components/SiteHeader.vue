@@ -41,7 +41,7 @@
               <NuxtLink
                 :to="localizedPath(item.href)"
                 class="flex items-center gap-1 rounded-lg px-2 py-2 text-[13px] font-medium whitespace-nowrap transition-colors duration-200 min-[1400px]:px-2.5 min-[1400px]:text-sm 2xl:px-3"
-                :class="item.label.toLowerCase() === 'products' ? 'text-titanium-600 hover:text-titanium-950 hover:bg-titanium-100 group-hover/nav:text-titanium-950 group-hover/nav:bg-titanium-100' : 'text-titanium-600 hover:text-titanium-950 hover:bg-titanium-100'"
+                :class="isProductNavigation(item) ? 'text-titanium-600 hover:text-titanium-950 hover:bg-titanium-100 group-hover/nav:text-titanium-950 group-hover/nav:bg-titanium-100' : 'text-titanium-600 hover:text-titanium-950 hover:bg-titanium-100'"
               >
                 {{ item.label }}
                 <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover/nav:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -211,7 +211,7 @@ const headerTagline = computed(() => {
 })
 
 const productMenuFallback = computed<NavigationItem>(() => ({
-  label: 'Products',
+  label: 'Titanium Products',
   href: '/products',
   children: productCategories.value.map(category => ({
     label: category.name,
@@ -222,7 +222,7 @@ const productMenuFallback = computed<NavigationItem>(() => ({
 const topNavigationItems = computed<NavigationItem[]>(() => {
   const items = navigationItems.value.length ? navigationItems.value : [productMenuFallback.value]
   const normalized = items.map((item) => {
-    if (item.label.toLowerCase() !== 'products') return item
+    if (!isProductNavigation(item)) return item
     return {
       ...item,
       href: item.href || '/products',
@@ -250,7 +250,7 @@ function dropdownChildrenFor(item: NavigationItem): HeaderDropdownItem[] {
   if (!item) return []
 
   const children = (item.children || []) as HeaderDropdownItem[]
-  const shouldAddAllProducts = item.label.toLowerCase() === 'products' && item.href
+  const shouldAddAllProducts = isProductNavigation(item) && item.href
   if (!shouldAddAllProducts) return children
 
   return [
@@ -285,6 +285,13 @@ function stripLocalePrefix(href?: string | null) {
   return (path || '').replace(/^\/(?:en|zh|de|es)(?=\/|$)/i, '') || '/'
 }
 
+function isProductNavigation(item: NavigationItem) {
+  const href = stripLocalePrefix(item.href)
+  const label = item.label.trim().toLowerCase()
+  const hasProductChildren = item.children?.some(child => stripLocalePrefix(child.href).startsWith('/products/'))
+  return href === '/products' || label.includes('product') || Boolean(hasProductChildren)
+}
+
 function companyOrder(item: NavigationItem) {
   const order = ['/quality', '/grades', '/standards', '/about', '/contact']
   const index = order.indexOf(stripLocalePrefix(item.href))
@@ -292,9 +299,8 @@ function companyOrder(item: NavigationItem) {
 }
 
 function primaryOrder(item: NavigationItem) {
-  const label = item.label.toLowerCase()
   const href = stripLocalePrefix(item.href)
-  if (label === 'products') return 0
+  if (isProductNavigation(item)) return 0
   const order = ['/certificates', '/factory-tour', '/processing', '/industries', '/resources']
   const index = order.indexOf(href)
   return index === -1 ? order.length : index + 1

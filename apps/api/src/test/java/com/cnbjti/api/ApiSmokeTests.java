@@ -53,6 +53,13 @@ class ApiSmokeTests {
   }
 
   @Test
+  void publicUploadRejectsGetWithMethodNotAllowed() throws Exception {
+    mockMvc.perform(get("/api/public/uploads"))
+        .andExpect(status().isMethodNotAllowed())
+        .andExpect(jsonPath("$.code").value("METHOD_NOT_ALLOWED"));
+  }
+
+  @Test
   void loginReturnsToken() throws Exception {
     mockMvc.perform(post("/api/auth/login")
             .contentType(MediaType.APPLICATION_JSON)

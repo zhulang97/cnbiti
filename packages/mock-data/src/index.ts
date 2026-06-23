@@ -124,7 +124,7 @@ export const siteConfig: SiteConfig = {
 
 export const navigation: NavigationItem[] = [
   {
-    label: 'Products',
+    label: 'Titanium Products',
     children: [
       { label: 'Titanium Bar & Rod', href: '/products/titanium-bar', icon: 'cylinder' },
       { label: 'Titanium Sheet / Plate / Foil', href: '/products/titanium-sheet', icon: 'layers' },

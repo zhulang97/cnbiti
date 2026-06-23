@@ -160,7 +160,7 @@ public class CatalogDataService {
 
   private List<NavigationItem> defaultNavigation() {
     return List.of(
-        new NavigationItem("Products", null, categories().stream()
+        new NavigationItem("Titanium Products", null, categories().stream()
             .map(category -> new NavigationItem(category.name(), "/products/" + category.slug(), null, null, category.icon()))
             .toList(), null, null),
         nav("Certificates", "/certificates"),

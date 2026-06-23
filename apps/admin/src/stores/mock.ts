@@ -2,6 +2,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ref } from 'vue'
 import { adminHeaders, apiRequest, apiUrl } from '@/api/client'
 import { useAuthStore } from '@/stores/auth'
+import { prepareUploadFile } from '@/utils/imageUpload'
 import type { AboutPageConfig, GalleryPageConfig, HomePageConfig, MediaAsset, NavigationItem, ProductCategory, ProductSpec, SeoMeta, SiteConfig, Standard, TitaniumGrade } from '@cnbjti/types'
 
 export type RfqStatus = 'new' | 'in_progress' | 'quoted' | 'won' | 'lost'
@@ -783,14 +784,28 @@ export const useMockStore = defineStore('mock', () => {
   }
 
   async function uploadFile(file: File) {
+    const uploadFile = await prepareUploadFile(file)
     const formData = new FormData()
-    formData.append('file', file)
+    formData.append('file', uploadFile)
     const asset = await apiRequest<MediaAsset>('/public/uploads', {
       method: 'POST',
       body: formData,
     })
-    await loadFiles(true)
+    upsertUploadedFile(asset)
     return asset
+  }
+
+  function upsertUploadedFile(asset: MediaAsset) {
+    const uploaded: AdminStoredFile = {
+      id: asset.id,
+      filename: asset.filename,
+      objectName: asset.url.split('/').slice(-2).join('/'),
+      contentType: asset.mimeType,
+      size: asset.size,
+      url: asset.url,
+      createdAt: new Date().toISOString(),
+    }
+    files.value = [uploaded, ...files.value.filter(file => file.id !== uploaded.id)]
   }
 
   async function updateRfqStatus(id: string, status: RfqStatus) {

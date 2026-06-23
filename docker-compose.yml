@@ -58,7 +58,7 @@ services:
     working_dir: /app
     command: ["java", "-jar", "apps/api/target/api-0.1.0-SNAPSHOT.jar"]
     environment:
-      JAVA_TOOL_OPTIONS: -Xmx128m -XX:MaxMetaspaceSize=96m -XX:MaxDirectMemorySize=32m
+      JAVA_TOOL_OPTIONS: -Xmx160m -XX:MaxMetaspaceSize=128m -XX:MaxDirectMemorySize=32m
       MYSQL_URL: jdbc:mysql://mysql:3306/cnbjti?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
       MYSQL_USER: cnbjti
       MYSQL_PASSWORD: cnbjti
