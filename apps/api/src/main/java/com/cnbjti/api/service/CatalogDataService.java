@@ -1309,9 +1309,10 @@ public class CatalogDataService {
       return List.of();
     }
     return values.stream()
-        .filter(value -> value != null && value.title() != null && !value.title().isBlank()
-            && value.desc() != null && !value.desc().isBlank())
-        .map(value -> new HomeCapability(value.title().trim(), value.desc().trim(), text(value.imageUrl(), ""), text(value.imageAlt(), "")))
+        .filter(value -> value != null
+            && ((value.title() != null && !value.title().isBlank())
+            || (value.imageUrl() != null && !value.imageUrl().isBlank())))
+        .map(value -> new HomeCapability(text(value.title(), ""), text(value.desc(), ""), text(value.imageUrl(), ""), text(value.imageAlt(), "")))
         .toList();
   }
 

@@ -858,7 +858,7 @@ function cleanHomeCapabilities(values: HomeCapability[]) {
       imageUrl: text(item.imageUrl, ''),
       imageAlt: text(item.imageAlt, ''),
     }))
-    .filter((item) => item.title && item.desc)
+    .filter((item) => item.title || item.imageUrl)
 }
 
 function cleanHomeQualityItems(values: HomeQualityItem[]) {

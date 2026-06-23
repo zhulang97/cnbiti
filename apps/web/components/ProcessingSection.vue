@@ -24,7 +24,7 @@
         </div>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:justify-self-end lg:max-w-[640px] xl:max-w-[660px]">
           <div
-            v-for="img in factoryImages"
+            v-for="img in showcaseImages"
             :key="img.src"
             class="group overflow-hidden rounded-xl border border-titanium-200 bg-white shadow-sm shadow-titanium-200/60 transition-all duration-300 hover:-translate-y-1 hover:border-accent-500/30 hover:shadow-xl hover:shadow-titanium-200/80"
           >
@@ -71,6 +71,16 @@ const defaultCapabilities: HomeCapability[] = [
 const fallbackFactoryTourPage = fallbackSiteConfig.factoryTourPage as GalleryPageConfig
 const capabilities = computed(() => siteConfig.value.homePage?.capabilities?.length ? siteConfig.value.homePage.capabilities : defaultCapabilities)
 
+const capabilityImages = computed(() => capabilities.value
+  .filter((item) => item?.imageUrl)
+  .slice(0, 4)
+  .map((item) => ({
+    src: item.imageUrl as string,
+    alt: item.imageAlt || item.title || 'Processing capability image',
+    label: item.title || 'Processing Capability',
+    subtitle: item.desc || '',
+  })))
+
 const factoryImages = computed(() => {
   const configuredItems = siteConfig.value.factoryTourPage?.items
   const sourceItems = configuredItems?.some((item) => item?.imageUrl) ? configuredItems : fallbackFactoryTourPage.items
@@ -85,4 +95,6 @@ const factoryImages = computed(() => {
       subtitle: item.desc || '',
     }))
 })
+
+const showcaseImages = computed(() => capabilityImages.value.length ? capabilityImages.value : factoryImages.value)
 </script>

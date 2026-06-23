@@ -25,8 +25,8 @@
           <div v-for="cap in capabilities" :key="cap.title" class="card group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-titanium-200/70">
             <div class="relative flex h-[150px] items-center justify-center overflow-hidden bg-steel-50 px-2 py-2 sm:h-[165px]">
               <img
-                :src="capImage(cap.title)"
-                :alt="cap.title"
+                :src="capImage(cap)"
+                :alt="cap.imageAlt || cap.title"
                 class="h-[96%] w-[96%] object-contain transition-transform duration-500 group-hover:scale-[1.03]"
                 loading="lazy"
               />
@@ -41,10 +41,10 @@
                   <p class="line-clamp-2 text-sm leading-relaxed text-titanium-400">{{ cap.desc }}</p>
                 </div>
               </div>
-              <div class="grid grid-cols-2 gap-2">
+              <div v-if="cap.specs.length" class="grid grid-cols-2 gap-2">
                 <div v-for="spec in cap.specs" :key="spec.label" class="rounded-lg border border-titanium-200 bg-steel-50 p-3">
                   <div class="mb-1 text-[11px] leading-tight text-titanium-500">{{ spec.label }}</div>
-                  <div class="text-xs font-semibold text-white">{{ spec.value }}</div>
+                  <div class="text-xs font-semibold text-titanium-950">{{ spec.value }}</div>
                 </div>
               </div>
             </div>
@@ -118,9 +118,21 @@
 
 <script setup lang="ts">
 import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
+import type { HomeCapability } from '@cnbjti/types'
 
+interface ProcessingSpec {
+  label: string
+  value: string
+}
 
-const capabilities = [
+interface ProcessingCapability extends HomeCapability {
+  icon?: string
+  specs: ProcessingSpec[]
+}
+
+const { siteConfig } = await useSiteRuntime()
+
+const defaultCapabilities: ProcessingCapability[] = [
   {
     icon: '✂️',
     title: 'Cut-to-Size',
@@ -189,28 +201,48 @@ const capabilities = [
   },
 ]
 
-function capImage(title: string) {
+const specsByTitle = new Map(defaultCapabilities.map((item) => [normalizeTitle(item.title), item.specs]))
+
+const capabilities = computed<ProcessingCapability[]>(() => {
+  const configured = siteConfig.value.homePage?.capabilities?.filter((item) => item?.title?.trim() || item?.imageUrl?.trim())
+  if (!configured?.length) return defaultCapabilities
+
+  return configured.map((item, index) => ({
+    title: item.title || `Processing Capability ${index + 1}`,
+    desc: item.desc || '',
+    imageUrl: item.imageUrl || '',
+    imageAlt: item.imageAlt || item.title || `Processing capability ${index + 1}`,
+    specs: specsByTitle.get(normalizeTitle(item.title || '')) || [],
+  }))
+})
+
+function normalizeTitle(title: string) {
+  return title.trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+function capImage(cap: ProcessingCapability) {
+  if (cap.imageUrl) return cap.imageUrl
   const images: Record<string, string> = {
-    'Cut-to-Size': qinghangPageAssets.cuttingFactory.url,
-    'CNC Machining': qinghangPageAssets.factoryCnc.url,
-    'Grinding & Polishing': qinghangPageAssets.surfaceTreatment.url,
-    'Welding & Fabrication': qinghangPageAssets.weldedTubes.url,
-    'Surface Treatment': qinghangPageAssets.heatTreatment.url,
-    'Inspection & Testing': qinghangPageAssets.sheetFactory.url,
+    'cut-to-size': qinghangPageAssets.cuttingFactory.url,
+    'cnc machining': qinghangPageAssets.factoryCnc.url,
+    'grinding & polishing': qinghangPageAssets.surfaceTreatment.url,
+    'welding & fabrication': qinghangPageAssets.weldedTubes.url,
+    'surface treatment': qinghangPageAssets.heatTreatment.url,
+    'inspection & testing': qinghangPageAssets.sheetFactory.url,
   }
-  return images[title] || qinghangPageAssets.cncMachining.url
+  return images[normalizeTitle(cap.title)] || qinghangPageAssets.cncMachining.url
 }
 
 function capCode(title: string) {
   const codes: Record<string, string> = {
-    'Cut-to-Size': 'CUT',
-    'CNC Machining': 'CNC',
-    'Grinding & Polishing': 'POL',
-    'Welding & Fabrication': 'WLD',
-    'Surface Treatment': 'SUR',
-    'Inspection & Testing': 'QC',
+    'cut-to-size': 'CUT',
+    'cnc machining': 'CNC',
+    'grinding & polishing': 'POL',
+    'welding & fabrication': 'WLD',
+    'surface treatment': 'SUR',
+    'inspection & testing': 'QC',
   }
-  return codes[title] || 'TI'
+  return codes[normalizeTitle(title)] || 'TI'
 }
 
 const tolerances = [
