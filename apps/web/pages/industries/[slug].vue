@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="industry">
     <section class="relative bg-titanium-950 pt-32 pb-16 overflow-hidden">
       <div class="absolute inset-0 grid-pattern opacity-30" />
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -133,30 +133,34 @@
 </template>
 
 <script setup lang="ts">
-import type { Article } from '@cnbjti/types'
-import { findIndustryProfile, matchingIndustryArticles } from '~/utils/industryContent'
+import type { Article, IndustryProfile } from '@cnbjti/types'
+import { defaultIndustryProfiles, findIndustryProfile, matchingIndustryArticles } from '~/utils/industryContent'
 import { qinghangPageAssets } from '~/utils/qinghangPageAssets'
 
 const route = useRoute()
 const slug = Array.isArray(route.params.slug) ? route.params.slug[0] : String(route.params.slug || '')
-const industry = findIndustryProfile(slug)
+const { data: industryData } = await useAsyncData(`public-industry-${slug}`, () => publicApi<IndustryProfile>(`/public/industries/${slug}`), {
+  default: () => findIndustryProfile(slug, defaultIndustryProfiles) || null,
+})
 
-if (!industry) {
+const industry = computed<IndustryProfile | null>(() => industryData.value || findIndustryProfile(slug, defaultIndustryProfiles) || null)
+
+if (!industry.value) {
   throw createError({ statusCode: 404, statusMessage: 'Industry not found' })
 }
 
 const { data: articleData } = await useAsyncData(`industry-articles-${slug}`, () => publicApi<Article[]>('/public/articles'))
 
-const relatedArticles = computed(() => matchingIndustryArticles(articleData.value || [], industry, 4))
+const relatedArticles = computed(() => industry.value ? matchingIndustryArticles(articleData.value || [], industry.value, 4) : [])
 
 function articleImage(article: Article) {
   return article.coverImage?.url || qinghangPageAssets.sheetFactory.url
 }
 
 useHead(() => ({
-  title: `${industry.name} Titanium Supply | CNBJTI`,
+  title: `${industry.value?.name || 'Industry'} Titanium Supply | CNBJTI`,
   meta: [
-    { name: 'description', content: `${industry.name} titanium grades, standards, product forms and RFQ guidance from CNBJTI.` },
+    { name: 'description', content: `${industry.value?.name || 'Industry'} titanium grades, standards, product forms and RFQ guidance from CNBJTI.` },
   ],
 }))
 </script>

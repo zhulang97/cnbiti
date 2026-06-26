@@ -47,6 +47,7 @@ public class SecurityConfig {
                 "/api/admin/audit-logs/**").hasRole("ADMIN")
             .requestMatchers("/api/admin/products/**", "/api/admin/articles/**", "/api/admin/files/**",
                 "/api/admin/categories/**", "/api/admin/grades/**", "/api/admin/standards/**",
+                "/api/admin/industries/**",
                 "/api/admin/content-options").hasAnyRole("ADMIN", "EDITOR")
             .requestMatchers("/api/admin/rfqs/**", "/api/admin/customers/**", "/api/admin/contact-messages/**")
                 .hasAnyRole("ADMIN", "SALES")

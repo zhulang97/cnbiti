@@ -9,6 +9,7 @@ import com.cnbjti.api.model.ApiModels.AdminContactMessage;
 import com.cnbjti.api.model.ApiModels.AdminContentOptions;
 import com.cnbjti.api.model.ApiModels.AdminDashboard;
 import com.cnbjti.api.model.ApiModels.AdminGradeDetail;
+import com.cnbjti.api.model.ApiModels.AdminIndustryDetail;
 import com.cnbjti.api.model.ApiModels.AdminProduct;
 import com.cnbjti.api.model.ApiModels.AdminProductDetail;
 import com.cnbjti.api.model.ApiModels.AdminRfq;
@@ -23,6 +24,7 @@ import com.cnbjti.api.model.ApiModels.CategorySaveRequest;
 import com.cnbjti.api.model.ApiModels.Customer;
 import com.cnbjti.api.model.ApiModels.CustomerDetail;
 import com.cnbjti.api.model.ApiModels.GradeSaveRequest;
+import com.cnbjti.api.model.ApiModels.IndustrySaveRequest;
 import com.cnbjti.api.model.ApiModels.NavigationItem;
 import com.cnbjti.api.model.ApiModels.NavigationSaveRequest;
 import com.cnbjti.api.model.ApiModels.ProductStatusRequest;
@@ -204,6 +206,32 @@ public class AdminController {
   @DeleteMapping("/categories/{id}")
   public ApiResponse<Void> deleteCategory(@PathVariable String id) {
     dataService.deleteCategory(id);
+    return ApiResponse.ok(null);
+  }
+
+  @GetMapping("/industries")
+  public ApiResponse<List<AdminIndustryDetail>> industries() {
+    return ApiResponse.ok(dataService.adminIndustries());
+  }
+
+  @GetMapping("/industries/{id}")
+  public ApiResponse<AdminIndustryDetail> industry(@PathVariable String id) {
+    return ApiResponse.ok(dataService.adminIndustryDetail(id));
+  }
+
+  @PostMapping("/industries")
+  public ApiResponse<AdminIndustryDetail> createIndustry(@Valid @RequestBody IndustrySaveRequest request) {
+    return ApiResponse.ok(dataService.createIndustry(request));
+  }
+
+  @PutMapping("/industries/{id}")
+  public ApiResponse<AdminIndustryDetail> updateIndustry(@PathVariable String id, @Valid @RequestBody IndustrySaveRequest request) {
+    return ApiResponse.ok(dataService.updateIndustry(id, request));
+  }
+
+  @DeleteMapping("/industries/{id}")
+  public ApiResponse<Void> deleteIndustry(@PathVariable String id) {
+    dataService.deleteIndustry(id);
     return ApiResponse.ok(null);
   }
 

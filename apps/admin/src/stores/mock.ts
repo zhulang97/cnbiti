@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { adminHeaders, apiRequest, apiUrl } from '@/api/client'
 import { useAuthStore } from '@/stores/auth'
 import { prepareUploadFile } from '@/utils/imageUpload'
-import type { AboutPageConfig, GalleryPageConfig, HomePageConfig, MediaAsset, NavigationItem, ProductCategory, ProductSpec, SeoMeta, SiteConfig, Standard, TitaniumGrade } from '@cnbjti/types'
+import type { AboutPageConfig, GalleryPageConfig, HomePageConfig, IndustryProfile, MediaAsset, NavigationItem, ProductCategory, ProductSpec, SeoMeta, SiteConfig, Standard, TitaniumGrade } from '@cnbjti/types'
 
 export type RfqStatus = 'new' | 'in_progress' | 'quoted' | 'won' | 'lost'
 export type ContentStatus = 'published' | 'draft'
@@ -56,6 +56,14 @@ export interface AdminProductDetail {
 }
 
 export type ProductSavePayload = Omit<AdminProductDetail, 'id'>
+
+export interface AdminIndustryDetail extends IndustryProfile {
+  id: string
+  status: ContentStatus
+  updatedAt: string
+}
+
+export type IndustrySavePayload = Omit<AdminIndustryDetail, 'id' | 'updatedAt'>
 
 export interface AdminArticle {
   id: string
@@ -444,6 +452,8 @@ export const useMockStore = defineStore('mock', () => {
     { id: 'p10', name: 'Grade 2 Titanium Elbow 90°', category: 'Titanium Fittings & Flanges', grade: 'Gr.2', status: 'draft', updatedAt: '2026-03-25' },
   ])
 
+  const industries = ref<AdminIndustryDetail[]>([])
+
   const articles = ref<AdminArticle[]>([
     { id: 'a1', title: 'Complete Guide to Titanium Grades: Gr.1 to Gr.23', category: 'Technical Guide', status: 'published', publishedAt: '2026-03-15' },
     { id: 'a2', title: 'ASTM B348 Titanium Bar: What Buyers Need to Know', category: 'Standards', status: 'published', publishedAt: '2026-02-28' },
@@ -653,6 +663,14 @@ export const useMockStore = defineStore('mock', () => {
     return products.value
   }
 
+  async function loadIndustries(force = false) {
+    if (!force && industries.value.length) {
+      return industries.value
+    }
+    industries.value = await apiRequest<AdminIndustryDetail[]>('/admin/industries')
+    return industries.value
+  }
+
   async function getContactMessage(id: string) {
     return apiRequest<AdminContactMessage>(`/admin/contact-messages/${encodeURIComponent(id)}`)
   }
@@ -739,6 +757,24 @@ export const useMockStore = defineStore('mock', () => {
   async function deleteProduct(id: string) {
     await apiRequest<void>(`/admin/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
     products.value = products.value.filter(product => product.id !== id)
+  }
+
+  async function getIndustryDetail(id: string) {
+    return apiRequest<AdminIndustryDetail>(`/admin/industries/${encodeURIComponent(id)}`)
+  }
+
+  async function saveIndustry(payload: IndustrySavePayload, id?: string) {
+    const updated = await apiRequest<AdminIndustryDetail>(id ? `/admin/industries/${encodeURIComponent(id)}` : '/admin/industries', {
+      method: id ? 'PUT' : 'POST',
+      body: JSON.stringify(payload),
+    })
+    upsert(industries.value, updated)
+    return updated
+  }
+
+  async function deleteIndustry(id: string) {
+    await apiRequest<void>(`/admin/industries/${encodeURIComponent(id)}`, { method: 'DELETE' })
+    industries.value = industries.value.filter(industry => industry.id !== id)
   }
 
   async function getArticleDetail(id: string) {
@@ -922,6 +958,7 @@ export const useMockStore = defineStore('mock', () => {
     dashboard,
     rfqs,
     products,
+    industries,
     articles,
     customers,
     categories,
@@ -952,6 +989,7 @@ export const useMockStore = defineStore('mock', () => {
     loadContactMessages,
     loadArticles,
     loadProducts,
+    loadIndustries,
     getContactMessage,
     updateContactMessageStatus,
     updateContactMessageNotes,
@@ -964,6 +1002,9 @@ export const useMockStore = defineStore('mock', () => {
     getProductDetail,
     saveProduct,
     deleteProduct,
+    getIndustryDetail,
+    saveIndustry,
+    deleteIndustry,
     getArticleDetail,
     saveArticle,
     deleteArticle,

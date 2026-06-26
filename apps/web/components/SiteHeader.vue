@@ -229,19 +229,25 @@ const topNavigationItems = computed<NavigationItem[]>(() => {
       children: item.children?.length ? item.children : productMenuFallback.value.children,
     }
   })
-  const primary = normalized
-    .filter((item) => !companyHrefs.has(stripLocalePrefix(item.href)))
-    .sort((a, b) => primaryOrder(a) - primaryOrder(b))
-  const companyChildren = normalized
-    .filter((item) => companyHrefs.has(stripLocalePrefix(item.href)))
-    .sort((a, b) => companyOrder(a) - companyOrder(b))
+  const primary: NavigationItem[] = []
+  const companyChildren: NavigationItem[] = []
+  let companyMenu: NavigationItem | null = null
 
-  if (companyChildren.length) {
-    primary.push({
-      label: 'Company',
-      href: '/about',
-      children: companyChildren,
-    })
+  for (const item of normalized) {
+    if (!companyHrefs.has(stripLocalePrefix(item.href))) {
+      primary.push(item)
+      continue
+    }
+
+    companyChildren.push(item)
+    if (!companyMenu) {
+      companyMenu = {
+        label: 'Company',
+        href: '/about',
+        children: companyChildren,
+      }
+      primary.push(companyMenu)
+    }
   }
 
   return primary
@@ -290,20 +296,6 @@ function isProductNavigation(item: NavigationItem) {
   const label = item.label.trim().toLowerCase()
   const hasProductChildren = item.children?.some(child => stripLocalePrefix(child.href).startsWith('/products/'))
   return href === '/products' || label.includes('product') || Boolean(hasProductChildren)
-}
-
-function companyOrder(item: NavigationItem) {
-  const order = ['/quality', '/grades', '/standards', '/about', '/contact']
-  const index = order.indexOf(stripLocalePrefix(item.href))
-  return index === -1 ? order.length : index
-}
-
-function primaryOrder(item: NavigationItem) {
-  const href = stripLocalePrefix(item.href)
-  if (isProductNavigation(item)) return 0
-  const order = ['/certificates', '/factory-tour', '/processing', '/industries', '/resources']
-  const index = order.indexOf(href)
-  return index === -1 ? order.length : index + 1
 }
 
 function toggleMobileGroup(label: string) {

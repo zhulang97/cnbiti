@@ -87,6 +87,7 @@ public class AdminAuditFilter extends OncePerRequestFilter {
       case "customers" -> "CUSTOMER";
       case "files" -> "FILE";
       case "grades" -> "GRADE";
+      case "industries" -> "INDUSTRY";
       case "navigation" -> "NAVIGATION";
       case "products" -> "PRODUCT";
       case "rfqs" -> "RFQ";

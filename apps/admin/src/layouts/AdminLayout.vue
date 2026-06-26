@@ -106,6 +106,7 @@ const navItems = computed(() => [
   { label: '文章管理', to: '/articles', icon: 'Reading', roles: ['ADMIN', 'EDITOR'] },
   { label: '留言管理', to: '/contact-messages', icon: 'Message', badge: newMessageCount.value || undefined, roles: ['ADMIN', 'SALES'] },
   { label: '客户管理', to: '/customers', icon: 'User', roles: ['ADMIN', 'SALES'] },
+  { label: '行业应用管理', to: '/industries', icon: 'Connection', roles: ['ADMIN', 'EDITOR'] },
 ].filter((item) => !item.roles || item.roles.includes(auth.role)))
 
 const pageTitles: Record<string, string> = {
@@ -123,6 +124,7 @@ const pageTitles: Record<string, string> = {
   'contact-messages': '留言管理',
   customers: '客户管理',
   'customer-detail': '客户详情',
+  industries: '行业应用管理',
 }
 
 const pageTitle = computed(() => pageTitles[route.name as string] || '管理后台')

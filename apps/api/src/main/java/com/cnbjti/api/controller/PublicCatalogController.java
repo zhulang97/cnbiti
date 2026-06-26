@@ -4,6 +4,7 @@ import com.cnbjti.api.common.ApiResponse;
 import com.cnbjti.api.model.ApiModels.AdminUser;
 import com.cnbjti.api.model.ApiModels.Article;
 import com.cnbjti.api.model.ApiModels.ContactResponse;
+import com.cnbjti.api.model.ApiModels.IndustryProfile;
 import com.cnbjti.api.model.ApiModels.MediaAsset;
 import com.cnbjti.api.model.ApiModels.NavigationItem;
 import com.cnbjti.api.model.ApiModels.Product;
@@ -113,6 +114,16 @@ public class PublicCatalogController {
   @GetMapping("/articles/{slug}")
   public ApiResponse<Article> article(@PathVariable String slug) {
     return ApiResponse.ok(dataService.articleBySlug(slug));
+  }
+
+  @GetMapping("/industries")
+  public ApiResponse<List<IndustryProfile>> industries() {
+    return ApiResponse.ok(dataService.industries());
+  }
+
+  @GetMapping("/industries/{slug}")
+  public ApiResponse<IndustryProfile> industry(@PathVariable String slug) {
+    return ApiResponse.ok(dataService.industryBySlug(slug));
   }
 
   @PostMapping("/rfqs")

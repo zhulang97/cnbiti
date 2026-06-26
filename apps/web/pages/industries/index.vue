@@ -89,12 +89,14 @@
 </template>
 
 <script setup lang="ts">
-import type { Article } from '@cnbjti/types'
-import { industryProfiles, matchingIndustryArticles, type IndustryProfile } from '~/utils/industryContent'
+import type { Article, IndustryProfile } from '@cnbjti/types'
+import { defaultIndustryProfiles, matchingIndustryArticles } from '~/utils/industryContent'
 
 const { data: articleData } = await useAsyncData('public-industry-list-articles', () => publicApi<Article[]>('/public/articles'))
+const { data: industryData } = await useAsyncData('public-industries', () => publicApi<IndustryProfile[]>('/public/industries'))
 
 const articles = computed(() => articleData.value || [])
+const industryProfiles = computed(() => industryData.value?.length ? industryData.value : defaultIndustryProfiles)
 
 function topArticle(industry: IndustryProfile) {
   return matchingIndustryArticles(articles.value, industry, 1)[0]

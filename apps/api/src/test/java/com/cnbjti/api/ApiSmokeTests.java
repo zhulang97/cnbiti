@@ -243,7 +243,7 @@ class ApiSmokeTests {
 
     mockMvc.perform(get("/api/admin/navigation").header(HttpHeaders.AUTHORIZATION, bearer(token)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data[0].label").value("Products"))
+        .andExpect(jsonPath("$.data[0].label").value("Titanium Products"))
         .andExpect(jsonPath("$.data[0].children").isArray());
 
     mockMvc.perform(put("/api/admin/navigation")
@@ -252,6 +252,7 @@ class ApiSmokeTests {
             .content("""
                 {
                   "items": [
+                    { "label": "Contact", "href": "/contact" },
                     {
                       "label": "Products",
                       "children": [
@@ -259,19 +260,21 @@ class ApiSmokeTests {
                         { "label": "Titanium Sheet", "href": "/products/titanium-sheet", "icon": "sheet" }
                       ]
                     },
-                    { "label": "Technical Guides", "href": "/resources", "badge": "New" },
-                    { "label": "Contact", "href": "/contact" }
+                    { "label": "Technical Guides", "href": "/resources", "badge": "New" }
                   ]
                 }
                 """))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data[1].label").value("Technical Guides"))
-        .andExpect(jsonPath("$.data[1].badge").value("New"));
+        .andExpect(jsonPath("$.data[0].label").value("Contact"))
+        .andExpect(jsonPath("$.data[1].label").value("Products"))
+        .andExpect(jsonPath("$.data[2].label").value("Technical Guides"))
+        .andExpect(jsonPath("$.data[2].badge").value("New"));
 
     mockMvc.perform(get("/api/public/navigation"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data[0].children[1].label").value("Titanium Sheet"))
-        .andExpect(jsonPath("$.data[1].href").value("/resources"));
+        .andExpect(jsonPath("$.data[0].href").value("/contact"))
+        .andExpect(jsonPath("$.data[1].children[1].label").value("Titanium Sheet"))
+        .andExpect(jsonPath("$.data[2].href").value("/resources"));
 
     mockMvc.perform(put("/api/admin/navigation")
             .header(HttpHeaders.AUTHORIZATION, bearer(token))
@@ -279,6 +282,45 @@ class ApiSmokeTests {
             .content("{\"items\":[{\"label\":\" \",\"href\":\"/bad\"}]}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"));
+  }
+
+  @Test
+  void adminCanManageIndustries() throws Exception {
+    String token = adminToken();
+
+    mockMvc.perform(get("/api/public/industries"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data[0].slug").value("chemical-processing"))
+        .andExpect(jsonPath("$.data[0].image").isNotEmpty());
+
+    mockMvc.perform(put("/api/admin/industries/industry-chemical-processing")
+            .header(HttpHeaders.AUTHORIZATION, bearer(token))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "slug": "chemical-processing",
+                  "name": "Chemical Processing",
+                  "kicker": "Reactors and piping",
+                  "summary": "Updated industry summary for chemical service.",
+                  "image": "https://example.com/chemical.jpg",
+                  "imageAlt": "Chemical titanium application",
+                  "grades": ["Gr.2", "Gr.7"],
+                  "standards": ["ASTM B338"],
+                  "applications": ["Heat exchangers"],
+                  "requirements": ["MTR required"],
+                  "productLinks": [{ "label": "Titanium Tubes", "href": "/products/titanium-tube" }],
+                  "articleKeywords": ["chemical"],
+                  "status": "published"
+                }
+                """))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data.image").value("https://example.com/chemical.jpg"))
+        .andExpect(jsonPath("$.data.grades[1]").value("Gr.7"));
+
+    mockMvc.perform(get("/api/public/industries/chemical-processing"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data.summary").value("Updated industry summary for chemical service."))
+        .andExpect(jsonPath("$.data.productLinks[0].href").value("/products/titanium-tube"));
   }
 
   @Test

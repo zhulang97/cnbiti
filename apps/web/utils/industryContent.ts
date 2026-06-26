@@ -1,27 +1,9 @@
-import type { Article } from '@cnbjti/types'
+import type { Article, IndustryProductLink, IndustryProfile } from '@cnbjti/types'
 import { qinghangPageAssets } from './qinghangPageAssets'
 
-export interface IndustryProductLink {
-  label: string
-  href: string
-}
+export type { IndustryProductLink, IndustryProfile }
 
-export interface IndustryProfile {
-  slug: string
-  name: string
-  kicker: string
-  summary: string
-  image: string
-  imageAlt: string
-  grades: string[]
-  standards: string[]
-  applications: string[]
-  requirements: string[]
-  productLinks: IndustryProductLink[]
-  articleKeywords: string[]
-}
-
-export const industryProfiles: IndustryProfile[] = [
+export const defaultIndustryProfiles: IndustryProfile[] = [
   {
     slug: 'chemical-processing',
     name: 'Chemical Processing',
@@ -168,8 +150,10 @@ export const industryProfiles: IndustryProfile[] = [
   },
 ]
 
-export function findIndustryProfile(slug: string) {
-  return industryProfiles.find((industry) => industry.slug === slug)
+export const industryProfiles = defaultIndustryProfiles
+
+export function findIndustryProfile(slug: string, profiles = defaultIndustryProfiles) {
+  return profiles.find((industry) => industry.slug === slug)
 }
 
 export function matchingIndustryArticles(articles: Article[], industry: IndustryProfile, limit = 3) {

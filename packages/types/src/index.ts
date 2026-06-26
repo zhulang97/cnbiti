@@ -92,6 +92,27 @@ export interface Article {
   seo?: SeoMeta
 }
 
+export interface IndustryProductLink {
+  label: string
+  href: string
+}
+
+export interface IndustryProfile {
+  id?: string
+  slug: string
+  name: string
+  kicker: string
+  summary: string
+  image: string
+  imageAlt: string
+  grades: string[]
+  standards: string[]
+  applications: string[]
+  requirements: string[]
+  productLinks: IndustryProductLink[]
+  articleKeywords: string[]
+}
+
 export interface RfqItem {
   productType: string
   grade?: string

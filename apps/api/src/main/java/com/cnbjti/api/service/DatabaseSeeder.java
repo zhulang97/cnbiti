@@ -16,6 +16,8 @@ import com.cnbjti.api.model.ApiModels.HomeFeature;
 import com.cnbjti.api.model.ApiModels.HomePageConfig;
 import com.cnbjti.api.model.ApiModels.HomeQualityItem;
 import com.cnbjti.api.model.ApiModels.HomeStat;
+import com.cnbjti.api.model.ApiModels.IndustryProductLink;
+import com.cnbjti.api.model.ApiModels.IndustryProfile;
 import com.cnbjti.api.model.ApiModels.ManagedGalleryItem;
 import com.cnbjti.api.model.ApiModels.MediaAsset;
 import com.cnbjti.api.model.ApiModels.Product;
@@ -219,6 +221,12 @@ public class DatabaseSeeder implements ApplicationRunner {
       String status = i < 3 ? CatalogDataService.STATUS_PUBLISHED : "draft";
       saveCatalog(CatalogDataService.TYPE_ARTICLE, item.id(), item.slug(), item.title(), status, i, item);
     }
+
+    List<IndustryProfile> industries = defaultIndustries();
+    for (int i = 0; i < industries.size(); i++) {
+      IndustryProfile item = industries.get(i);
+      saveCatalog(CatalogDataService.TYPE_INDUSTRY, item.id(), item.slug(), item.name(), CatalogDataService.STATUS_PUBLISHED, i, item);
+    }
   }
 
   private void seedRfqs() {
@@ -276,6 +284,86 @@ public class DatabaseSeeder implements ApplicationRunner {
     return new Article(id, slug, title, excerpt, null,
         media("am" + id, "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80", title, slug + ".jpg"),
         category, List.of(), publishedAt, readingTime, null);
+  }
+
+  private List<IndustryProfile> defaultIndustries() {
+    return List.of(
+        industry("industry-chemical-processing", "chemical-processing", "Chemical Processing", "Reactors, piping and anodes",
+            "Titanium is specified for corrosive chemical service where chloride attack, oxidizing media and long maintenance intervals matter.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_58a53e1a37ce4e8b8607c380292bd0bd.png", "Titanium Chemical Industry Application",
+            List.of("Gr.1", "Gr.2", "Gr.7", "Gr.12"), List.of("ASTM B338", "ASTM B265", "ASTM B348", "ASME SB338"),
+            List.of("Heat exchangers", "Pressure vessels", "Electrolyzer parts", "Process piping"),
+            List.of("Heat number traceability", "PMI or third-party test options", "Pickled or polished surfaces", "Export crating for tubes and sheets"),
+            List.of(link("Titanium Tubes", "/products/titanium-tube"), link("Titanium Sheets", "/products/titanium-sheet"), link("Titanium Fittings", "/products/titanium-fittings")),
+            List.of("chemical", "reactor", "piping", "anode", "electrolyzer", "water treatment")),
+        industry("industry-marine-desalination", "marine-desalination", "Marine and Desalination", "Seawater corrosion resistance",
+            "Commercially pure titanium is used for ship systems, offshore structures and desalination equipment exposed to seawater and chlorides.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_2db6859fc7914665b067b94f9dc60da0.jpg", "Shipbuilding and Desalination Application",
+            List.of("Gr.1", "Gr.2", "Gr.7", "Gr.12"), List.of("ASTM B338", "ASTM B265", "ASTM B381"),
+            List.of("Condenser tubing", "Seawater piping", "Offshore fasteners", "Plate heat exchangers"),
+            List.of("Clean tube ends", "UT or eddy-current testing when required", "MTR with chemical and mechanical values", "Moisture-proof export packing"),
+            List.of(link("Titanium Tubes", "/products/titanium-tube"), link("Titanium Fasteners", "/products/titanium-fasteners"), link("Titanium Plates", "/products/titanium-sheet")),
+            List.of("marine", "ship", "offshore", "desalination", "seawater", "water treatment")),
+        industry("industry-medical", "medical", "Medical and Dental", "Biocompatible titanium supply",
+            "Medical projects typically require tight chemistry control, clean surfaces and full documentation for implant, dental and instrument components.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_0cd3cdf4a59044799351dcd285ef728d.jpg", "Titanium Medical Application",
+            List.of("Gr.2", "Gr.4", "Gr.5", "Gr.23"), List.of("ASTM F67", "ASTM F136", "ASTM B348"),
+            List.of("Dental implant blanks", "Surgical instruments", "Orthopedic parts", "Precision machined components"),
+            List.of("Grade 23 ELI availability", "Low interstitial chemistry control", "Fine machining surface finish", "Lot-level MTR documentation"),
+            List.of(link("Titanium Bars", "/products/titanium-bar"), link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Fasteners", "/products/titanium-fasteners")),
+            List.of("medical", "dental", "implant", "medicine", "knee", "biocompatible")),
+        industry("industry-aerospace", "aerospace", "Aerospace and Defense", "High strength with lower weight",
+            "Aerospace buyers use titanium alloys for structural parts, fasteners and machined components where strength-to-weight ratio is critical.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_747a102ba40e42f7ba78e2efa2b16b74.jpg", "Titanium Forging",
+            List.of("Gr.5", "Gr.9", "Gr.23"), List.of("AMS 4928", "ASTM B348", "ASTM B381"),
+            List.of("Fasteners", "Forged blanks", "CNC parts", "Hydraulic tubing"),
+            List.of("Drawing review before quotation", "Tight dimensional tolerance", "Optional third-party inspection", "Batch traceability"),
+            List.of(link("Titanium Bars", "/products/titanium-bar"), link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Fasteners", "/products/titanium-fasteners")),
+            List.of("aerospace", "aircraft", "drone", "performance", "strength", "fastener")),
+        industry("industry-energy", "energy", "Energy and Hydrogen", "Electrochemical and power projects",
+            "Titanium is used in energy storage, hydrogen, fuel cell and electrolyzer applications that need corrosion resistance and stable conductivity support.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_5e341e461ece4a9086ff293b260ffde9.webp", "Titanium Heat Treatment Furnace",
+            List.of("Gr.1", "Gr.2", "Gr.5", "Gr.7"), List.of("ASTM B265", "ASTM B348", "ASTM B381"),
+            List.of("Electrolyzer plates", "Titanium anodes", "Battery pack hardware", "Fuel cell components"),
+            List.of("Surface treatment options", "Flatness and thickness control", "Custom cutting service", "Consistent batch documentation"),
+            List.of(link("Titanium Sheets", "/products/titanium-sheet"), link("Titanium Electrolyzer", "/products/cnc-parts/titanium-electrolyzer-for-water-treatment"), link("CNC Titanium Parts", "/products/cnc-parts")),
+            List.of("energy", "battery", "fuel cell", "hydrogen", "anode", "electrolyzer")),
+        industry("industry-industrial-machining", "industrial-machining", "Industrial Machining", "Custom parts and processed blanks",
+            "For industrial buyers, CNBJTI can combine stock titanium material with cutting, CNC machining, forging and finishing support.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_842b07feb73b4582b2c4d57ede43978b.png", "Titanium CNC Machining",
+            List.of("Gr.2", "Gr.5", "Gr.9", "Gr.12"), List.of("ASTM B348", "ASTM B265", "ASTM B381"),
+            List.of("Machined housings", "Custom washers", "Forged blanks", "Cut-to-size plate"),
+            List.of("STEP, DXF, DWG or PDF drawings", "Tolerance review", "First article confirmation", "Protective packing for finished surfaces"),
+            List.of(link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Bars", "/products/titanium-bar"), link("Titanium Plates", "/products/titanium-sheet")),
+            List.of("machining", "casting", "manufacturing", "custom", "industrial", "component")),
+        industry("industry-automotive", "automotive", "Automotive and Motorsport", "Weight reduction and heat resistance",
+            "Motorsport and advanced automotive projects use titanium for exhaust, fasteners and structural parts that need lower mass without weak hardware.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_535475e4c15a489dae12d2a841b4e878.jpg", "Titanium CNC Factory",
+            List.of("Gr.5", "Gr.9", "Gr.2"), List.of("ASTM B348", "ASTM B338", "ASTM B265"),
+            List.of("Exhaust tubing", "Bolts and nuts", "Bracket blanks", "CNC lightweight parts"),
+            List.of("Reliable alloy grade control", "Thread and tolerance inspection", "Surface finish choice", "Small-batch manufacturing support"),
+            List.of(link("Titanium Fasteners", "/products/titanium-fasteners"), link("Titanium Tubes", "/products/titanium-tube"), link("CNC Titanium Parts", "/products/cnc-parts")),
+            List.of("automotive", "motorsport", "racing", "vehicle", "nev", "battery")),
+        industry("industry-electronics", "electronics", "Electronics and Consumer Devices", "Durable housings and fine finishes",
+            "Consumer electronics projects use titanium when housings, buttons and small precision parts need strength, premium finish and corrosion stability.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_2577ed70f8764881bc9b430246fc4bd8.png", "Titanium Sheet Surface Treatment",
+            List.of("Gr.2", "Gr.5"), List.of("ASTM B348", "ASTM B265"),
+            List.of("3C device housings", "Precision screws", "Machined buttons", "Thin sheet components"),
+            List.of("Consistent surface appearance", "Fine machining support", "Scratch protection packing", "Prototype to batch supply"),
+            List.of(link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Fasteners", "/products/titanium-fasteners"), link("Titanium Sheets", "/products/titanium-sheet")),
+            List.of("3c", "electronic", "housing", "consumer", "device", "screw"))
+    );
+  }
+
+  private IndustryProfile industry(String id, String slug, String name, String kicker, String summary, String image,
+      String imageAlt, List<String> grades, List<String> standards, List<String> applications, List<String> requirements,
+      List<IndustryProductLink> productLinks, List<String> articleKeywords) {
+    return new IndustryProfile(id, slug, name, kicker, summary, image, imageAlt, grades, standards, applications,
+        requirements, productLinks, articleKeywords);
+  }
+
+  private IndustryProductLink link(String label, String href) {
+    return new IndustryProductLink(label, href);
   }
 
   private AboutPageConfig defaultAboutPage() {

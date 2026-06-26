@@ -21,6 +21,7 @@ const router = createRouter({
         { path: 'rfq', name: 'rfq-list', meta: { roles: ['ADMIN', 'SALES'] }, component: () => import('@/views/RfqListView.vue') },
         { path: 'rfq/:id', name: 'rfq-detail', meta: { roles: ['ADMIN', 'SALES'] }, component: () => import('@/views/RfqDetailView.vue') },
         { path: 'products', name: 'products', meta: { roles: ['ADMIN', 'EDITOR'] }, component: () => import('@/views/ProductListView.vue') },
+        { path: 'industries', name: 'industries', meta: { roles: ['ADMIN', 'EDITOR'] }, component: () => import('@/views/IndustryListView.vue') },
         { path: 'media', name: 'media', meta: { roles: ['ADMIN', 'EDITOR'] }, component: () => import('@/views/MediaLibraryView.vue') },
         { path: 'audit-logs', name: 'audit-logs', meta: { roles: ['ADMIN'] }, component: () => import('@/views/AuditLogView.vue') },
         { path: 'users', name: 'users', meta: { roles: ['ADMIN'] }, component: () => import('@/views/AdminUserView.vue') },

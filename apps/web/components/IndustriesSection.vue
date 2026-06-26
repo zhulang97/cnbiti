@@ -36,6 +36,9 @@
 </template>
 
 <script setup lang="ts">
-import { industryProfiles } from '~/utils/industryContent'
+import type { IndustryProfile } from '@cnbjti/types'
+import { defaultIndustryProfiles } from '~/utils/industryContent'
 
+const { data: industryData } = await useAsyncData('public-home-industries', () => publicApi<IndustryProfile[]>('/public/industries'))
+const industryProfiles = computed(() => (industryData.value?.length ? industryData.value : defaultIndustryProfiles).slice(0, 8))
 </script>

@@ -9,6 +9,7 @@ import com.cnbjti.api.model.ApiModels.AdminCategoryDetail;
 import com.cnbjti.api.model.ApiModels.AdminContentOptions;
 import com.cnbjti.api.model.ApiModels.AdminDashboard;
 import com.cnbjti.api.model.ApiModels.AdminGradeDetail;
+import com.cnbjti.api.model.ApiModels.AdminIndustryDetail;
 import com.cnbjti.api.model.ApiModels.AdminProduct;
 import com.cnbjti.api.model.ApiModels.AdminProductDetail;
 import com.cnbjti.api.model.ApiModels.AdminRfq;
@@ -30,6 +31,9 @@ import com.cnbjti.api.model.ApiModels.HomeFeature;
 import com.cnbjti.api.model.ApiModels.HomePageConfig;
 import com.cnbjti.api.model.ApiModels.HomeQualityItem;
 import com.cnbjti.api.model.ApiModels.HomeStat;
+import com.cnbjti.api.model.ApiModels.IndustryProductLink;
+import com.cnbjti.api.model.ApiModels.IndustryProfile;
+import com.cnbjti.api.model.ApiModels.IndustrySaveRequest;
 import com.cnbjti.api.model.ApiModels.ManagedGalleryItem;
 import com.cnbjti.api.model.ApiModels.MediaAsset;
 import com.cnbjti.api.model.ApiModels.NavigationItem;
@@ -55,7 +59,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -74,6 +77,7 @@ public class CatalogDataService {
   static final String TYPE_STANDARD = "STANDARD";
   static final String TYPE_PRODUCT = "PRODUCT";
   static final String TYPE_ARTICLE = "ARTICLE";
+  static final String TYPE_INDUSTRY = "INDUSTRY";
   static final String STATUS_PUBLISHED = "published";
 
   private static final Set<String> RFQ_STATUSES = Set.of("new", "in_progress", "quoted", "won", "lost");
@@ -147,7 +151,7 @@ public class CatalogDataService {
 
   @Transactional
   public List<NavigationItem> updateNavigation(NavigationSaveRequest request) {
-    List<NavigationItem> items = orderNavigationItems(normalizeNavigationItems(request.items()));
+    List<NavigationItem> items = normalizeNavigationItems(request.items());
     if (items.isEmpty()) {
       throw new IllegalArgumentException("Navigation items are required");
     }
@@ -221,6 +225,18 @@ public class CatalogDataService {
 
   public Article articleBySlug(String slug) {
     return catalogBySlug(TYPE_ARTICLE, slug, Article.class);
+  }
+
+  public List<IndustryProfile> industries() {
+    List<IndustryProfile> stored = catalogList(TYPE_INDUSTRY, IndustryProfile.class, true);
+    return stored.isEmpty() ? defaultIndustries() : stored;
+  }
+
+  public IndustryProfile industryBySlug(String slug) {
+    return industries().stream()
+        .filter(industry -> slug(industry.slug()).equals(slug(slug)))
+        .findFirst()
+        .orElseThrow(() -> new NoSuchElementException("Industry not found"));
   }
 
   @Transactional
@@ -362,6 +378,51 @@ public class CatalogDataService {
       throw new IllegalArgumentException("Product category is used by products and cannot be deleted");
     }
     catalogRepository.delete(category);
+  }
+
+  public List<AdminIndustryDetail> adminIndustries() {
+    List<CatalogContentEntity> items = catalogRepository.findByContentTypeOrderBySortOrderAsc(TYPE_INDUSTRY);
+    if (items.isEmpty()) {
+      return defaultIndustries().stream()
+          .map(this::toDefaultAdminIndustryDetail)
+          .toList();
+    }
+    return items.stream()
+        .map(this::toAdminIndustryDetail)
+        .toList();
+  }
+
+  public AdminIndustryDetail adminIndustryDetail(String id) {
+    CatalogContentEntity entity = catalogRepository.findByContentTypeAndItemId(TYPE_INDUSTRY, id).orElse(null);
+    if (entity != null) {
+      return toAdminIndustryDetail(entity);
+    }
+    return defaultIndustries().stream()
+        .filter(industry -> id.equals(industry.id()))
+        .findFirst()
+        .map(this::toDefaultAdminIndustryDetail)
+        .orElseThrow(() -> new NoSuchElementException("Industry not found"));
+  }
+
+  @Transactional
+  public AdminIndustryDetail createIndustry(IndustrySaveRequest request) {
+    validateStatus(request.status());
+    ensureSlugAvailable(TYPE_INDUSTRY, request.slug(), null);
+    String id = nextCatalogItemId(TYPE_INDUSTRY, "ind");
+    return toAdminIndustryDetail(saveIndustryEntity(null, id, request));
+  }
+
+  @Transactional
+  public AdminIndustryDetail updateIndustry(String id, IndustrySaveRequest request) {
+    validateStatus(request.status());
+    CatalogContentEntity existing = catalogRepository.findByContentTypeAndItemId(TYPE_INDUSTRY, id).orElse(null);
+    ensureSlugAvailable(TYPE_INDUSTRY, request.slug(), id);
+    return toAdminIndustryDetail(saveIndustryEntity(existing, id, request));
+  }
+
+  @Transactional
+  public void deleteIndustry(String id) {
+    catalogRepository.findByContentTypeAndItemId(TYPE_INDUSTRY, id).ifPresent(catalogRepository::delete);
   }
 
   public List<AdminGradeDetail> adminGrades() {
@@ -584,6 +645,29 @@ public class CatalogDataService {
     return catalogRepository.save(entity);
   }
 
+  private CatalogContentEntity saveIndustryEntity(CatalogContentEntity existing, String id, IndustrySaveRequest request) {
+    IndustryProfile previous = existing == null ? null : jsonCodec.read(existing.getPayloadJson(), IndustryProfile.class);
+    IndustryProfile industry = new IndustryProfile(
+        id,
+        slug(request.slug()),
+        request.name().trim(),
+        text(request.kicker(), ""),
+        text(request.summary(), ""),
+        text(request.image(), previous == null ? "" : previous.image()),
+        text(request.imageAlt(), request.name().trim()),
+        list(request.grades()),
+        list(request.standards()),
+        list(request.applications()),
+        list(request.requirements()),
+        listProductLinks(request.productLinks()),
+        list(request.articleKeywords())
+    );
+    CatalogContentEntity entity = new CatalogContentEntity(TYPE_INDUSTRY + ":" + id, TYPE_INDUSTRY, id,
+        industry.slug(), industry.name(), request.status(), existing == null ? nextSortOrder(TYPE_INDUSTRY) : existing.getSortOrder(),
+        jsonCodec.write(industry), LocalDateTime.now());
+    return catalogRepository.save(entity);
+  }
+
   private CatalogContentEntity saveGradeEntity(CatalogContentEntity existing, String id, GradeSaveRequest request) {
     TitaniumGrade previous = existing == null ? null : jsonCodec.read(existing.getPayloadJson(), TitaniumGrade.class);
     TitaniumGrade grade = new TitaniumGrade(
@@ -749,6 +833,47 @@ public class CatalogDataService {
     return new AdminCategoryDetail(category.id(), category.slug(), category.name(), text(category.description(), ""),
         category.image() == null ? "" : category.image().url(), text(category.icon(), ""), category.productCount(),
         category.seo(), category.showOnHome(), category.homeSort(), entity.getStatus(), entity.getUpdatedAt().toLocalDate().toString());
+  }
+
+  private AdminIndustryDetail toAdminIndustryDetail(CatalogContentEntity entity) {
+    IndustryProfile industry = jsonCodec.read(entity.getPayloadJson(), IndustryProfile.class);
+    return new AdminIndustryDetail(
+        industry.id(),
+        industry.slug(),
+        industry.name(),
+        text(industry.kicker(), ""),
+        text(industry.summary(), ""),
+        text(industry.image(), ""),
+        text(industry.imageAlt(), ""),
+        list(industry.grades()),
+        list(industry.standards()),
+        list(industry.applications()),
+        list(industry.requirements()),
+        listProductLinks(industry.productLinks()),
+        list(industry.articleKeywords()),
+        entity.getStatus(),
+        entity.getUpdatedAt().toLocalDate().toString()
+    );
+  }
+
+  private AdminIndustryDetail toDefaultAdminIndustryDetail(IndustryProfile industry) {
+    return new AdminIndustryDetail(
+        industry.id(),
+        industry.slug(),
+        industry.name(),
+        text(industry.kicker(), ""),
+        text(industry.summary(), ""),
+        text(industry.image(), ""),
+        text(industry.imageAlt(), ""),
+        list(industry.grades()),
+        list(industry.standards()),
+        list(industry.applications()),
+        list(industry.requirements()),
+        listProductLinks(industry.productLinks()),
+        list(industry.articleKeywords()),
+        STATUS_PUBLISHED,
+        LocalDate.now().toString()
+    );
   }
 
   private ProductCategory toProductCategory(CatalogContentEntity entity) {
@@ -1027,7 +1152,7 @@ public class CatalogDataService {
     if (json == null || json.isBlank()) {
       return defaultNavigation();
     }
-    return orderNavigationItems(normalizeNavigationItems(Arrays.asList(jsonCodec.read(json, NavigationItem[].class))));
+    return normalizeNavigationItems(Arrays.asList(jsonCodec.read(json, NavigationItem[].class)));
   }
 
   private List<NavigationItem> normalizeNavigationItems(List<NavigationItem> items) {
@@ -1052,43 +1177,6 @@ public class CatalogDataService {
         text(item.badge(), null),
         text(item.icon(), null)
     );
-  }
-
-  private List<NavigationItem> orderNavigationItems(List<NavigationItem> items) {
-    return items.stream()
-        .sorted(Comparator.comparingInt(this::navigationOrder))
-        .toList();
-  }
-
-  private int navigationOrder(NavigationItem item) {
-    String href = navigationHref(item);
-    if ("products".equalsIgnoreCase(item.label()) || "/products".equals(href)
-        || ((item.href() == null || item.href().isBlank()) && item.children() != null && !item.children().isEmpty())) {
-      return 0;
-    }
-    return switch (href) {
-      case "/certificates" -> 1;
-      case "/factory-tour" -> 2;
-      case "/processing" -> 3;
-      case "/industries" -> 4;
-      case "/resources" -> 5;
-      case "/quality" -> 6;
-      case "/grades" -> 7;
-      case "/standards" -> 8;
-      case "/about" -> 9;
-      case "/contact" -> 10;
-      default -> 100;
-    };
-  }
-
-  private String navigationHref(NavigationItem item) {
-    String href = text(item.href(), "");
-    int suffixIndex = href.length();
-    int queryIndex = href.indexOf('?');
-    int hashIndex = href.indexOf('#');
-    if (queryIndex >= 0) suffixIndex = Math.min(suffixIndex, queryIndex);
-    if (hashIndex >= 0) suffixIndex = Math.min(suffixIndex, hashIndex);
-    return href.substring(0, suffixIndex).replaceFirst("^/(?:en|zh|de|es)(?=/|$)", "");
   }
 
   private Map<String, String> cleanLinks(Map<String, String> values) {
@@ -1401,10 +1489,98 @@ public class CatalogDataService {
     return new MediaAsset(id, url, null, alt, null, null, "image/jpeg", 0, filename);
   }
 
+  private List<IndustryProfile> defaultIndustries() {
+    return List.of(
+        industry("industry-chemical-processing", "chemical-processing", "Chemical Processing", "Reactors, piping and anodes",
+            "Titanium is specified for corrosive chemical service where chloride attack, oxidizing media and long maintenance intervals matter.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_58a53e1a37ce4e8b8607c380292bd0bd.png", "Titanium Chemical Industry Application",
+            List.of("Gr.1", "Gr.2", "Gr.7", "Gr.12"), List.of("ASTM B338", "ASTM B265", "ASTM B348", "ASME SB338"),
+            List.of("Heat exchangers", "Pressure vessels", "Electrolyzer parts", "Process piping"),
+            List.of("Heat number traceability", "PMI or third-party test options", "Pickled or polished surfaces", "Export crating for tubes and sheets"),
+            List.of(link("Titanium Tubes", "/products/titanium-tube"), link("Titanium Sheets", "/products/titanium-sheet"), link("Titanium Fittings", "/products/titanium-fittings")),
+            List.of("chemical", "reactor", "piping", "anode", "electrolyzer", "water treatment")),
+        industry("industry-marine-desalination", "marine-desalination", "Marine and Desalination", "Seawater corrosion resistance",
+            "Commercially pure titanium is used for ship systems, offshore structures and desalination equipment exposed to seawater and chlorides.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_2db6859fc7914665b067b94f9dc60da0.jpg", "Shipbuilding and Desalination Application",
+            List.of("Gr.1", "Gr.2", "Gr.7", "Gr.12"), List.of("ASTM B338", "ASTM B265", "ASTM B381"),
+            List.of("Condenser tubing", "Seawater piping", "Offshore fasteners", "Plate heat exchangers"),
+            List.of("Clean tube ends", "UT or eddy-current testing when required", "MTR with chemical and mechanical values", "Moisture-proof export packing"),
+            List.of(link("Titanium Tubes", "/products/titanium-tube"), link("Titanium Fasteners", "/products/titanium-fasteners"), link("Titanium Plates", "/products/titanium-sheet")),
+            List.of("marine", "ship", "offshore", "desalination", "seawater", "water treatment")),
+        industry("industry-medical", "medical", "Medical and Dental", "Biocompatible titanium supply",
+            "Medical projects typically require tight chemistry control, clean surfaces and full documentation for implant, dental and instrument components.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_0cd3cdf4a59044799351dcd285ef728d.jpg", "Titanium Medical Application",
+            List.of("Gr.2", "Gr.4", "Gr.5", "Gr.23"), List.of("ASTM F67", "ASTM F136", "ASTM B348"),
+            List.of("Dental implant blanks", "Surgical instruments", "Orthopedic parts", "Precision machined components"),
+            List.of("Grade 23 ELI availability", "Low interstitial chemistry control", "Fine machining surface finish", "Lot-level MTR documentation"),
+            List.of(link("Titanium Bars", "/products/titanium-bar"), link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Fasteners", "/products/titanium-fasteners")),
+            List.of("medical", "dental", "implant", "medicine", "knee", "biocompatible")),
+        industry("industry-aerospace", "aerospace", "Aerospace and Defense", "High strength with lower weight",
+            "Aerospace buyers use titanium alloys for structural parts, fasteners and machined components where strength-to-weight ratio is critical.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_747a102ba40e42f7ba78e2efa2b16b74.jpg", "Titanium Forging",
+            List.of("Gr.5", "Gr.9", "Gr.23"), List.of("AMS 4928", "ASTM B348", "ASTM B381"),
+            List.of("Fasteners", "Forged blanks", "CNC parts", "Hydraulic tubing"),
+            List.of("Drawing review before quotation", "Tight dimensional tolerance", "Optional third-party inspection", "Batch traceability"),
+            List.of(link("Titanium Bars", "/products/titanium-bar"), link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Fasteners", "/products/titanium-fasteners")),
+            List.of("aerospace", "aircraft", "drone", "performance", "strength", "fastener")),
+        industry("industry-energy", "energy", "Energy and Hydrogen", "Electrochemical and power projects",
+            "Titanium is used in energy storage, hydrogen, fuel cell and electrolyzer applications that need corrosion resistance and stable conductivity support.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_5e341e461ece4a9086ff293b260ffde9.webp", "Titanium Heat Treatment Furnace",
+            List.of("Gr.1", "Gr.2", "Gr.5", "Gr.7"), List.of("ASTM B265", "ASTM B348", "ASTM B381"),
+            List.of("Electrolyzer plates", "Titanium anodes", "Battery pack hardware", "Fuel cell components"),
+            List.of("Surface treatment options", "Flatness and thickness control", "Custom cutting service", "Consistent batch documentation"),
+            List.of(link("Titanium Sheets", "/products/titanium-sheet"), link("Titanium Electrolyzer", "/products/cnc-parts/titanium-electrolyzer-for-water-treatment"), link("CNC Titanium Parts", "/products/cnc-parts")),
+            List.of("energy", "battery", "fuel cell", "hydrogen", "anode", "electrolyzer")),
+        industry("industry-industrial-machining", "industrial-machining", "Industrial Machining", "Custom parts and processed blanks",
+            "For industrial buyers, CNBJTI can combine stock titanium material with cutting, CNC machining, forging and finishing support.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_842b07feb73b4582b2c4d57ede43978b.png", "Titanium CNC Machining",
+            List.of("Gr.2", "Gr.5", "Gr.9", "Gr.12"), List.of("ASTM B348", "ASTM B265", "ASTM B381"),
+            List.of("Machined housings", "Custom washers", "Forged blanks", "Cut-to-size plate"),
+            List.of("STEP, DXF, DWG or PDF drawings", "Tolerance review", "First article confirmation", "Protective packing for finished surfaces"),
+            List.of(link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Bars", "/products/titanium-bar"), link("Titanium Plates", "/products/titanium-sheet")),
+            List.of("machining", "casting", "manufacturing", "custom", "industrial", "component")),
+        industry("industry-automotive", "automotive", "Automotive and Motorsport", "Weight reduction and heat resistance",
+            "Motorsport and advanced automotive projects use titanium for exhaust, fasteners and structural parts that need lower mass without weak hardware.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_535475e4c15a489dae12d2a841b4e878.jpg", "Titanium CNC Factory",
+            List.of("Gr.5", "Gr.9", "Gr.2"), List.of("ASTM B348", "ASTM B338", "ASTM B265"),
+            List.of("Exhaust tubing", "Bolts and nuts", "Bracket blanks", "CNC lightweight parts"),
+            List.of("Reliable alloy grade control", "Thread and tolerance inspection", "Surface finish choice", "Small-batch manufacturing support"),
+            List.of(link("Titanium Fasteners", "/products/titanium-fasteners"), link("Titanium Tubes", "/products/titanium-tube"), link("CNC Titanium Parts", "/products/cnc-parts")),
+            List.of("automotive", "motorsport", "racing", "vehicle", "nev", "battery")),
+        industry("industry-electronics", "electronics", "Electronics and Consumer Devices", "Durable housings and fine finishes",
+            "Consumer electronics projects use titanium when housings, buttons and small precision parts need strength, premium finish and corrosion stability.",
+            "https://cnbjti.com/cnbjti-assets/2026-05-14/file_2577ed70f8764881bc9b430246fc4bd8.png", "Titanium Sheet Surface Treatment",
+            List.of("Gr.2", "Gr.5"), List.of("ASTM B348", "ASTM B265"),
+            List.of("3C device housings", "Precision screws", "Machined buttons", "Thin sheet components"),
+            List.of("Consistent surface appearance", "Fine machining support", "Scratch protection packing", "Prototype to batch supply"),
+            List.of(link("CNC Titanium Parts", "/products/cnc-parts"), link("Titanium Fasteners", "/products/titanium-fasteners"), link("Titanium Sheets", "/products/titanium-sheet")),
+            List.of("3c", "electronic", "housing", "consumer", "device", "screw"))
+    );
+  }
+
+  private IndustryProfile industry(String id, String slug, String name, String kicker, String summary, String image,
+      String imageAlt, List<String> grades, List<String> standards, List<String> applications, List<String> requirements,
+      List<IndustryProductLink> productLinks, List<String> articleKeywords) {
+    return new IndustryProfile(id, slug, name, kicker, summary, image, imageAlt, grades, standards, applications,
+        requirements, productLinks, articleKeywords);
+  }
+
+  private IndustryProductLink link(String label, String href) {
+    return new IndustryProductLink(label, href);
+  }
+
   private List<String> list(List<String> values) {
     return values == null ? List.of() : values.stream()
         .filter(value -> value != null && !value.isBlank())
         .map(String::trim)
+        .toList();
+  }
+
+  private List<IndustryProductLink> listProductLinks(List<IndustryProductLink> values) {
+    return values == null ? List.of() : values.stream()
+        .filter(value -> value != null && value.label() != null && !value.label().isBlank()
+            && value.href() != null && !value.href().isBlank())
+        .map(value -> new IndustryProductLink(value.label().trim(), value.href().trim()))
         .toList();
   }
 

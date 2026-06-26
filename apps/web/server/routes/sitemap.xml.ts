@@ -1,4 +1,4 @@
-import { industryProfiles } from '../../utils/industryContent'
+import { defaultIndustryProfiles } from '../../utils/industryContent'
 
 interface ApiEnvelope<T> {
   data: T
@@ -25,13 +25,15 @@ export default defineEventHandler(async (event) => {
   const siteUrl = String(config.public.siteUrl || 'https://cnbjti.com').replace(/\/$/, '')
   const apiBase = String(config.apiBase || 'http://127.0.0.1:8080/api').replace(/\/$/, '')
 
-  const [categories, products, grades, standards, articles] = await Promise.all([
+  const [categories, products, grades, standards, articles, industries] = await Promise.all([
     fetchList<SlugItem>(apiBase, '/public/categories'),
     fetchList<SlugItem>(apiBase, '/public/products'),
     fetchList<SlugItem>(apiBase, '/public/grades'),
     fetchList<SlugItem>(apiBase, '/public/standards'),
     fetchList<SlugItem>(apiBase, '/public/articles'),
+    fetchList<SlugItem>(apiBase, '/public/industries'),
   ])
+  const industryRoutes = industries.length ? industries : defaultIndustryProfiles
 
   const urls: SitemapUrl[] = [
     route(siteUrl, '/', 'weekly', '1.0'),
@@ -58,7 +60,7 @@ export default defineEventHandler(async (event) => {
       .map((item) => route(siteUrl, `/products/${item.category!.slug}/${item.slug}`, 'weekly', '0.8', item.updatedAt)),
     ...grades.map((item) => route(siteUrl, `/grades/${item.slug}`, 'monthly', '0.7', item.updatedAt)),
     ...standards.map((item) => route(siteUrl, `/standards/${item.slug}`, 'monthly', '0.7', item.updatedAt)),
-    ...industryProfiles.map((item) => route(siteUrl, `/industries/${item.slug}`, 'monthly', '0.7')),
+    ...industryRoutes.map((item) => route(siteUrl, `/industries/${item.slug}`, 'monthly', '0.7', 'updatedAt' in item ? item.updatedAt : undefined)),
     ...articles.map((item) => route(siteUrl, `/resources/${item.slug}`, 'weekly', '0.7', item.publishedAt || item.updatedAt)),
   ]
 

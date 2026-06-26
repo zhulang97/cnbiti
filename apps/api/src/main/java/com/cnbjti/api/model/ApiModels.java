@@ -154,6 +154,26 @@ public final class ApiModels {
   ) {
   }
 
+  public record IndustryProductLink(String label, String href) {
+  }
+
+  public record IndustryProfile(
+      String id,
+      String slug,
+      String name,
+      String kicker,
+      String summary,
+      String image,
+      String imageAlt,
+      List<String> grades,
+      List<String> standards,
+      List<String> applications,
+      List<String> requirements,
+      List<IndustryProductLink> productLinks,
+      List<String> articleKeywords
+  ) {
+  }
+
   public record SiteConfig(
       String siteName,
       String tagline,
@@ -344,6 +364,42 @@ public final class ApiModels {
   }
 
   public record AdminArticle(String id, String title, String category, String status, String publishedAt) {
+  }
+
+  public record AdminIndustryDetail(
+      String id,
+      String slug,
+      String name,
+      String kicker,
+      String summary,
+      String image,
+      String imageAlt,
+      List<String> grades,
+      List<String> standards,
+      List<String> applications,
+      List<String> requirements,
+      List<IndustryProductLink> productLinks,
+      List<String> articleKeywords,
+      String status,
+      String updatedAt
+  ) {
+  }
+
+  public record IndustrySaveRequest(
+      @NotBlank String slug,
+      @NotBlank String name,
+      String kicker,
+      String summary,
+      String image,
+      String imageAlt,
+      List<String> grades,
+      List<String> standards,
+      List<String> applications,
+      List<String> requirements,
+      List<IndustryProductLink> productLinks,
+      List<String> articleKeywords,
+      @NotBlank String status
+  ) {
   }
 
   public record AdminContentOptions(
